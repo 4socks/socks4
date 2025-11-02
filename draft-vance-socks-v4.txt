@@ -29,6 +29,13 @@ Abstract
    connections to an application server, and BIND for preparing for and
    accepting inbound connections initiated by an application server.
 
+Discussion Venues
+
+   This note is to be removed before publishing as an RFC.
+
+   Source for this draft and an issue tracker can be found at
+   https://github.com/4socks/socks4.
+
 Status of This Memo
 
    This Internet-Draft is submitted in full conformance with the
