@@ -1,0 +1,228 @@
+---
+title: "SOCKS: A Protocol for TCP Proxy Across Firewalls"
+abbrev: "SOCKS4 SPEC"
+category: historic
+
+docname: draft-vance-socks-v4-latest
+submissiontype: independent
+v: 3
+
+author:
+ -
+    fullname: Daniel James Vance
+    organization: Independent
+    email: djvanc@outlook.com
+
+normative:
+  RFC1413:
+
+informative:
+  RFC791:
+  RFC793:
+
+...
+
+--- abstract
+
+This document is published as a historical record of the SOCKS 4 protocol. The original spec does not have an Abstract, so the Abstract below is added afterwards.
+
+This document describes SOCKS version 4, a protocol designed to facilitate TCP proxy services across a network firewall. SOCKS operates at the session layer, providing application users with transparent access to network services on the other side of the firewall. It is application-protocol independent, allowing it to support a wide range of services, including those utilizing encryption, while maintaining minimum processing overhead by simply relaying data after initial access control checks. The protocol defines two primary operations: CONNECT for establishing outbound connections to an application server, and BIND for preparing for and accepting inbound connections initiated by an application server.
+
+
+--- middle
+
+# Introduction
+
+SOCKS was originally developed by David Koblas and subsequently modified and extended to its current running version -- **version 4**. It is a protocol that relays **TCP sessions** at a firewall host to allow application users **transparent access** across the firewall. Because the protocol is independent of application protocols, it can be (and has been) used for many different services, such as **telnet, ftp, finger, whois, gopher, WWW, etc.** Access control can be applied at the beginning of each TCP session; thereafter the server simply relays the data between the client and the application server, incurring **minimum processing overhead**. Since SOCKS never has to know anything about the application protocol, it should also be easy for it to accommodate applications which use encryption to protect their traffic from nosey snoopers.
+
+Two operations are defined: **CONNECT** and **BIND**.
+
+# CONNECT
+
+The client connects to the SOCKS server and sends a **CONNECT** request when it wants to establish a connection to an application server. The client includes in the request packet the IP address and the port number of the destination host, and userid, in the following format.
+
+## CONNECT Request Packet Format
+
+```
+		+----+----+----+----+----+----+----+----+----+----+....+----+
+		| VN | CD | DSTPORT |      DSTIP         | USERID       |NULL|
+		+----+----+----+----+----+----+----+----+----+----+....+----+
+ # of bytes:	 1    1       2                   4          variable      1
+```
+
+  * **VN** is the SOCKS protocol version number and should be **4**.
+  * **CD** is the SOCKS command code and should be **1** for CONNECT request.
+  * **NULL** is a byte of all zero bits.
+
+The SOCKS server checks to see whether such a request should be granted based on any combination of source IP address, destination IP address, destination port number, the userid, and information it may obtain by consulting **IDENT, cf. RFC 1413**. If the request is granted, the SOCKS server makes a connection to the specified port of the destination host. A **reply packet** is sent to the client when this connection is established, or when the request is rejected or the operation fails.
+
+## CONNECT Reply Packet Format
+
+```
+		+----+----+----+----+----+----+----+----+
+		| VN | CD | DSTPORT |      DSTIP         |
+		+----+----+----+----+----+----+----+----+
+ # of bytes:	 1    1       2                   4
+```
+
+  * **VN** is the version of the reply code and should be **0**.
+  * **CD** is the result code with one of the following values:
+      * **90:** request granted
+      * **91:** request rejected or failed
+      * **92:** request rejected becasue SOCKS server cannot connect to identd on the client
+      * **93:** request rejected because the client program and identd report different user-ids
+
+The remaining fields are ignored.
+
+The SOCKS server closes its connection immediately after notifying the client of a failed or rejected request. For a successful request, the SOCKS server gets ready to **relay traffic on both directions**. This enables the client to do I/O on its connection as if it were directly connected to the application server.
+
+# BIND
+
+The client connects to the SOCKS server and sends a **BIND** request when it wants to prepare for an **inbound connection** from an application server. This should only happen after a primary connection to the application server has been established with a CONNECT. Typically, this is part of the sequence of actions:
+
+  * `bind()`: obtain a socket
+  * `getsockname()`: get the IP address and port number of the socket
+  * `listen()`: ready to accept call from the application server
+  * use the primary connection to inform the application server of the IP address and the port number that it should connect to.
+  * `accept()`: accept a connection from the application server
+
+The purpose of SOCKS BIND operation is to support such a sequence but using a socket on the **SOCKS server** rather than on the client.
+
+The client includes in the request packet the IP address of the application server, the destination port used in the primary connection, and the userid.
+
+## BIND Request Packet Format
+
+```
+		+----+----+----+----+----+----+----+----+----+----+....+----+
+		| VN | CD | DSTPORT |      DSTIP         | USERID       |NULL|
+		+----+----+----+----+----+----+----+----+----+----+....+----+
+ # of bytes:	 1    1       2                   4          variable      1
+```
+
+  * **VN** is again **4** for the SOCKS protocol version number.
+  * **CD** must be **2** to indicate BIND request.
+
+The SOCKS server uses the client information to decide whether the request is to be granted. The reply it sends back to the client has the **same format as the reply for CONNECT request**, i.e.,
+
+## BIND First Reply Packet Format (Socket Assigned)
+
+```
+		+----+----+----+----+----+----+----+----+
+		| VN | CD | DSTPORT |      DSTIP         |
+		+----+----+----+----+----+----+----+----+
+ # of bytes:	 1    1       2                   4
+```
+
+  * **VN** is the version of the reply code and should be **0**.
+  * **CD** is the result code with one of the following values:
+      * **90:** request granted
+      * **91:** request rejected or failed
+      * **92:** request rejected becasue SOCKS server cannot connect to identd on the client
+      * **93:** request rejected because the client program and identd report different user-ids.
+
+However, for a granted request (**CD is 90**), the **DSTPORT** and **DSTIP** fields are meaningful. In that case, the SOCKS server obtains a socket to wait for an incoming connection and sends the **port number** and the **IP address** of that socket to the client in **DSTPORT** and **DSTIP**, respectively. If the DSTIP in the reply is **0** (the value of constant `INADDR_ANY`), then the client should **replace it by the IP address of the SOCKS server** to which the cleint is connected. (This happens if the SOCKS server is not a multi-homed host.) In the typical scenario, these two numbers are made available to the application client prgram via the result of the subsequent `getsockname()` call. The application protocol must provide a way for these two pieces of information to be sent from the client to the application server so that it can initiate the connection, which connects it to the SOCKS server rather than directly to the application client as it normally would.
+
+## BIND Second Reply Packet Format (Connection Established)
+
+The SOCKS server sends a **second reply packet** to the client when the anticipated connection from the application server is established. The SOCKS server checks the IP address of the originating host against the value of **DSTIP specified in the client's BIND request**. If a mismatch is found, the **CD field in the second reply is set to 91** and the SOCKS server closes both connections. If the two match, **CD in the second reply is set to 90** and the SOCKS server gets ready to relay the traffic on its two connections. From then on the client does I/O on its connection to the SOCKS server as if it were directly connected to the application server.
+
+# Timeout Mechanism
+
+For both **CONNECT** and **BIND** operations, the server sets a **time limit** (2 minutes in current CSTC implementation) for the establishment of its connection with the application server. If the connection is still not establiched when the time limit expires, the server closes its connection to the client and gives up.
+
+# Security Considerations
+
+The SOCKS Version 4 (SOCKSv4) protocol, designed for TCP proxy traversal of network firewalls, operates exclusively at the session layer and **inherently lacks robust security mechanisms**. Its deployment and operational policy must be rigorously evaluated against the deficiencies outlined herein.
+
+## Authentication and Authorization Deficiencies
+
+### Weak Client Identification Mechanism
+
+The SOCKSv4 request format incorporates a **`USERID`** field. This field is designated for rudimentary client identification, typically intended for conjunction with the **IDENT protocol** (specified in [RFC 1413]).
+
+* **Ident Protocol Vulnerability:** Reliance on IDENT constitutes a **significant security risk**. The IDENT protocol operates via an untrusted daemon resident on the client host, rendering the identification process susceptible to trivial **spoofing or malicious disabling**.
+* **Absence of Strong Authentication:** SOCKSv4 **lacks integrated provisions** for strong client-to-server or server-to-client authentication. This includes the absence of any mechanism for verifying user credentials, such as passwords, or employing cryptographic challenge-response methods.
+
+### Policy-Dependent Authorization
+
+Access control (authorization) for SOCKSv4 services is **exclusively managed** by the local configuration and security policy of the SOCKS server implementation. A failure in the server's configuration or a weakness in its policy can directly result in **unauthorized network access** across the protective boundary of the firewall.
+
+## Data Integrity and Transport Limitations
+
+### Absence of Confidentiality (Plaintext Relay)
+
+SOCKSv4 functions as a session layer relay and **does not incorporate any encryption** capabilities for the application data stream. All application traffic traversing the SOCKS proxy is forwarded in **plaintext**. This inherent vulnerability exposes all transmitted data to **passive network eavesdropping** and interception.
+
+### Protocol Scope Restriction
+
+The SOCKSv4 protocol is **strictly confined** to the proxying of **Transmission Control Protocol (TCP)** connections. It provides **no native support** for the relay of **User Datagram Protocol (UDP)** traffic or other protocols operating at the IP layer.
+
+## Vulnerabilities Associated with the BIND Operation
+
+The **BIND** command, utilized to establish a socket for an anticipated inbound connection (a callback) from an application server, introduces distinct security challenges.
+
+### Source Address Verification Bypass
+
+The SOCKS server attempts a rudimentary security check during the BIND operation by comparing the source IP address of the incoming connection with the target address (`DSTIP`) specified in the client's request.
+
+* **IP Address Spoofing Risk:** A malicious actor could potentially **forge the source IP address** of the inbound connection, thereby bypassing this basic server check and facilitating the establishment of an **unauthorized session**.
+* **NAT/PAT Incompatibility:** In network topologies employing **Network Address Translation (NAT)** or **Port Address Translation (PAT)**, the source IP address is structurally altered. This modification renders the BIND source address verification mechanism **unreliable, ineffectual, or operationally complex** to maintain.
+
+
+## Denial of Service (DoS) Vector
+
+### Resource Exhaustion Potential
+
+Each successful SOCKS connection consumes finite server resources, including active sockets, allocated memory, and network bandwidth. A malicious client can exploit this by initiating a **large volume of connection attempts**—particularly through the resource-intensive **BIND operation**—to rapidly exhaust the SOCKS server's capacity. This constitutes a direct vector for a **Denial of Service** attack against legitimate users.
+
+### Inadequate Mitigations
+
+Although the protocol specifies a basic connection establishment **timeout mechanism (2 minutes)**, this measure is insufficient in scope and rigor to fully mitigate the risks associated with sophisticated DoS attacks.
+
+## Recommended Mitigation and Deployment Practices
+
+Given the security deficiencies of SOCKSv4, deployment should be guided by the following principles:
+
+1. Strict Operational Environment: SOCKSv4 is only recommended for use in environments designated as highly trusted and subject to stringent local policy control*.
+2.  Layered Security via Encrypted Tunnels: Where SOCKSv4 must transport sensitive application traffic, the protocol must be encapsulated within an existing secure transport layer, such as a Transport Layer Security (TLS/SSL) or IPsec tunnel, to establish confidentiality and integrity.
+3.  Protocol Migration: Operators should actively plan for the migration to or substitution with a more secure protocol version, specifically SOCKS Version 5 ([RFC 1928]), which incorporates native, robust authentication methods.
+
+# IANA Considerations
+
+This document describes the SOCKS Version 4 protocol, which is presented as a historical record. This protocol does not define any new protocol fields, codes, or registries that require assignment by the Internet Assigned Numbers Authority (IANA).
+
+The existing values used within the protocol are summarized below:
+
+## SOCKS Protocol Version Number (VN)
+
+* The SOCKS protocol version number `VN` in requests is **4 (0x04)**.
+* The SOCKS protocol version number `VN` in replies is **0 (0x00)**.
+
+## SOCKS Command Code (CD)
+
+The SOCKS command code `CD` in requests defines two values:
+    * **1 (0x01):** CONNECT
+    * **2 (0x02):** BIND
+
+## SOCKS Reply Code (CD)
+
+The SOCKS reply code `CD` in replies defines four values:
+    * **90 (0x5A):** Request granted
+    * **91 (0x5B):** Request rejected or failed
+    * **92 (0x5C):** Request rejected because SOCKS server cannot connect to `identd` on the client
+    * **93 (0x5D):** Request rejected because the client program and `identd` report different user-ids
+
+## Port Number
+
+The SOCKS protocol is conventionally known to use **TCP port 1080** for its service. This port number has already been registered in the **IANA Service Name and Transport Protocol Port Number Registry** for the `socks` service.
+
+--- back
+
+# Original Auther
+{:numbered="false"}
+~~~~
+Ying-Da Lee
+Principal Member Technical Staff
+NEC Systems Laboratory, CSTC
+ylee@syl.dl.nec.com
+~~~~
