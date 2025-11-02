@@ -53,7 +53,7 @@ jobs:
       with:
         make: upload
       env:
-        UPLOAD_EMAIL: ${{ inputs.email }}
+        UPLOAD_EMAIL: anvil-aorta-ivory@duck.com
 
     - name: "Archive Submitted Drafts"
       uses: actions/upload-artifact@v4
