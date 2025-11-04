@@ -56,12 +56,12 @@ The client MUST send a request packet with the following structure:
  Size (bytes):	 1    1       2           4         variable     1
 ```
 
-  - VN (Version Number): MUST be 4, representing the SOCKS protocol version.
-  - CD (Command Code): MUST be 1, indicating a CONNECT request.
-  - DSTPORT (Destination Port): The port number of the application server (network byte order).
-  - DSTIP (Destination IP): The IP address of the application server (network byte order).
-  - USERID (User Identifier): A string of characters representing the client's user ID.
-  - NULL: A single byte with a value of all zero bits, terminating the USERID field.
+- VN (Version Number): MUST be 4, representing the SOCKS protocol version.
+- CD (Command Code): MUST be 1, indicating a CONNECT request.
+- DSTPORT (Destination Port): The port number of the application server (network byte order).
+- DSTIP (Destination IP): The IP address of the application server (network byte order).
+- USERID (User Identifier): A string of characters representing the client's user ID.
+- NULL: A single byte with a value of all zero bits, terminating the USERID field.
 
 ## CONNECT Processing and Reply
 
@@ -82,13 +82,13 @@ The SOCKS server MUST send a reply packet with the following structure:
  Size (bytes):	 1    1       2           4
 ```
 
-  - VN: MUST be 0, representing the reply version code.
-  - CD (Result Code): The SOCKS server MUST use one of the following values:
-      - 90: Request granted.
-      - 91: Request rejected or failed.
-      - 92: Request rejected due to inability to connect to identd on the client.
-      - 93: Request rejected because the client program and identd report different user-IDs.
-  - DSTPORT and DSTIP: These fields MUST be ignored by the client in a CONNECT reply.
+ - VN: MUST be 0, representing the reply version code.
+ - CD (Result Code): The SOCKS server MUST use one of the following values:
+     - 90: Request granted.
+     - 91: Request rejected or failed.
+     - 92: Request rejected due to inability to connect to identd on the client.
+     - 93: Request rejected because the client program and identd report different user-IDs.
+ - DSTPORT and DSTIP: These fields MUST be ignored by the client in a CONNECT reply.
 
 If the request is rejected or failed (CD \!= 90), the SOCKS server MUST close its connection to the client immediately after sending the reply.
 
@@ -109,11 +109,11 @@ The client MUST send a request packet identical in format to the CONNECT request
  Size (bytes):	 1    1       2           4         variable     1
 ```
 
-  - VN: MUST be 4.
-  - CD: MUST be 2, indicating a BIND request.
-  - DSTPORT: The port number of the primary connection to the application server.
-  - DSTIP: The IP address of the application server.
-  - USERID and NULL: As defined for the CONNECT request.
+ - VN: MUST be 4.
+ - CD: MUST be 2, indicating a BIND request.
+ - DSTPORT: The port number of the primary connection to the application server.
+ - DSTIP: The IP address of the application server.
+ - USERID and NULL: As defined for the CONNECT request.
 
 ## BIND First Reply (Socket Assignment)
 
