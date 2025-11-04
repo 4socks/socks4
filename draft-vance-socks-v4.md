@@ -41,6 +41,22 @@ The SOCKS server MUST apply access control mechanisms at the beginning of each T
 
 Two primary operations are defined: CONNECT and BIND.
 
+# Conventions and Terminology
+
+{::boilerplate bcp14-tagged}
+
+This specification uses the following terms:
+
+* Client (Application Client): The program requesting a connection to an application server through the SOCKS server.
+* SOCKS Server: The host, typically at a firewall, that intermediates the connection between the Client and the Application Server.
+* Application Server: The host to which the Client ultimately wishes to connect (e.g., a Telnet daemon, an HTTP server).
+* TCP Session: A connection established using the Transmission Control Protocol (TCP). SOCKSv4 only supports TCP sessions.
+* DSTIP (Destination IP): The IP address of the Application Server, as specified in the SOCKS request.
+* DSTPORT (Destination Port): The port number of the Application Server, as specified in the SOCKS request.
+* USERID: A variable-length, NULL-terminated string identifying the client's user on the local system.
+* NULL: A byte of all zero bits, used to terminate the USERID field.
+* IDENT: A protocol (as described in RFC 1413) used by the SOCKS server to verify the user identity of the client.
+
 # CONNECT Operation
 
 The client MUST initiate a CONNECT request when it desires to establish an outbound TCP connection to an application server.
