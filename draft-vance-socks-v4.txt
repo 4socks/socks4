@@ -4,11 +4,11 @@
 
 Network Working Group                                        D. J. Vance
 Internet-Draft                                               Independent
-Intended status: Historic                                2 November 2025
-Expires: 6 May 2026
+Intended status: Historic                                4 November 2025
+Expires: 8 May 2026
 
 
-            SOCKS: A Protocol for TCP Proxy Across Firewalls
+                 SOCKS Protocol Version 4 Specification
                       draft-vance-socks-v4-latest
 
 Abstract
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 May 2026.
+   This Internet-Draft will expire on 8 May 2026.
 
 Copyright Notice
 
@@ -67,13 +67,14 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction
-   2.  CONNECT
+   2.  CONNECT Operation
      2.1.  CONNECT Request Packet Format
-     2.2.  CONNECT Reply Packet Format
-   3.  BIND
+     2.2.  CONNECT Processing and Reply
+     2.3.  CONNECT Reply Packet Format
+   3.  BIND Operation
      3.1.  BIND Request Packet Format
-     3.2.  BIND First Reply Packet Format (Socket Assigned)
-     3.3.  BIND Second Reply Packet Format (Connection Established)
+     3.2.  BIND First Reply (Socket Assignment)
+     3.3.  BIND Second Reply (Connection Established)
    4.  Timeout Mechanism
    5.  Security Considerations
      5.1.  Authentication and Authorization Deficiencies
@@ -101,175 +102,166 @@ Table of Contents
 
 1.  Introduction
 
-   SOCKS was originally developed by David Koblas and subsequently
-   modified and extended to its current running version -- *version 4*.
-   It is a protocol that relays *TCP sessions* at a firewall host to
-   allow application users *transparent access* across the firewall.
-   Because the protocol is independent of application protocols, it can
-   be (and has been) used for many different services, such as *telnet,
-   ftp, finger, whois, gopher, WWW, etc.* Access control can be applied
-   at the beginning of each TCP session; thereafter the server simply
-   relays the data between the client and the application server,
-   incurring *minimum processing overhead*. Since SOCKS never has to
-   know anything about the application protocol, it should also be easy
-   for it to accommodate applications which use encryption to protect
-   their traffic from nosey snoopers.
+   The SOCKS protocol, Version 4 (SOCKSv4), SHALL be used to relay TCP
+   sessions between an application client and an an application server
+   via a SOCKS server, often positioned at a firewall host.  The
+   protocol MUST provide transparent access across the firewall for
+   application users.
 
-   Two operations are defined: *CONNECT* and *BIND*.
+   The protocol MUST be application-protocol independent, allowing it to
+   be used for various services, including, but not limited to, telnet,
+   ftp, finger, whois, gopher, and WWW.
 
-2.  CONNECT
+   The SOCKS server MUST apply access control mechanisms at the
+   beginning of each TCP session.  Following successful establishment,
+   the SOCKS server MUST simply relay data between the client and the
+   application server, incurring minimum processing overhead.  The
+   protocol inherently supports applications utilizing encryption, as
+   the SOCKS server is not required to interpret the application
+   protocol's payload.
 
-   The client connects to the SOCKS server and sends a *CONNECT* request
-   when it wants to establish a connection to an application server.
-   The client includes in the request packet the IP address and the port
-   number of the destination host, and userid, in the following format.
+   Two primary operations are defined: CONNECT and BIND.
+
+2.  CONNECT Operation
+
+   The client MUST initiate a CONNECT request when it desires to
+   establish an outbound TCP connection to an application server.
 
 2.1.  CONNECT Request Packet Format
 
+   The client MUST send a request packet with the following structure:
+
    +----+----+----+----+----+----+----+----+----+----+....+----+ | VN |
-   CD | DSTPORT | DSTIP | USERID |NULL|
-   +----+----+----+----+----+----+----+----+----+----+....+----+ # of
-   bytes: 1 1 2 4 variable 1
+   CD | DSTPORT |      DSTIP      | USERID      |NULL|
+   +----+----+----+----+----+----+----+----+----+----+....+----+  Size
+   (bytes): 1    1       2           4         variable     1
 
-   *  *VN* is the SOCKS protocol version number and should be *4*.
+     * VN (Version Number): MUST be 4, representing the SOCKS protocol
+   version.   * CD (Command Code): MUST be 1, indicating a CONNECT
+   request.   * DSTPORT (Destination Port): The port number of the
+   application server (network byte order).   * DSTIP (Destination IP):
+   The IP address of the application server (network byte order).   *
+   USERID (User Identifier): A string of characters representing the
+   client's user ID.   * NULL: A single byte with a value of all zero
+   bits, terminating the USERID field.
 
-   *  *CD* is the SOCKS command code and should be *1* for CONNECT
-      request.
+2.2.  CONNECT Processing and Reply
 
-   *  *NULL* is a byte of all zero bits.
+   The SOCKS server MUST determine whether to grant the request based on
+   criteria such as the source IP address, DSTIP, DSTPORT, USERID, and
+   information obtained via IDENT (cf. RFC 1413).
 
-   The SOCKS server checks to see whether such a request should be
-   granted based on any combination of source IP address, destination IP
-   address, destination port number, the userid, and information it may
-   obtain by consulting *IDENT, cf. RFC 1413*. If the request is
-   granted, the SOCKS server makes a connection to the specified port of
-   the destination host.  A *reply packet* is sent to the client when
-   this connection is established, or when the request is rejected or
-   the operation fails.
+   If the request is granted, the SOCKS server MUST attempt to establish
+   a TCP connection to the specified DSTPORT on the DSTIP.
 
-2.2.  CONNECT Reply Packet Format
+   A reply packet MUST be sent to the client upon the establishment of
+   the connection, rejection of the request, or operational failure.
 
-   +----+----+----+----+----+----+----+----+ | VN | CD | DSTPORT |
-   DSTIP | +----+----+----+----+----+----+----+----+ # of bytes: 1 1 2 4
+2.3.  CONNECT Reply Packet Format
 
-   *  *VN* is the version of the reply code and should be *0*.
+   The SOCKS server MUST send a reply packet with the following
+   structure:
 
-   *  *CD* is the result code with one of the following values:
+   +----+----+----+----+----+----+----+----+ | VN | CD | DSTPORT |     
+   DSTIP      | +----+----+----+----+----+----+----+----+  Size (bytes):
+   1    1       2           4
 
-      -  *90:* request granted
+     * VN: MUST be 0, representing the reply version code.   * CD
+   (Result Code): The SOCKS server MUST use one of the following
+   values:       * 90: Request granted.       * 91: Request rejected or
+   failed.       * 92: Request rejected due to inability to connect to
+   identd on the client.       * 93: Request rejected because the client
+   program and identd report different user-IDs.   * DSTPORT and DSTIP:
+   These fields MUST be ignored by the client in a CONNECT reply.
 
-      -  *91:* request rejected or failed
+   If the request is rejected or failed (CD != 90), the SOCKS server
+   MUST close its connection to the client immediately after sending the
+   reply.
 
-      -  *92:* request rejected becasue SOCKS server cannot connect to
-         identd on the client
+   If the request is successful (CD = 90), the SOCKS server MUST
+   immediately begin relaying traffic in both directions between the
+   client connection and the established application server connection.
+   The client MUST then treat its connection to the SOCKS server as if
+   it were a direct connection to the application server.
 
-      -  *93:* request rejected because the client program and identd
-         report different user-ids
+3.  BIND Operation
 
-   The remaining fields are ignored.
-
-   The SOCKS server closes its connection immediately after notifying
-   the client of a failed or rejected request.  For a successful
-   request, the SOCKS server gets ready to *relay traffic on both
-   directions*. This enables the client to do I/O on its connection as
-   if it were directly connected to the application server.
-
-3.  BIND
-
-   The client connects to the SOCKS server and sends a *BIND* request
-   when it wants to prepare for an *inbound connection* from an
-   application server.  This should only happen after a primary
-   connection to the application server has been established with a
-   CONNECT.  Typically, this is part of the sequence of actions:
-
-   *  bind(): obtain a socket
-
-   *  getsockname(): get the IP address and port number of the socket
-
-   *  listen(): ready to accept call from the application server
-
-   *  use the primary connection to inform the application server of the
-      IP address and the port number that it should connect to.
-
-   *  accept(): accept a connection from the application server
-
-   The purpose of SOCKS BIND operation is to support such a sequence but
-   using a socket on the *SOCKS server* rather than on the client.
-
-   The client includes in the request packet the IP address of the
-   application server, the destination port used in the primary
-   connection, and the userid.
+   The client MUST initiate a BIND request when it requires the SOCKS
+   server to prepare for an inbound connection from an application
+   server.  This operation is typically used for protocols that involve
+   a secondary data connection originating from the server (e.g., FTP's
+   active mode).  A BIND request SHOULD only be sent after a primary
+   connection to the application server has been successfully
+   established using a CONNECT request.
 
 3.1.  BIND Request Packet Format
 
+   The client MUST send a request packet identical in format to the
+   CONNECT request:
+
    +----+----+----+----+----+----+----+----+----+----+....+----+ | VN |
-   CD | DSTPORT | DSTIP | USERID |NULL|
-   +----+----+----+----+----+----+----+----+----+----+....+----+ # of
-   bytes: 1 1 2 4 variable 1
+   CD | DSTPORT |      DSTIP      | USERID      |NULL|
+   +----+----+----+----+----+----+----+----+----+----+....+----+  Size
+   (bytes): 1    1       2           4         variable     1
 
-   *  *VN* is again *4* for the SOCKS protocol version number.
+     * VN: MUST be 4.   * CD: MUST be 2, indicating a BIND request.   *
+   DSTPORT: The port number of the primary connection to the application
+   server.   * DSTIP: The IP address of the application server.   *
+   USERID and NULL: As defined for the CONNECT request.
 
-   *  *CD* must be *2* to indicate BIND request.
+3.2.  BIND First Reply (Socket Assignment)
 
-   The SOCKS server uses the client information to decide whether the
-   request is to be granted.  The reply it sends back to the client has
-   the *same format as the reply for CONNECT request*, i.e.,
+   The SOCKS server MUST first decide whether to grant the BIND request.
+   The reply format MUST be the same as the CONNECT reply format.
 
-3.2.  BIND First Reply Packet Format (Socket Assigned)
+   If the request is rejected (CD != 90), the SOCKS server MUST close
+   its connection to the client immediately.
 
-   +----+----+----+----+----+----+----+----+ | VN | CD | DSTPORT |
-   DSTIP | +----+----+----+----+----+----+----+----+ # of bytes: 1 1 2 4
+   If the request is granted (CD = 90):
 
-   *  *VN* is the version of the reply code and should be *0*.
+   1.  The SOCKS server MUST obtain a local socket and begin listening
+   for an incoming connection. 2.  The SOCKS server MUST send a first
+   reply packet where the DSTPORT and DSTIP fields are meaningful:      
+   * DSTPORT MUST contain the port number of the newly listening socket
+   (network byte order).       * DSTIP MUST contain the IP address of
+   the SOCKS server's listening interface (network byte order). 3.  If
+   the SOCKS server returns a DSTIP of 0 (the value of constant
+   'INADDR_ANY'), the client MUST replace this value with the IP address
+   of the SOCKS server to which the client is currently connected. 4. 
+   The client MUST use this IP address and port to inform the
+   application server via the primary connection, enabling the
+   application server to initiate the anticipated inbound connection to
+   the SOCKS server.
 
-   *  *CD* is the result code with one of the following values:
+3.3.  BIND Second Reply (Connection Established)
 
-      -  *90:* request granted
+   The SOCKS server MUST send a second reply packet to the client once
+   the anticipated inbound connection from the application server is
+   established.  The reply format MUST be the same as the first reply.
 
-      -  *91:* request rejected or failed
+   The SOCKS server MUST check the IP address of the newly connected
+   application server host against the DSTIP value specified in the
+   client's original BIND request.
 
-      -  *92:* request rejected becasue SOCKS server cannot connect to
-         identd on the client
+     * If the IP addresses match: The CD field in the second reply MUST
+   be set to 90.  The SOCKS server MUST then prepare to relay traffic
+   between the client connection and the new application server
+   connection.   * If a mismatch is found: The CD field in the second
+   reply MUST be set to 91.  The SOCKS server MUST immediately close
+   both the client connection and the connection from the application
+   server.
 
-      -  *93:* request rejected because the client program and identd
-         report different user-ids.
-
-   However, for a granted request (*CD is 90*), the *DSTPORT* and
-   *DSTIP* fields are meaningful.  In that case, the SOCKS server
-   obtains a socket to wait for an incoming connection and sends the
-   *port number* and the *IP address* of that socket to the client in
-   *DSTPORT* and *DSTIP*, respectively.  If the DSTIP in the reply is
-   *0* (the value of constant INADDR_ANY), then the client should
-   *replace it by the IP address of the SOCKS server* to which the
-   cleint is connected.  (This happens if the SOCKS server is not a
-   multi-homed host.)  In the typical scenario, these two numbers are
-   made available to the application client prgram via the result of the
-   subsequent getsockname() call.  The application protocol must provide
-   a way for these two pieces of information to be sent from the client
-   to the application server so that it can initiate the connection,
-   which connects it to the SOCKS server rather than directly to the
-   application client as it normally would.
-
-3.3.  BIND Second Reply Packet Format (Connection Established)
-
-   The SOCKS server sends a *second reply packet* to the client when the
-   anticipated connection from the application server is established.
-   The SOCKS server checks the IP address of the originating host
-   against the value of *DSTIP specified in the client's BIND request*.
-   If a mismatch is found, the *CD field in the second reply is set to
-   91* and the SOCKS server closes both connections.  If the two match,
-   *CD in the second reply is set to 90* and the SOCKS server gets ready
-   to relay the traffic on its two connections.  From then on the client
-   does I/O on its connection to the SOCKS server as if it were directly
-   connected to the application server.
+   Upon a successful second reply, the client MUST perform I/O on its
+   connection to the SOCKS server as if it were directly connected to
+   the application server.
 
 4.  Timeout Mechanism
 
-   For both *CONNECT* and *BIND* operations, the server sets a *time
-   limit* (2 minutes in current CSTC implementation) for the
-   establishment of its connection with the application server.  If the
-   connection is still not establiched when the time limit expires, the
-   server closes its connection to the client and gives up.
+   For both CONNECT and BIND operations, the SOCKS server MUST employ a
+   time limit for the establishment of its connection with the
+   application server (e.g., 2 minutes).  If the connection is not
+   established before the time limit expires, the SOCKS server MUST
+   close its connection to the client and abort the operation.
 
 5.  Security Considerations
 

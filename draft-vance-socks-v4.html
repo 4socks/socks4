@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
-<title>SOCKS: A Protocol for TCP Proxy Across Firewalls</title>
+<title>SOCKS Protocol Version 4 Specification</title>
 <meta content="Daniel James Vance" name="author">
 <meta content="
        This document is published as a historical record of the SOCKS 4 protocol. The original spec does not have an Abstract, so the Abstract below is added afterwards. 
@@ -1047,7 +1047,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Vance</td>
-<td class="center">Expires 6 May 2026</td>
+<td class="center">Expires 8 May 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1060,12 +1060,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-vance-socks-v4-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-02" class="published">2 November 2025</time>
+<time datetime="2025-11-04" class="published">4 November 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Historic</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-05-06">6 May 2026</time></dd>
+<dd class="expires"><time datetime="2026-05-08">8 May 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1075,7 +1075,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </dd>
 </dl>
 </div>
-<h1 id="title">SOCKS: A Protocol for TCP Proxy Across Firewalls</h1>
+<h1 id="title">SOCKS Protocol Version 4 Specification</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">This document is published as a historical record of the SOCKS 4 protocol. The original spec does not have an Abstract, so the Abstract below is added afterwards.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
@@ -1108,7 +1108,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 6 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 8 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1138,27 +1138,30 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
-            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-connect" class="internal xref">CONNECT</a></p>
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-connect-operation" class="internal xref">CONNECT Operation</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
                 <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-connect-request-packet-form" class="internal xref">CONNECT Request Packet Format</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
-                <p id="section-toc.1-1.2.2.2.1" class="keepWithNext"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-connect-reply-packet-format" class="internal xref">CONNECT Reply Packet Format</a></p>
+                <p id="section-toc.1-1.2.2.2.1" class="keepWithNext"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-connect-processing-and-repl" class="internal xref">CONNECT Processing and Reply</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.3">
+                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="auto internal xref">2.3</a>.  <a href="#name-connect-reply-packet-format" class="internal xref">CONNECT Reply Packet Format</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
-            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-bind" class="internal xref">BIND</a></p>
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-bind-operation" class="internal xref">BIND Operation</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-bind-request-packet-format" class="internal xref">BIND Request Packet Format</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-bind-first-reply-packet-for" class="internal xref">BIND First Reply Packet Format (Socket Assigned)</a></p>
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-bind-first-reply-socket-ass" class="internal xref">BIND First Reply (Socket Assignment)</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
-                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-bind-second-reply-packet-fo" class="internal xref">BIND Second Reply Packet Format (Connection Established)</a></p>
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-bind-second-reply-connectio" class="internal xref">BIND Second Reply (Connection Established)</a></p>
 </li>
             </ul>
 </li>
@@ -1257,169 +1260,124 @@ svg :is([fill="white"], [fill^="#fff"]) {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">SOCKS was originally developed by David Koblas and subsequently modified and extended to its current running version -- <strong>version 4</strong>. It is a protocol that relays <strong>TCP sessions</strong> at a firewall host to allow application users <strong>transparent access</strong> across the firewall. Because the protocol is independent of application protocols, it can be (and has been) used for many different services, such as <strong>telnet, ftp, finger, whois, gopher, WWW, etc.</strong> Access control can be applied at the beginning of each TCP session; thereafter the server simply relays the data between the client and the application server, incurring <strong>minimum processing overhead</strong>. Since SOCKS never has to know anything about the application protocol, it should also be easy for it to accommodate applications which use encryption to protect their traffic from nosey snoopers.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">Two operations are defined: <strong>CONNECT</strong> and <strong>BIND</strong>.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-1">The SOCKS protocol, Version 4 (SOCKSv4), SHALL be used to relay TCP sessions between an application client and an an application server via a SOCKS server, often positioned at a firewall host. The protocol MUST provide transparent access across the firewall for application users.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">The protocol MUST be application-protocol independent, allowing it to be used for various services, including, but not limited to, telnet, ftp, finger, whois, gopher, and WWW.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">The SOCKS server MUST apply access control mechanisms at the beginning of each TCP session. Following successful establishment, the SOCKS server MUST simply relay data between the client and the application server, incurring minimum processing overhead. The protocol inherently supports applications utilizing encryption, as the SOCKS server is not required to interpret the application protocol's payload.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">Two primary operations are defined: CONNECT and BIND.<a href="#section-1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="connect">
+<div id="connect-operation">
 <section id="section-2">
-      <h2 id="name-connect">
-<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-connect" class="section-name selfRef">CONNECT</a>
+      <h2 id="name-connect-operation">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-connect-operation" class="section-name selfRef">CONNECT Operation</a>
       </h2>
-<p id="section-2-1">The client connects to the SOCKS server and sends a <strong>CONNECT</strong> request when it wants to establish a connection to an application server. The client includes in the request packet the IP address and the port number of the destination host, and userid, in the following format.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-1">The client MUST initiate a CONNECT request when it desires to establish an outbound TCP connection to an application server.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <div id="connect-request-packet-format">
 <section id="section-2.1">
         <h3 id="name-connect-request-packet-form">
 <a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-connect-request-packet-form" class="section-name selfRef">CONNECT Request Packet Format</a>
         </h3>
-<p id="section-2.1-1"><code>
+<p id="section-2.1-1">The client MUST send a request packet with the following structure:<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1-2"><code>
                 +----+----+----+----+----+----+----+----+----+----+....+----+
-                | VN | CD | DSTPORT |      DSTIP         | USERID       |NULL|
+                | VN | CD | DSTPORT |      DSTIP      | USERID      |NULL|
                 +----+----+----+----+----+----+----+----+----+----+....+----+
- # of bytes:     1    1       2                   4          variable      1
-</code><a href="#section-2.1-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-2.1-2.1">
-            <p id="section-2.1-2.1.1"><strong>VN</strong> is the SOCKS protocol version number and should be <strong>4</strong>.<a href="#section-2.1-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-2.1-2.2">
-            <p id="section-2.1-2.2.1"><strong>CD</strong> is the SOCKS command code and should be <strong>1</strong> for CONNECT request.<a href="#section-2.1-2.2.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-2.1-2.3">
-            <p id="section-2.1-2.3.1"><strong>NULL</strong> is a byte of all zero bits.<a href="#section-2.1-2.3.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-2.1-3">The SOCKS server checks to see whether such a request should be granted based on any combination of source IP address, destination IP address, destination port number, the userid, and information it may obtain by consulting <strong>IDENT, cf. RFC 1413</strong>. If the request is granted, the SOCKS server makes a connection to the specified port of the destination host. A <strong>reply packet</strong> is sent to the client when this connection is established, or when the request is rejected or the operation fails.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
+ Size (bytes):   1    1       2           4         variable     1
+</code><a href="#section-2.1-2" class="pilcrow">¶</a></p>
+<p id="section-2.1-3">  * VN (Version Number): MUST be 4, representing the SOCKS protocol version.
+  * CD (Command Code): MUST be 1, indicating a CONNECT request.
+  * DSTPORT (Destination Port): The port number of the application server (network byte order).
+  * DSTIP (Destination IP): The IP address of the application server (network byte order).
+  * USERID (User Identifier): A string of characters representing the client's user ID.
+  * NULL: A single byte with a value of all zero bits, terminating the USERID field.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="connect-processing-and-reply">
+<section id="section-2.2">
+        <h3 id="name-connect-processing-and-repl">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-connect-processing-and-repl" class="section-name selfRef">CONNECT Processing and Reply</a>
+        </h3>
+<p id="section-2.2-1">The SOCKS server MUST determine whether to grant the request based on criteria such as the source IP address, DSTIP, DSTPORT, USERID, and information obtained via IDENT (cf. RFC 1413).<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-2">If the request is granted, the SOCKS server MUST attempt to establish a TCP connection to the specified DSTPORT on the DSTIP.<a href="#section-2.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.2-3">A reply packet MUST be sent to the client upon the establishment of the connection, rejection of the request, or operational failure.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="connect-reply-packet-format">
-<section id="section-2.2">
+<section id="section-2.3">
         <h3 id="name-connect-reply-packet-format">
-<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-connect-reply-packet-format" class="section-name selfRef">CONNECT Reply Packet Format</a>
+<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-connect-reply-packet-format" class="section-name selfRef">CONNECT Reply Packet Format</a>
         </h3>
-<p id="section-2.2-1"><code>
+<p id="section-2.3-1">The SOCKS server MUST send a reply packet with the following structure:<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.3-2"><code>
                 +----+----+----+----+----+----+----+----+
-                | VN | CD | DSTPORT |      DSTIP         |
+                | VN | CD | DSTPORT |      DSTIP      |
                 +----+----+----+----+----+----+----+----+
- # of bytes:     1    1       2                   4
-</code><a href="#section-2.2-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-2.2-2.1">
-            <p id="section-2.2-2.1.1"><strong>VN</strong> is the version of the reply code and should be <strong>0</strong>.<a href="#section-2.2-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-2.2-2.2">
-            <p id="section-2.2-2.2.1"><strong>CD</strong> is the result code with one of the following values:<a href="#section-2.2-2.2.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-2.2-2.2.2.1">
-                <p id="section-2.2-2.2.2.1.1"><strong>90:</strong> request granted<a href="#section-2.2-2.2.2.1.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-2.2-2.2.2.2">
-                <p id="section-2.2-2.2.2.2.1"><strong>91:</strong> request rejected or failed<a href="#section-2.2-2.2.2.2.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-2.2-2.2.2.3">
-                <p id="section-2.2-2.2.2.3.1"><strong>92:</strong> request rejected becasue SOCKS server cannot connect to identd on the client<a href="#section-2.2-2.2.2.3.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-2.2-2.2.2.4">
-                <p id="section-2.2-2.2.2.4.1"><strong>93:</strong> request rejected because the client program and identd report different user-ids<a href="#section-2.2-2.2.2.4.1" class="pilcrow">¶</a></p>
-</li>
-            </ul>
-</li>
-        </ul>
-<p id="section-2.2-3">The remaining fields are ignored.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
-<p id="section-2.2-4">The SOCKS server closes its connection immediately after notifying the client of a failed or rejected request. For a successful request, the SOCKS server gets ready to <strong>relay traffic on both directions</strong>. This enables the client to do I/O on its connection as if it were directly connected to the application server.<a href="#section-2.2-4" class="pilcrow">¶</a></p>
+ Size (bytes):   1    1       2           4
+</code><a href="#section-2.3-2" class="pilcrow">¶</a></p>
+<p id="section-2.3-3">  * VN: MUST be 0, representing the reply version code.
+  * CD (Result Code): The SOCKS server MUST use one of the following values:
+      * 90: Request granted.
+      * 91: Request rejected or failed.
+      * 92: Request rejected due to inability to connect to identd on the client.
+      * 93: Request rejected because the client program and identd report different user-IDs.
+  * DSTPORT and DSTIP: These fields MUST be ignored by the client in a CONNECT reply.<a href="#section-2.3-3" class="pilcrow">¶</a></p>
+<p id="section-2.3-4">If the request is rejected or failed (CD != 90), the SOCKS server MUST close its connection to the client immediately after sending the reply.<a href="#section-2.3-4" class="pilcrow">¶</a></p>
+<p id="section-2.3-5">If the request is successful (CD = 90), the SOCKS server MUST immediately begin relaying traffic in both directions between the client connection and the established application server connection. The client MUST then treat its connection to the SOCKS server as if it were a direct connection to the application server.<a href="#section-2.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
-<div id="bind">
+<div id="bind-operation">
 <section id="section-3">
-      <h2 id="name-bind">
-<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-bind" class="section-name selfRef">BIND</a>
+      <h2 id="name-bind-operation">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-bind-operation" class="section-name selfRef">BIND Operation</a>
       </h2>
-<p id="section-3-1">The client connects to the SOCKS server and sends a <strong>BIND</strong> request when it wants to prepare for an <strong>inbound connection</strong> from an application server. This should only happen after a primary connection to the application server has been established with a CONNECT. Typically, this is part of the sequence of actions:<a href="#section-3-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3-2.1">
-          <p id="section-3-2.1.1"><code>bind()</code>: obtain a socket<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-2.2">
-          <p id="section-3-2.2.1"><code>getsockname()</code>: get the IP address and port number of the socket<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-2.3">
-          <p id="section-3-2.3.1"><code>listen()</code>: ready to accept call from the application server<a href="#section-3-2.3.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-2.4">
-          <p id="section-3-2.4.1">use the primary connection to inform the application server of the IP address and the port number that it should connect to.<a href="#section-3-2.4.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-2.5">
-          <p id="section-3-2.5.1"><code>accept()</code>: accept a connection from the application server<a href="#section-3-2.5.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-<p id="section-3-3">The purpose of SOCKS BIND operation is to support such a sequence but using a socket on the <strong>SOCKS server</strong> rather than on the client.<a href="#section-3-3" class="pilcrow">¶</a></p>
-<p id="section-3-4">The client includes in the request packet the IP address of the application server, the destination port used in the primary connection, and the userid.<a href="#section-3-4" class="pilcrow">¶</a></p>
+<p id="section-3-1">The client MUST initiate a BIND request when it requires the SOCKS server to prepare for an inbound connection from an application server. This operation is typically used for protocols that involve a secondary data connection originating from the server (e.g., FTP's active mode). A BIND request SHOULD only be sent after a primary connection to the application server has been successfully established using a CONNECT request.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <div id="bind-request-packet-format">
 <section id="section-3.1">
         <h3 id="name-bind-request-packet-format">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-bind-request-packet-format" class="section-name selfRef">BIND Request Packet Format</a>
         </h3>
-<p id="section-3.1-1"><code>
+<p id="section-3.1-1">The client MUST send a request packet identical in format to the CONNECT request:<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-2"><code>
                 +----+----+----+----+----+----+----+----+----+----+....+----+
-                | VN | CD | DSTPORT |      DSTIP         | USERID       |NULL|
+                | VN | CD | DSTPORT |      DSTIP      | USERID      |NULL|
                 +----+----+----+----+----+----+----+----+----+----+....+----+
- # of bytes:     1    1       2                   4          variable      1
-</code><a href="#section-3.1-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.1-2.1">
-            <p id="section-3.1-2.1.1"><strong>VN</strong> is again <strong>4</strong> for the SOCKS protocol version number.<a href="#section-3.1-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-3.1-2.2">
-            <p id="section-3.1-2.2.1"><strong>CD</strong> must be <strong>2</strong> to indicate BIND request.<a href="#section-3.1-2.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="section-3.1-3">The SOCKS server uses the client information to decide whether the request is to be granted. The reply it sends back to the client has the <strong>same format as the reply for CONNECT request</strong>, i.e.,<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+ Size (bytes):   1    1       2           4         variable     1
+</code><a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">  * VN: MUST be 4.
+  * CD: MUST be 2, indicating a BIND request.
+  * DSTPORT: The port number of the primary connection to the application server.
+  * DSTIP: The IP address of the application server.
+  * USERID and NULL: As defined for the CONNECT request.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="bind-first-reply-packet-format-socket-assigned">
+<div id="bind-first-reply-socket-assignment">
 <section id="section-3.2">
-        <h3 id="name-bind-first-reply-packet-for">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-bind-first-reply-packet-for" class="section-name selfRef">BIND First Reply Packet Format (Socket Assigned)</a>
+        <h3 id="name-bind-first-reply-socket-ass">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-bind-first-reply-socket-ass" class="section-name selfRef">BIND First Reply (Socket Assignment)</a>
         </h3>
-<p id="section-3.2-1"><code>
-                +----+----+----+----+----+----+----+----+
-                | VN | CD | DSTPORT |      DSTIP         |
-                +----+----+----+----+----+----+----+----+
- # of bytes:     1    1       2                   4
-</code><a href="#section-3.2-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.2-2.1">
-            <p id="section-3.2-2.1.1"><strong>VN</strong> is the version of the reply code and should be <strong>0</strong>.<a href="#section-3.2-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-3.2-2.2">
-            <p id="section-3.2-2.2.1"><strong>CD</strong> is the result code with one of the following values:<a href="#section-3.2-2.2.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.2-2.2.2.1">
-                <p id="section-3.2-2.2.2.1.1"><strong>90:</strong> request granted<a href="#section-3.2-2.2.2.1.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-3.2-2.2.2.2">
-                <p id="section-3.2-2.2.2.2.1"><strong>91:</strong> request rejected or failed<a href="#section-3.2-2.2.2.2.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-3.2-2.2.2.3">
-                <p id="section-3.2-2.2.2.3.1"><strong>92:</strong> request rejected becasue SOCKS server cannot connect to identd on the client<a href="#section-3.2-2.2.2.3.1" class="pilcrow">¶</a></p>
-</li>
-              <li class="normal" id="section-3.2-2.2.2.4">
-                <p id="section-3.2-2.2.2.4.1"><strong>93:</strong> request rejected because the client program and identd report different user-ids.<a href="#section-3.2-2.2.2.4.1" class="pilcrow">¶</a></p>
-</li>
-            </ul>
-</li>
-        </ul>
-<p id="section-3.2-3">However, for a granted request (<strong>CD is 90</strong>), the <strong>DSTPORT</strong> and <strong>DSTIP</strong> fields are meaningful. In that case, the SOCKS server obtains a socket to wait for an incoming connection and sends the <strong>port number</strong> and the <strong>IP address</strong> of that socket to the client in <strong>DSTPORT</strong> and <strong>DSTIP</strong>, respectively. If the DSTIP in the reply is <strong>0</strong> (the value of constant <code>INADDR_ANY</code>), then the client should <strong>replace it by the IP address of the SOCKS server</strong> to which the cleint is connected. (This happens if the SOCKS server is not a multi-homed host.) In the typical scenario, these two numbers are made available to the application client prgram via the result of the subsequent <code>getsockname()</code> call. The application protocol must provide a way for these two pieces of information to be sent from the client to the application server so that it can initiate the connection, which connects it to the SOCKS server rather than directly to the application client as it normally would.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-1">The SOCKS server MUST first decide whether to grant the BIND request. The reply format MUST be the same as the CONNECT reply format.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">If the request is rejected (CD != 90), the SOCKS server MUST close its connection to the client immediately.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-3">If the request is granted (CD = 90):<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-4">1.  The SOCKS server MUST obtain a local socket and begin listening for an incoming connection.
+2.  The SOCKS server MUST send a first reply packet where the DSTPORT and DSTIP fields are meaningful:
+      * DSTPORT MUST contain the port number of the newly listening socket (network byte order).
+      * DSTIP MUST contain the IP address of the SOCKS server's listening interface (network byte order).
+3.  If the SOCKS server returns a DSTIP of 0 (the value of constant 'INADDR_ANY'), the client MUST replace this value with the IP address of the SOCKS server to which the client is currently connected.
+4.  The client MUST use this IP address and port to inform the application server via the primary connection, enabling the application server to initiate the anticipated inbound connection to the SOCKS server.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="bind-second-reply-packet-format-connection-established">
+<div id="bind-second-reply-connection-established">
 <section id="section-3.3">
-        <h3 id="name-bind-second-reply-packet-fo">
-<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-bind-second-reply-packet-fo" class="section-name selfRef">BIND Second Reply Packet Format (Connection Established)</a>
+        <h3 id="name-bind-second-reply-connectio">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-bind-second-reply-connectio" class="section-name selfRef">BIND Second Reply (Connection Established)</a>
         </h3>
-<p id="section-3.3-1">The SOCKS server sends a <strong>second reply packet</strong> to the client when the anticipated connection from the application server is established. The SOCKS server checks the IP address of the originating host against the value of <strong>DSTIP specified in the client's BIND request</strong>. If a mismatch is found, the <strong>CD field in the second reply is set to 91</strong> and the SOCKS server closes both connections. If the two match, <strong>CD in the second reply is set to 90</strong> and the SOCKS server gets ready to relay the traffic on its two connections. From then on the client does I/O on its connection to the SOCKS server as if it were directly connected to the application server.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-1">The SOCKS server MUST send a second reply packet to the client once the anticipated inbound connection from the application server is established. The reply format MUST be the same as the first reply.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2">The SOCKS server MUST check the IP address of the newly connected application server host against the DSTIP value specified in the client's original BIND request.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">  * If the IP addresses match: The CD field in the second reply MUST be set to 90. The SOCKS server MUST then prepare to relay traffic between the client connection and the new application server connection.
+  * If a mismatch is found: The CD field in the second reply MUST be set to 91. The SOCKS server MUST immediately close both the client connection and the connection from the application server.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3-4">Upon a successful second reply, the client MUST perform I/O on its connection to the SOCKS server as if it were directly connected to the application server.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1429,7 +1387,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
       <h2 id="name-timeout-mechanism">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-timeout-mechanism" class="section-name selfRef">Timeout Mechanism</a>
       </h2>
-<p id="section-4-1">For both <strong>CONNECT</strong> and <strong>BIND</strong> operations, the server sets a <strong>time limit</strong> (2 minutes in current CSTC implementation) for the establishment of its connection with the application server. If the connection is still not establiched when the time limit expires, the server closes its connection to the client and gives up.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-1">For both CONNECT and BIND operations, the SOCKS server MUST employ a time limit for the establishment of its connection with the application server (e.g., 2 minutes). If the connection is not established before the time limit expires, the SOCKS server MUST close its connection to the client and abort the operation.<a href="#section-4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
