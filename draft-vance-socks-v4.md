@@ -125,8 +125,8 @@ If the request is granted (CD = 90):
 
 1.  The SOCKS server MUST obtain a local socket and begin listening for an incoming connection.
 2.  The SOCKS server MUST send a first reply packet where the DSTPORT and DSTIP fields are meaningful:
-      - DSTPORT MUST contain the port number of the newly listening socket (network byte order).
-      - DSTIP MUST contain the IP address of the SOCKS server's listening interface (network byte order).
+    - DSTPORT MUST contain the port number of the newly listening socket (network byte order).
+    - DSTIP MUST contain the IP address of the SOCKS server's listening interface (network byte order).
 3.  If the SOCKS server returns a DSTIP of 0 (the value of constant 'INADDR\_ANY'), the client MUST replace this value with the IP address of the SOCKS server to which the client is currently connected.
 4.  The client MUST use this IP address and port to inform the application server via the primary connection, enabling the application server to initiate the anticipated inbound connection to the SOCKS server.
 
