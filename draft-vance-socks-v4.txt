@@ -67,36 +67,37 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction
-   2.  CONNECT Operation
-     2.1.  CONNECT Request Packet Format
-     2.2.  CONNECT Processing and Reply
-     2.3.  CONNECT Reply Packet Format
-   3.  BIND Operation
-     3.1.  BIND Request Packet Format
-     3.2.  BIND First Reply (Socket Assignment)
-     3.3.  BIND Second Reply (Connection Established)
-   4.  Timeout Mechanism
-   5.  Security Considerations
-     5.1.  Authentication and Authorization Deficiencies
-       5.1.1.  Weak Client Identification Mechanism
-       5.1.2.  Policy-Dependent Authorization
-     5.2.  Data Integrity and Transport Limitations
-       5.2.1.  Absence of Confidentiality (Plaintext Relay)
-       5.2.2.  Protocol Scope Restriction
-     5.3.  Vulnerabilities Associated with the BIND Operation
-       5.3.1.  Source Address Verification Bypass
-     5.4.  Denial of Service (DoS) Vector
-       5.4.1.  Resource Exhaustion Potential
-       5.4.2.  Inadequate Mitigations
-     5.5.  Recommended Mitigation and Deployment Practices
-   6.  IANA Considerations
-     6.1.  SOCKS Protocol Version Number (VN)
-     6.2.  SOCKS Command Code (CD)
-     6.3.  SOCKS Reply Code (CD)
-     6.4.  Port Number
-   7.  References
-     7.1.  Normative References
-     7.2.  Informative References
+   2.  Conventions and Terminology
+   3.  CONNECT Operation
+     3.1.  CONNECT Request Packet Format
+     3.2.  CONNECT Processing and Reply
+     3.3.  CONNECT Reply Packet Format
+   4.  BIND Operation
+     4.1.  BIND Request Packet Format
+     4.2.  BIND First Reply (Socket Assignment)
+     4.3.  BIND Second Reply (Connection Established)
+   5.  Timeout Mechanism
+   6.  Security Considerations
+     6.1.  Authentication and Authorization Deficiencies
+       6.1.1.  Weak Client Identification Mechanism
+       6.1.2.  Policy-Dependent Authorization
+     6.2.  Data Integrity and Transport Limitations
+       6.2.1.  Absence of Confidentiality (Plaintext Relay)
+       6.2.2.  Protocol Scope Restriction
+     6.3.  Vulnerabilities Associated with the BIND Operation
+       6.3.1.  Source Address Verification Bypass
+     6.4.  Denial of Service (DoS) Vector
+       6.4.1.  Resource Exhaustion Potential
+       6.4.2.  Inadequate Mitigations
+     6.5.  Recommended Mitigation and Deployment Practices
+   7.  IANA Considerations
+     7.1.  SOCKS Protocol Version Number (VN)
+     7.2.  SOCKS Command Code (CD)
+     7.3.  SOCKS Reply Code (CD)
+     7.4.  Port Number
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
    Original Auther
    Author's Address
 
@@ -122,12 +123,49 @@ Table of Contents
 
    Two primary operations are defined: CONNECT and BIND.
 
-2.  CONNECT Operation
+2.  Conventions and Terminology
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+   This specification uses the following terms:
+
+   *  Client (Application Client): The program requesting a connection
+      to an application server through the SOCKS server.
+
+   *  SOCKS Server: The host, typically at a firewall, that
+      intermediates the connection between the Client and the
+      Application Server.
+
+   *  Application Server: The host to which the Client ultimately wishes
+      to connect (e.g., a Telnet daemon, an HTTP server).
+
+   *  TCP Session: A connection established using the Transmission
+      Control Protocol (TCP).  SOCKSv4 only supports TCP sessions.
+
+   *  DSTIP (Destination IP): The IP address of the Application Server,
+      as specified in the SOCKS request.
+
+   *  DSTPORT (Destination Port): The port number of the Application
+      Server, as specified in the SOCKS request.
+
+   *  USERID: A variable-length, NULL-terminated string identifying the
+      client's user on the local system.
+
+   *  NULL: A byte of all zero bits, used to terminate the USERID field.
+
+   *  IDENT: A protocol (as described in RFC 1413) used by the SOCKS
+      server to verify the user identity of the client.
+
+3.  CONNECT Operation
 
    The client MUST initiate a CONNECT request when it desires to
    establish an outbound TCP connection to an application server.
 
-2.1.  CONNECT Request Packet Format
+3.1.  CONNECT Request Packet Format
 
    The client MUST send a request packet with the following structure:
 
@@ -153,7 +191,7 @@ Table of Contents
    *  NULL: A single byte with a value of all zero bits, terminating the
       USERID field.
 
-2.2.  CONNECT Processing and Reply
+3.2.  CONNECT Processing and Reply
 
    The SOCKS server MUST determine whether to grant the request based on
    criteria such as the source IP address, DSTIP, DSTPORT, USERID, and
@@ -165,7 +203,7 @@ Table of Contents
    A reply packet MUST be sent to the client upon the establishment of
    the connection, rejection of the request, or operational failure.
 
-2.3.  CONNECT Reply Packet Format
+3.3.  CONNECT Reply Packet Format
 
    The SOCKS server MUST send a reply packet with the following
    structure:
@@ -192,7 +230,7 @@ Table of Contents
    The client MUST then treat its connection to the SOCKS server as if
    it were a direct connection to the application server.
 
-3.  BIND Operation
+4.  BIND Operation
 
    The client MUST initiate a BIND request when it requires the SOCKS
    server to prepare for an inbound connection from an application
@@ -202,7 +240,7 @@ Table of Contents
    connection to the application server has been successfully
    established using a CONNECT request.
 
-3.1.  BIND Request Packet Format
+4.1.  BIND Request Packet Format
 
    The client MUST send a request packet identical in format to the
    CONNECT request:
@@ -217,7 +255,7 @@ Table of Contents
    server.  - DSTIP: The IP address of the application server.  - USERID
    and NULL: As defined for the CONNECT request.
 
-3.2.  BIND First Reply (Socket Assignment)
+4.2.  BIND First Reply (Socket Assignment)
 
    The SOCKS server MUST first decide whether to grant the BIND request.
    The reply format MUST be the same as the CONNECT reply format.
@@ -241,7 +279,7 @@ Table of Contents
    application server to initiate the anticipated inbound connection to
    the SOCKS server.
 
-3.3.  BIND Second Reply (Connection Established)
+4.3.  BIND Second Reply (Connection Established)
 
    The SOCKS server MUST send a second reply packet to the client once
    the anticipated inbound connection from the application server is
@@ -263,7 +301,7 @@ Table of Contents
    connection to the SOCKS server as if it were directly connected to
    the application server.
 
-4.  Timeout Mechanism
+5.  Timeout Mechanism
 
    For both CONNECT and BIND operations, the SOCKS server MUST employ a
    time limit for the establishment of its connection with the
@@ -271,7 +309,7 @@ Table of Contents
    established before the time limit expires, the SOCKS server MUST
    close its connection to the client and abort the operation.
 
-5.  Security Considerations
+6.  Security Considerations
 
    The SOCKS Version 4 (SOCKSv4) protocol, designed for TCP proxy
    traversal of network firewalls, operates exclusively at the session
@@ -279,9 +317,9 @@ Table of Contents
    deployment and operational policy must be rigorously evaluated
    against the deficiencies outlined herein.
 
-5.1.  Authentication and Authorization Deficiencies
+6.1.  Authentication and Authorization Deficiencies
 
-5.1.1.  Weak Client Identification Mechanism
+6.1.1.  Weak Client Identification Mechanism
 
    The SOCKSv4 request format incorporates a *USERID* field.  This field
    is designated for rudimentary client identification, typically
@@ -300,7 +338,7 @@ Table of Contents
       verifying user credentials, such as passwords, or employing
       cryptographic challenge-response methods.
 
-5.1.2.  Policy-Dependent Authorization
+6.1.2.  Policy-Dependent Authorization
 
    Access control (authorization) for SOCKSv4 services is *exclusively
    managed* by the local configuration and security policy of the SOCKS
@@ -308,9 +346,9 @@ Table of Contents
    weakness in its policy can directly result in *unauthorized network
    access* across the protective boundary of the firewall.
 
-5.2.  Data Integrity and Transport Limitations
+6.2.  Data Integrity and Transport Limitations
 
-5.2.1.  Absence of Confidentiality (Plaintext Relay)
+6.2.1.  Absence of Confidentiality (Plaintext Relay)
 
    SOCKSv4 functions as a session layer relay and *does not incorporate
    any encryption* capabilities for the application data stream.  All
@@ -318,20 +356,20 @@ Table of Contents
    *plaintext*. This inherent vulnerability exposes all transmitted data
    to *passive network eavesdropping* and interception.
 
-5.2.2.  Protocol Scope Restriction
+6.2.2.  Protocol Scope Restriction
 
    The SOCKSv4 protocol is *strictly confined* to the proxying of
    *Transmission Control Protocol (TCP)* connections.  It provides *no
    native support* for the relay of *User Datagram Protocol (UDP)*
    traffic or other protocols operating at the IP layer.
 
-5.3.  Vulnerabilities Associated with the BIND Operation
+6.3.  Vulnerabilities Associated with the BIND Operation
 
    The *BIND* command, utilized to establish a socket for an anticipated
    inbound connection (a callback) from an application server,
    introduces distinct security challenges.
 
-5.3.1.  Source Address Verification Bypass
+6.3.1.  Source Address Verification Bypass
 
    The SOCKS server attempts a rudimentary security check during the
    BIND operation by comparing the source IP address of the incoming
@@ -350,9 +388,9 @@ Table of Contents
       mechanism *unreliable, ineffectual, or operationally complex* to
       maintain.
 
-5.4.  Denial of Service (DoS) Vector
+6.4.  Denial of Service (DoS) Vector
 
-5.4.1.  Resource Exhaustion Potential
+6.4.1.  Resource Exhaustion Potential
 
    Each successful SOCKS connection consumes finite server resources,
    including active sockets, allocated memory, and network bandwidth.  A
@@ -362,14 +400,14 @@ Table of Contents
    This constitutes a direct vector for a *Denial of Service* attack
    against legitimate users.
 
-5.4.2.  Inadequate Mitigations
+6.4.2.  Inadequate Mitigations
 
    Although the protocol specifies a basic connection establishment
    *timeout mechanism (2 minutes)*, this measure is insufficient in
    scope and rigor to fully mitigate the risks associated with
    sophisticated DoS attacks.
 
-5.5.  Recommended Mitigation and Deployment Practices
+6.5.  Recommended Mitigation and Deployment Practices
 
    Given the security deficiencies of SOCKSv4, deployment should be
    guided by the following principles:
@@ -389,7 +427,7 @@ Table of Contents
        specifically SOCKS Version 5 ([RFC 1928]), which incorporates
        native, robust authentication methods.
 
-6.  IANA Considerations
+7.  IANA Considerations
 
    This document describes the SOCKS Version 4 protocol, which is
    presented as a historical record.  This protocol does not define any
@@ -398,18 +436,18 @@ Table of Contents
 
    The existing values used within the protocol are summarized below:
 
-6.1.  SOCKS Protocol Version Number (VN)
+7.1.  SOCKS Protocol Version Number (VN)
 
    *  The SOCKS protocol version number VN in requests is *4 (0x04)*.
 
    *  The SOCKS protocol version number VN in replies is *0 (0x00)*.
 
-6.2.  SOCKS Command Code (CD)
+7.2.  SOCKS Command Code (CD)
 
    The SOCKS command code CD in requests defines two values: * *1
    (0x01):* CONNECT * *2 (0x02):* BIND
 
-6.3.  SOCKS Reply Code (CD)
+7.3.  SOCKS Reply Code (CD)
 
    The SOCKS reply code CD in replies defines four values: * *90
    (0x5A):* Request granted * *91 (0x5B):* Request rejected or failed *
@@ -417,22 +455,31 @@ Table of Contents
    identd on the client * *93 (0x5D):* Request rejected because the
    client program and identd report different user-ids
 
-6.4.  Port Number
+7.4.  Port Number
 
    The SOCKS protocol is conventionally known to use *TCP port 1080* for
    its service.  This port number has already been registered in the
    *IANA Service Name and Transport Protocol Port Number Registry* for
    the socks service.
 
-7.  References
+8.  References
 
-7.1.  Normative References
+8.1.  Normative References
 
    [RFC1413]  St. Johns, M., "Identification Protocol", RFC 1413,
               DOI 10.17487/RFC1413, February 1993,
               <https://www.rfc-editor.org/rfc/rfc1413>.
 
-7.2.  Informative References
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+8.2.  Informative References
 
    [RFC791]   Postel, J., "Internet Protocol", STD 5, RFC 791,
               DOI 10.17487/RFC0791, September 1981,
