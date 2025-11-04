@@ -1284,12 +1284,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 +----+----+----+----+----+----+----+----+----+----+....+----+
  Size (bytes):   1    1       2           4         variable     1
 </code><a href="#section-2.1-2" class="pilcrow">¶</a></p>
-<p id="section-2.1-3">  * VN (Version Number): MUST be 4, representing the SOCKS protocol version.
-  * CD (Command Code): MUST be 1, indicating a CONNECT request.
-  * DSTPORT (Destination Port): The port number of the application server (network byte order).
-  * DSTIP (Destination IP): The IP address of the application server (network byte order).
-  * USERID (User Identifier): A string of characters representing the client's user ID.
-  * NULL: A single byte with a value of all zero bits, terminating the USERID field.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
+<p id="section-2.1-3">  - VN (Version Number): MUST be 4, representing the SOCKS protocol version.
+  - CD (Command Code): MUST be 1, indicating a CONNECT request.
+  - DSTPORT (Destination Port): The port number of the application server (network byte order).
+  - DSTIP (Destination IP): The IP address of the application server (network byte order).
+  - USERID (User Identifier): A string of characters representing the client's user ID.
+  - NULL: A single byte with a value of all zero bits, terminating the USERID field.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="connect-processing-and-reply">
@@ -1314,13 +1314,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 +----+----+----+----+----+----+----+----+
  Size (bytes):   1    1       2           4
 </code><a href="#section-2.3-2" class="pilcrow">¶</a></p>
-<p id="section-2.3-3">  * VN: MUST be 0, representing the reply version code.
-  * CD (Result Code): The SOCKS server MUST use one of the following values:
-      * 90: Request granted.
-      * 91: Request rejected or failed.
-      * 92: Request rejected due to inability to connect to identd on the client.
-      * 93: Request rejected because the client program and identd report different user-IDs.
-  * DSTPORT and DSTIP: These fields MUST be ignored by the client in a CONNECT reply.<a href="#section-2.3-3" class="pilcrow">¶</a></p>
+<p id="section-2.3-3">  - VN: MUST be 0, representing the reply version code.
+  - CD (Result Code): The SOCKS server MUST use one of the following values:
+      - 90: Request granted.
+      - 91: Request rejected or failed.
+      - 92: Request rejected due to inability to connect to identd on the client.
+      - 93: Request rejected because the client program and identd report different user-IDs.
+  - DSTPORT and DSTIP: These fields MUST be ignored by the client in a CONNECT reply.<a href="#section-2.3-3" class="pilcrow">¶</a></p>
 <p id="section-2.3-4">If the request is rejected or failed (CD != 90), the SOCKS server MUST close its connection to the client immediately after sending the reply.<a href="#section-2.3-4" class="pilcrow">¶</a></p>
 <p id="section-2.3-5">If the request is successful (CD = 90), the SOCKS server MUST immediately begin relaying traffic in both directions between the client connection and the established application server connection. The client MUST then treat its connection to the SOCKS server as if it were a direct connection to the application server.<a href="#section-2.3-5" class="pilcrow">¶</a></p>
 </section>
@@ -1345,11 +1345,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 +----+----+----+----+----+----+----+----+----+----+....+----+
  Size (bytes):   1    1       2           4         variable     1
 </code><a href="#section-3.1-2" class="pilcrow">¶</a></p>
-<p id="section-3.1-3">  * VN: MUST be 4.
-  * CD: MUST be 2, indicating a BIND request.
-  * DSTPORT: The port number of the primary connection to the application server.
-  * DSTIP: The IP address of the application server.
-  * USERID and NULL: As defined for the CONNECT request.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">  - VN: MUST be 4.
+  - CD: MUST be 2, indicating a BIND request.
+  - DSTPORT: The port number of the primary connection to the application server.
+  - DSTIP: The IP address of the application server.
+  - USERID and NULL: As defined for the CONNECT request.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="bind-first-reply-socket-assignment">
@@ -1362,8 +1362,8 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-3.2-3">If the request is granted (CD = 90):<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 <p id="section-3.2-4">1.  The SOCKS server MUST obtain a local socket and begin listening for an incoming connection.
 2.  The SOCKS server MUST send a first reply packet where the DSTPORT and DSTIP fields are meaningful:
-      * DSTPORT MUST contain the port number of the newly listening socket (network byte order).
-      * DSTIP MUST contain the IP address of the SOCKS server's listening interface (network byte order).
+      - DSTPORT MUST contain the port number of the newly listening socket (network byte order).
+      - DSTIP MUST contain the IP address of the SOCKS server's listening interface (network byte order).
 3.  If the SOCKS server returns a DSTIP of 0 (the value of constant 'INADDR_ANY'), the client MUST replace this value with the IP address of the SOCKS server to which the client is currently connected.
 4.  The client MUST use this IP address and port to inform the application server via the primary connection, enabling the application server to initiate the anticipated inbound connection to the SOCKS server.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 </section>
@@ -1375,8 +1375,8 @@ svg :is([fill="white"], [fill^="#fff"]) {
         </h3>
 <p id="section-3.3-1">The SOCKS server MUST send a second reply packet to the client once the anticipated inbound connection from the application server is established. The reply format MUST be the same as the first reply.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">The SOCKS server MUST check the IP address of the newly connected application server host against the DSTIP value specified in the client's original BIND request.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
-<p id="section-3.3-3">  * If the IP addresses match: The CD field in the second reply MUST be set to 90. The SOCKS server MUST then prepare to relay traffic between the client connection and the new application server connection.
-  * If a mismatch is found: The CD field in the second reply MUST be set to 91. The SOCKS server MUST immediately close both the client connection and the connection from the application server.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">  - If the IP addresses match: The CD field in the second reply MUST be set to 90. The SOCKS server MUST then prepare to relay traffic between the client connection and the new application server connection.
+  - If a mismatch is found: The CD field in the second reply MUST be set to 91. The SOCKS server MUST immediately close both the client connection and the connection from the application server.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 <p id="section-3.3-4">Upon a successful second reply, the client MUST perform I/O on its connection to the SOCKS server as if it were directly connected to the application server.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
