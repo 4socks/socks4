@@ -499,9 +499,9 @@ Table of Contents
 
 7.1.  SOCKS Protocol Version Number (VN)
 
-   *  The SOCKS protocol version number VN in requests is *4 (0x04)*.
+   *  The SOCKS protocol version number VN in requests is 4 (0x04).
 
-   *  The SOCKS protocol version number VN in replies is *0 (0x00)*.
+   *  The SOCKS protocol version number VN in replies is 0 (0x00).
 
 7.2.  SOCKS Command Code (CD)
 
