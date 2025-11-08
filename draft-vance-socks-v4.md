@@ -37,7 +37,7 @@ This document describes SOCKS version 4, a protocol designed to facilitate TCP p
 
 The SOCKS protocol, Version 4 (SOCKSv4), SHALL be used to relay TCP sessions between an application client and an an application server via a SOCKS server, often positioned at a firewall host. The protocol MUST provide transparent access across the firewall for application users.
 
-The protocol MUST be application-protocol independent, allowing it to be used for various services, including, but not limited to, telnet, ftp, finger, whois, gopher, and WWW.
+The protocol MUST be application-protocol independent, allowing it to be used for various services, including, but not limited to, telnet, ftp, finger, whois, gopher, and WWW (World Wide Web).
 
 The SOCKS server MUST apply access control mechanisms at the beginning of each TCP session. Following successful establishment, the SOCKS server MUST simply relay data between the client and the application server, incurring minimum processing overhead. The protocol inherently supports applications utilizing encryption, as the SOCKS server is not required to interpret the application protocol's payload.
 
@@ -75,7 +75,7 @@ The client MUST send a request packet with the following structure:
 | DSTIP | Destination IP Address | 4 |
 | USERID | User ID | variable |
 | NULL | Null Terminator | 1 |
-{: \#socks-request-format title="SOCKS Request Format"}
+{: \#socks-request-format title="CONNECT Request Packet Format"}
 
 - VN (Version Number): MUST be 4, representing the SOCKS protocol version.
 - CD (Command Code): MUST be 1, indicating a CONNECT request.
@@ -96,12 +96,13 @@ A reply packet MUST be sent to the client upon the establishment of the connecti
 
 The SOCKS server MUST send a reply packet with the following structure:
 
-```
-		+----+----+----+----+----+----+----+----+
-		| VN | CD | DSTPORT |      DSTIP      |
-		+----+----+----+----+----+----+----+----+
- Size (bytes):	 1    1       2           4
-```
+| Field | Description | Size (bytes) |
+|:---|:---|:---:|
+| VN | Version Number | 1 |
+| CD | Command Code | 1 |
+| DSTPORT | Destination Port | 2 |
+| DSTIP | Destination IP Address | 4 |
+{: \#socks-partial-request-format title="CONNECT Reply Packet Format"}
 
  - VN: MUST be 0, representing the reply version code.
  - CD (Result Code): The SOCKS server MUST use one of the following values:
@@ -123,12 +124,15 @@ The client MUST initiate a BIND request when it requires the SOCKS server to pre
 
 The client MUST send a request packet identical in format to the CONNECT request:
 
-```
-		+----+----+----+----+----+----+----+----+----+----+....+----+
-		| VN | CD | DSTPORT |      DSTIP      | USERID      |NULL|
-		+----+----+----+----+----+----+----+----+----+----+....+----+
- Size (bytes):	 1    1       2           4         variable     1
-```
+| Field | Description | Size (bytes) |
+|:---|:---|:---:|
+| VN | Version Number (must be 4) | 1 |
+| CD | Command Code (1 for CONNECT, 2 for BIND) | 1 |
+| DSTPORT | Destination Port (Network Byte Order) | 2 |
+| DSTIP | Destination IP Address | 4 |
+| USERID | User ID (String of Octets) | variable |
+| NULL | Null Terminator (0x00) | 1 |
+{: #socks-version-4-request-format title="BIND Request Packet Format"}
 
  - VN: MUST be 4.
  - CD: MUST be 2, indicating a BIND request.
@@ -237,20 +241,20 @@ The existing values used within the protocol are summarized below:
 ## SOCKS Command Code (CD)
 
 The SOCKS command code `CD` in requests defines two values:
-    * **1 (0x01):** CONNECT
-    * **2 (0x02):** BIND
+    * 1 (0x01): CONNECT
+    * 2 (0x02): BIND
 
 ## SOCKS Reply Code (CD)
 
 The SOCKS reply code `CD` in replies defines four values:
-    * **90 (0x5A):** Request granted
-    * **91 (0x5B):** Request rejected or failed
-    * **92 (0x5C):** Request rejected because SOCKS server cannot connect to `identd` on the client
-    * **93 (0x5D):** Request rejected because the client program and `identd` report different user-ids
+    * 90 (0x5A): Request granted
+    * 91 (0x5B): Request rejected or failed
+    * 92 (0x5C): Request rejected because SOCKS server cannot connect to `identd` on the client
+    * 93 (0x5D): Request rejected because the client program and `identd` report different user-ids
 
 ## Port Number
 
-The SOCKS protocol is conventionally known to use **TCP port 1080** for its service. This port number has already been registered in the **IANA Service Name and Transport Protocol Port Number Registry** for the `socks` service.
+The SOCKS protocol is conventionally known to use TCP port 1080 for its service. This port number has already been registered in the IANA Service Name and Transport Protocol Port Number Registry for the `socks` service.
 
 --- back
 
