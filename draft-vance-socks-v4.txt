@@ -4,8 +4,8 @@
 
 Network Working Group                                        D. J. Vance
 Internet-Draft                                               Independent
-Intended status: Historic                                4 November 2025
-Expires: 8 May 2026
+Intended status: Historic                                8 November 2025
+Expires: 12 May 2026
 
 
                  SOCKS Protocol Version 4 Specification
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 May 2026.
+   This Internet-Draft will expire on 12 May 2026.
 
 Copyright Notice
 
@@ -169,10 +169,23 @@ Table of Contents
 
    The client MUST send a request packet with the following structure:
 
-   +----+----+----+----+----+----+----+----+----+----+....+----+ | VN |
-   CD | DSTPORT |      DSTIP      | USERID      |NULL|
-   +----+----+----+----+----+----+----+----+----+----+....+----+  Size
-   (bytes): 1    1       2           4         variable     1
+            +=========+========================+==============+
+            | Field   | Description            | Size (bytes) |
+            +=========+========================+==============+
+            | VN      | Version Number         |      1       |
+            +---------+------------------------+--------------+
+            | CD      | Command Code           |      1       |
+            +---------+------------------------+--------------+
+            | DSTPORT | Destination Port       |      2       |
+            +---------+------------------------+--------------+
+            | DSTIP   | Destination IP Address |      4       |
+            +---------+------------------------+--------------+
+            | USERID  | User ID                |   variable   |
+            +---------+------------------------+--------------+
+            | NULL    | Null Terminator        |      1       |
+            +---------+------------------------+--------------+
+
+                       Table 1: SOCKS Request Format
 
    *  VN (Version Number): MUST be 4, representing the SOCKS protocol
       version.
