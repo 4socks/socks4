@@ -278,8 +278,13 @@ Given the security deficiencies of SOCKSv4, deployment should be guided by the f
 # Original Auther
 {:numbered="false"}
 ~~~~
-Ying-Da Lee
-Principal Member Technical Staff
-NEC Systems Laboratory, CSTC
-ylee@syl.dl.nec.com
+      Ying-Da Lee
+      Principal Member Technical Staff
+      NEC Systems Laboratory, CSTC
+      ylee@syl.dl.nec.com
+
+      David Koblas
+      Netskope
 ~~~~
+
+We sincerely apologize that, due to the document's long history and the passage of time, many early contributors may not have been formally included in this list. We extend our deepest gratitude to all who have contributed to this work. If you believe your name should be added to the acknowledgments, please contact the draft maintainers.
