@@ -15,6 +15,12 @@ author:
 
 normative:
   RFC1413:
+  SOCKS4:
+       title: "SOCKS: A protocol for TCP proxy across firewalls"
+       author:
+         name: Ying-Da Lee
+         org: NEC Systems Laboratory, CSTC
+         email: ylee@syl.dl.nec.com
 
 informative:
   RFC791:
