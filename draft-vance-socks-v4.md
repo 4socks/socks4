@@ -106,10 +106,15 @@ The SOCKS server MUST send a reply packet with the following structure:
 
 - VN: MUST be 0, representing the reply version code.
 - CD (Result Code): The SOCKS server MUST use one of the following values:
-   - 90: Request granted.
-   - 91: Request rejected or failed.
-   - 92: Request rejected due to inability to connect to identd on the client.
-   - 93: Request rejected because the client program and identd report different user-IDs.
+
+| Reply Code | Description |
+|:---|:---|
+| 90 | Request granted (Connection successful). |
+| 91 | Request rejected or failed. |
+| 92 | Request rejected due to inability to connect to `identd` on the client. |
+| 93 | Request rejected because the client program and `identd` report different user-IDs. |
+{: #socks-version-4-reply-codes title="Result Codes"}
+
 - DSTPORT and DSTIP: These fields MUST be ignored by the client in a CONNECT reply.
 
 If the request is rejected or failed (CD \!= 90), the SOCKS server MUST close its connection to the client immediately after sending the reply.
@@ -161,8 +166,8 @@ The SOCKS server MUST send a second reply packet to the client once the anticipa
 
 The SOCKS server MUST check the IP address of the newly connected application server host against the DSTIP value specified in the client's original BIND request.
 
-  - If the IP addresses match: The CD field in the second reply MUST be set to 90. The SOCKS server MUST then prepare to relay traffic between the client connection and the new application server connection.
-  - If a mismatch is found: The CD field in the second reply MUST be set to 91. The SOCKS server MUST immediately close both the client connection and the connection from the application server.
+- If the IP addresses match: The CD field in the second reply MUST be set to 90. The SOCKS server MUST then prepare to relay traffic between the client connection and the new application server connection.
+- If a mismatch is found: The CD field in the second reply MUST be set to 91. The SOCKS server MUST immediately close both the client connection and the connection from the application server.
 
 Upon a successful second reply, the client MUST perform I/O on its connection to the SOCKS server as if it were directly connected to the application server.
 
