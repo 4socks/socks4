@@ -104,13 +104,13 @@ The SOCKS server MUST send a reply packet with the following structure:
 | DSTIP | Destination IP Address | 4 |
 {: \#socks-partial-request-format title="CONNECT Reply Packet Format"}
 
- - VN: MUST be 0, representing the reply version code.
- - CD (Result Code): The SOCKS server MUST use one of the following values:
-     - 90: Request granted.
-     - 91: Request rejected or failed.
-     - 92: Request rejected due to inability to connect to identd on the client.
-     - 93: Request rejected because the client program and identd report different user-IDs.
- - DSTPORT and DSTIP: These fields MUST be ignored by the client in a CONNECT reply.
+- VN: MUST be 0, representing the reply version code.
+- CD (Result Code): The SOCKS server MUST use one of the following values:
+   - 90: Request granted.
+   - 91: Request rejected or failed.
+   - 92: Request rejected due to inability to connect to identd on the client.
+   - 93: Request rejected because the client program and identd report different user-IDs.
+- DSTPORT and DSTIP: These fields MUST be ignored by the client in a CONNECT reply.
 
 If the request is rejected or failed (CD \!= 90), the SOCKS server MUST close its connection to the client immediately after sending the reply.
 
@@ -134,11 +134,11 @@ The client MUST send a request packet identical in format to the CONNECT request
 | NULL | Null Terminator (0x00) | 1 |
 {: #socks-version-4-request-format title="BIND Request Packet Format"}
 
- - VN: MUST be 4.
- - CD: MUST be 2, indicating a BIND request.
- - DSTPORT: The port number of the primary connection to the application server.
- - DSTIP: The IP address of the application server.
- - USERID and NULL: As defined for the CONNECT request.
+- VN: MUST be 4.
+- CD: MUST be 2, indicating a BIND request.
+- DSTPORT: The port number of the primary connection to the application server.
+- DSTIP: The IP address of the application server.
+- USERID and NULL: As defined for the CONNECT request.
 
 ## BIND First Reply (Socket Assignment)
 
@@ -148,8 +148,8 @@ If the request is rejected (CD != 90), the SOCKS server MUST close its connectio
 
 If the request is granted (CD = 90):
 
-1.  The SOCKS server MUST obtain a local socket and begin listening for an incoming connection.
-2.  The SOCKS server MUST send a first reply packet where the DSTPORT and DSTIP fields are meaningful:
+1. The SOCKS server MUST obtain a local socket and begin listening for an incoming connection.
+2. The SOCKS server MUST send a first reply packet where the DSTPORT and DSTIP fields are meaningful:
     - DSTPORT MUST contain the port number of the newly listening socket (network byte order).
     - DSTIP MUST contain the IP address of the SOCKS server's listening interface (network byte order).
 3.  If the SOCKS server returns a DSTIP of 0 (the value of constant 'INADDR\_ANY'), the client MUST replace this value with the IP address of the SOCKS server to which the client is currently connected.
