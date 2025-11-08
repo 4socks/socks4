@@ -240,22 +240,22 @@ The existing values used within the protocol are summarized below:
 
 ## SOCKS Protocol Version Number (VN)
 
-* The SOCKS protocol version number `VN` in requests is **4 (0x04)**.
-* The SOCKS protocol version number `VN` in replies is **0 (0x00)**.
+* The SOCKS protocol version number `VN` in requests is 4 (0x04).
+* The SOCKS protocol version number `VN` in replies is 0 (0x00).
 
 ## SOCKS Command Code (CD)
 
 The SOCKS command code `CD` in requests defines two values:
-    * 1 (0x01): CONNECT
-    * 2 (0x02): BIND
+* 1 (0x01): CONNECT
+* 2 (0x02): BIND
 
 ## SOCKS Reply Code (CD)
 
 The SOCKS reply code `CD` in replies defines four values:
-    * 90 (0x5A): Request granted
-    * 91 (0x5B): Request rejected or failed
-    * 92 (0x5C): Request rejected because SOCKS server cannot connect to `identd` on the client
-    * 93 (0x5D): Request rejected because the client program and `identd` report different user-ids
+* 90 (0x5A): Request granted
+* 91 (0x5B): Request rejected or failed
+* 92 (0x5C): Request rejected because SOCKS server cannot connect to `identd` on the client
+* 93 (0x5D): Request rejected because the client program and `identd` report different user-ids
 
 ## Port Number
 
