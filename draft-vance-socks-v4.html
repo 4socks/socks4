@@ -1445,18 +1445,48 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
             <p id="section-3.3-3.1.1">VN: <span class="bcp14">MUST</span> be 0, representing the reply version code.<a href="#section-3.3-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-3.3-3.2">
-            <p id="section-3.3-3.2.1">CD (Result Code): The SOCKS server <span class="bcp14">MUST</span> use one of the following values:
-   - 90: Request granted.
-   - 91: Request rejected or failed.
-   - 92: Request rejected due to inability to connect to identd on the client.
-   - 93: Request rejected because the client program and identd report different user-IDs.<a href="#section-3.3-3.2.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="section-3.3-3.3">
-            <p id="section-3.3-3.3.1">DSTPORT and DSTIP: These fields <span class="bcp14">MUST</span> be ignored by the client in a CONNECT reply.<a href="#section-3.3-3.3.1" class="pilcrow">¶</a></p>
+            <p id="section-3.3-3.2.1">CD (Result Code): The SOCKS server <span class="bcp14">MUST</span> use one of the following values:<a href="#section-3.3-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-3.3-4">If the request is rejected or failed (CD != 90), the SOCKS server <span class="bcp14">MUST</span> close its connection to the client immediately after sending the reply.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
-<p id="section-3.3-5">If the request is successful (CD = 90), the SOCKS server <span class="bcp14">MUST</span> immediately begin relaying traffic in both directions between the client connection and the established application server connection. The client <span class="bcp14">MUST</span> then treat its connection to the SOCKS server as if it were a direct connection to the application server.<a href="#section-3.3-5" class="pilcrow">¶</a></p>
+<span id="name-result-codes"></span><div id="socks-version-4-reply-codes">
+<table class="center" id="table-3">
+          <caption>
+<a href="#table-3" class="selfRef">Table 3</a>:
+<a href="#name-result-codes" class="selfRef">Result Codes</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Reply Code</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">90</td>
+              <td class="text-left" rowspan="1" colspan="1">Request granted (Connection successful).</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">91</td>
+              <td class="text-left" rowspan="1" colspan="1">Request rejected or failed.</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">92</td>
+              <td class="text-left" rowspan="1" colspan="1">Request rejected due to inability to connect to <code>identd</code> on the client.</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">93</td>
+              <td class="text-left" rowspan="1" colspan="1">Request rejected because the client program and <code>identd</code> report different user-IDs.</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<ul class="normal">
+<li class="normal" id="section-3.3-5.1">
+            <p id="section-3.3-5.1.1">DSTPORT and DSTIP: These fields <span class="bcp14">MUST</span> be ignored by the client in a CONNECT reply.<a href="#section-3.3-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-3.3-6">If the request is rejected or failed (CD != 90), the SOCKS server <span class="bcp14">MUST</span> close its connection to the client immediately after sending the reply.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
+<p id="section-3.3-7">If the request is successful (CD = 90), the SOCKS server <span class="bcp14">MUST</span> immediately begin relaying traffic in both directions between the client connection and the established application server connection. The client <span class="bcp14">MUST</span> then treat its connection to the SOCKS server as if it were a direct connection to the application server.<a href="#section-3.3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1474,9 +1504,9 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         </h3>
 <p id="section-4.1-1">The client <span class="bcp14">MUST</span> send a request packet identical in format to the CONNECT request:<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 <span id="name-bind-request-packet-format-2"></span><div id="socks-version-4-request-format">
-<table class="center" id="table-3">
+<table class="center" id="table-4">
           <caption>
-<a href="#table-3" class="selfRef">Table 3</a>:
+<a href="#table-4" class="selfRef">Table 4</a>:
 <a href="#name-bind-request-packet-format-2" class="selfRef">BIND Request Packet Format</a>
           </caption>
 <thead>
@@ -1562,8 +1592,14 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         </h3>
 <p id="section-4.3-1">The SOCKS server <span class="bcp14">MUST</span> send a second reply packet to the client once the anticipated inbound connection from the application server is established. The reply format <span class="bcp14">MUST</span> be the same as the first reply.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
 <p id="section-4.3-2">The SOCKS server <span class="bcp14">MUST</span> check the IP address of the newly connected application server host against the DSTIP value specified in the client's original BIND request.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
-<p id="section-4.3-3">  - If the IP addresses match: The CD field in the second reply <span class="bcp14">MUST</span> be set to 90. The SOCKS server <span class="bcp14">MUST</span> then prepare to relay traffic between the client connection and the new application server connection.
-  - If a mismatch is found: The CD field in the second reply <span class="bcp14">MUST</span> be set to 91. The SOCKS server <span class="bcp14">MUST</span> immediately close both the client connection and the connection from the application server.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.3-3.1">
+            <p id="section-4.3-3.1.1">If the IP addresses match: The CD field in the second reply <span class="bcp14">MUST</span> be set to 90. The SOCKS server <span class="bcp14">MUST</span> then prepare to relay traffic between the client connection and the new application server connection.<a href="#section-4.3-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.3-3.2">
+            <p id="section-4.3-3.2.1">If a mismatch is found: The CD field in the second reply <span class="bcp14">MUST</span> be set to 91. The SOCKS server <span class="bcp14">MUST</span> immediately close both the client connection and the connection from the application server.<a href="#section-4.3-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 <p id="section-4.3-4">Upon a successful second reply, the client <span class="bcp14">MUST</span> perform I/O on its connection to the SOCKS server as if it were directly connected to the application server.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
