@@ -177,6 +177,41 @@ For both CONNECT and BIND operations, the SOCKS server MUST employ a time limit 
 
 # Security Considerations
 
+See {{Security-Analysis}}
+
+# IANA Considerations
+
+This document describes the SOCKS Version 4 protocol, which is presented as a historical record. This protocol does not define any new protocol fields, codes, or registries that require assignment by the Internet Assigned Numbers Authority (IANA).
+
+The existing values used within the protocol are summarized below:
+
+## SOCKS Protocol Version Number (VN)
+
+* The SOCKS protocol version number `VN` in requests is 4 (0x04).
+* The SOCKS protocol version number `VN` in replies is 0 (0x00).
+
+## SOCKS Command Code (CD)
+
+The SOCKS command code `CD` in requests defines two values:
+* 1 (0x01): CONNECT
+* 2 (0x02): BIND
+
+## SOCKS Reply Code (CD)
+
+The SOCKS reply code `CD` in replies defines four values:
+* 90 (0x5A): Request granted
+* 91 (0x5B): Request rejected or failed
+* 92 (0x5C): Request rejected because SOCKS server cannot connect to `identd` on the client
+* 93 (0x5D): Request rejected because the client program and `identd` report different user-ids
+
+## Port Number
+
+The SOCKS protocol is conventionally known to use TCP port 1080 for its service. This port number has already been registered in the IANA Service Name and Transport Protocol Port Number Registry for the `socks` service.
+
+--- back
+
+# Security Analysis
+
 The SOCKS Version 4 (SOCKSv4) protocol, designed for TCP proxy traversal of network firewalls, operates exclusively at the session layer and **inherently lacks robust security mechanisms**. Its deployment and operational policy must be rigorously evaluated against the deficiencies outlined herein.
 
 ## Authentication and Authorization Deficiencies
@@ -210,7 +245,7 @@ The **BIND** command, utilized to establish a socket for an anticipated inbound 
 
 The SOCKS server attempts a rudimentary security check during the BIND operation by comparing the source IP address of the incoming connection with the target address (`DSTIP`) specified in the client's request.
 
-* **IP Address Spoofing Risk:** A malicious actor could potentially **forge the source IP address** of the inbound connection, thereby bypassing this basic server check and facilitating the establishment of an **unauthorized session**.
+* IP Address Spoofing Risk: A malicious actor could potentially forge the source IP address of the inbound connection, thereby bypassing this basic server check and facilitating the establishment of an unauthorized session.
 * **NAT/PAT Incompatibility:** In network topologies employing **Network Address Translation (NAT)** or **Port Address Translation (PAT)**, the source IP address is structurally altered. This modification renders the BIND source address verification mechanism **unreliable, ineffectual, or operationally complex** to maintain.
 
 
@@ -231,37 +266,6 @@ Given the security deficiencies of SOCKSv4, deployment should be guided by the f
 1. Strict Operational Environment: SOCKSv4 is only recommended for use in environments designated as highly trusted and subject to stringent local policy control*.
 2.  Layered Security via Encrypted Tunnels: Where SOCKSv4 must transport sensitive application traffic, the protocol must be encapsulated within an existing secure transport layer, such as a Transport Layer Security (TLS/SSL) or IPsec tunnel, to establish confidentiality and integrity.
 3.  Protocol Migration: Operators should actively plan for the migration to or substitution with a more secure protocol version, specifically SOCKS Version 5 ([RFC 1928]), which incorporates native, robust authentication methods.
-
-# IANA Considerations
-
-This document describes the SOCKS Version 4 protocol, which is presented as a historical record. This protocol does not define any new protocol fields, codes, or registries that require assignment by the Internet Assigned Numbers Authority (IANA).
-
-The existing values used within the protocol are summarized below:
-
-## SOCKS Protocol Version Number (VN)
-
-* The SOCKS protocol version number `VN` in requests is 4 (0x04).
-* The SOCKS protocol version number `VN` in replies is 0 (0x00).
-
-## SOCKS Command Code (CD)
-
-The SOCKS command code `CD` in requests defines two values:
-* 1 (0x01): CONNECT
-* 2 (0x02): BIND
-
-## SOCKS Reply Code (CD)
-
-The SOCKS reply code `CD` in replies defines four values:
-* 90 (0x5A): Request granted
-* 91 (0x5B): Request rejected or failed
-* 92 (0x5C): Request rejected because SOCKS server cannot connect to `identd` on the client
-* 93 (0x5D): Request rejected because the client program and `identd` report different user-ids
-
-## Port Number
-
-The SOCKS protocol is conventionally known to use TCP port 1080 for its service. This port number has already been registered in the IANA Service Name and Transport Protocol Port Number Registry for the `socks` service.
-
---- back
 
 # Original Auther
 {:numbered="false"}
