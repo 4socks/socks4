@@ -67,12 +67,15 @@ The client MUST initiate a CONNECT request when it desires to establish an outbo
 
 The client MUST send a request packet with the following structure:
 
-```
-		+----+----+----+----+----+----+----+----+----+----+....+----+
-		| VN | CD | DSTPORT |      DSTIP      | USERID      |NULL|
-		+----+----+----+----+----+----+----+----+----+----+....+----+
- Size (bytes):	 1    1       2           4         variable     1
-```
+| Field | Description | Size (bytes) |
+|:---|:---|:---:|
+| VN | Version Number | 1 |
+| CD | Command Code | 1 |
+| DSTPORT | Destination Port | 2 |
+| DSTIP | Destination IP Address | 4 |
+| USERID | User ID | variable |
+| NULL | Null Terminator | 1 |
+{: \#socks-request-format title="SOCKS Request Format"}
 
 - VN (Version Number): MUST be 4, representing the SOCKS protocol version.
 - CD (Command Code): MUST be 1, indicating a CONNECT request.
