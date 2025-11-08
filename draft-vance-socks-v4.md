@@ -177,7 +177,7 @@ For both CONNECT and BIND operations, the SOCKS server MUST employ a time limit 
 
 # Security Considerations
 
-See {{security-analysis}}
+See {{security-analysis}}.
 
 # IANA Considerations
 
@@ -193,12 +193,14 @@ The existing values used within the protocol are summarized below:
 ## SOCKS Command Code (CD)
 
 The SOCKS command code `CD` in requests defines two values:
+
 * 1 (0x01): CONNECT
 * 2 (0x02): BIND
 
 ## SOCKS Reply Code (CD)
 
 The SOCKS reply code `CD` in replies defines four values:
+
 * 90 (0x5A): Request granted
 * 91 (0x5B): Request rejected or failed
 * 92 (0x5C): Request rejected because SOCKS server cannot connect to `identd` on the client
