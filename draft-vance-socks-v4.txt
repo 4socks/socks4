@@ -111,7 +111,7 @@ Table of Contents
 
    The protocol MUST be application-protocol independent, allowing it to
    be used for various services, including, but not limited to, telnet,
-   ftp, finger, whois, gopher, and WWW.
+   ftp, finger, whois, gopher, and WWW (World Wide Web).
 
    The SOCKS server MUST apply access control mechanisms at the
    beginning of each TCP session.  Following successful establishment,
@@ -185,7 +185,7 @@ Table of Contents
             | NULL    | Null Terminator        |      1       |
             +---------+------------------------+--------------+
 
-                       Table 1: SOCKS Request Format
+                   Table 1: CONNECT Request Packet Format
 
    *  VN (Version Number): MUST be 4, representing the SOCKS protocol
       version.
@@ -221,9 +221,19 @@ Table of Contents
    The SOCKS server MUST send a reply packet with the following
    structure:
 
-   +----+----+----+----+----+----+----+----+ | VN | CD | DSTPORT |     
-   DSTIP      | +----+----+----+----+----+----+----+----+  Size (bytes):
-   1    1       2           4
+            +=========+========================+==============+
+            | Field   | Description            | Size (bytes) |
+            +=========+========================+==============+
+            | VN      | Version Number         |      1       |
+            +---------+------------------------+--------------+
+            | CD      | Command Code           |      1       |
+            +---------+------------------------+--------------+
+            | DSTPORT | Destination Port       |      2       |
+            +---------+------------------------+--------------+
+            | DSTIP   | Destination IP Address |      4       |
+            +---------+------------------------+--------------+
+
+                    Table 2: CONNECT Reply Packet Format
 
     - VN: MUST be 0, representing the reply version code.  - CD (Result
    Code): The SOCKS server MUST use one of the following values:      -
@@ -258,10 +268,25 @@ Table of Contents
    The client MUST send a request packet identical in format to the
    CONNECT request:
 
-   +----+----+----+----+----+----+----+----+----+----+....+----+ | VN |
-   CD | DSTPORT |      DSTIP      | USERID      |NULL|
-   +----+----+----+----+----+----+----+----+----+----+....+----+  Size
-   (bytes): 1    1       2           4         variable     1
+   +=========+==========================================+==============+
+   | Field   | Description                              | Size (bytes) |
+   +=========+==========================================+==============+
+   | VN      | Version Number (must be 4)               |      1       |
+   +---------+------------------------------------------+--------------+
+   | CD      | Command Code (1 for                      |      1       |
+   |         | CONNECT, 2 for BIND)                     |              |
+   +---------+------------------------------------------+--------------+
+   | DSTPORT | Destination Port (Network                |      2       |
+   |         | Byte Order)                              |              |
+   +---------+------------------------------------------+--------------+
+   | DSTIP   | Destination IP Address                   |      4       |
+   +---------+------------------------------------------+--------------+
+   | USERID  | User ID (String of Octets)               |   variable   |
+   +---------+------------------------------------------+--------------+
+   | NULL    | Null Terminator (0x00)                   |      1       |
+   +---------+------------------------------------------+--------------+
+
+                    Table 3: BIND Request Packet Format
 
     - VN: MUST be 4.  - CD: MUST be 2, indicating a BIND request.  -
    DSTPORT: The port number of the primary connection to the application
@@ -457,23 +482,23 @@ Table of Contents
 
 7.2.  SOCKS Command Code (CD)
 
-   The SOCKS command code CD in requests defines two values: * *1
-   (0x01):* CONNECT * *2 (0x02):* BIND
+   The SOCKS command code CD in requests defines two values: * 1 (0x01):
+   CONNECT * 2 (0x02): BIND
 
 7.3.  SOCKS Reply Code (CD)
 
-   The SOCKS reply code CD in replies defines four values: * *90
-   (0x5A):* Request granted * *91 (0x5B):* Request rejected or failed *
-   *92 (0x5C):* Request rejected because SOCKS server cannot connect to
-   identd on the client * *93 (0x5D):* Request rejected because the
-   client program and identd report different user-ids
+   The SOCKS reply code CD in replies defines four values: * 90 (0x5A):
+   Request granted * 91 (0x5B): Request rejected or failed * 92 (0x5C):
+   Request rejected because SOCKS server cannot connect to identd on the
+   client * 93 (0x5D): Request rejected because the client program and
+   identd report different user-ids
 
 7.4.  Port Number
 
-   The SOCKS protocol is conventionally known to use *TCP port 1080* for
+   The SOCKS protocol is conventionally known to use TCP port 1080 for
    its service.  This port number has already been registered in the
-   *IANA Service Name and Transport Protocol Port Number Registry* for
-   the socks service.
+   IANA Service Name and Transport Protocol Port Number Registry for the
+   socks service.
 
 8.  References
 
