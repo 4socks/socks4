@@ -177,7 +177,7 @@ For both CONNECT and BIND operations, the SOCKS server MUST employ a time limit 
 
 # Security Considerations
 
-See {{Security-Analysis}}
+See {{security-analysis}}
 
 # IANA Considerations
 
