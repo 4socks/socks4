@@ -1621,7 +1621,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-security-considerations">
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-6-1">See <a href="#security-analysis" class="auto internal xref">Appendix A</a><a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-1">See <a href="#security-analysis" class="auto internal xref">Appendix A</a>.<a href="#section-6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
@@ -1651,9 +1651,15 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-socks-command-code-cd">
 <a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-socks-command-code-cd" class="section-name selfRef">SOCKS Command Code (CD)</a>
         </h3>
-<p id="section-7.2-1">The SOCKS command code <code>CD</code> in requests defines two values:
-* 1 (0x01): CONNECT
-* 2 (0x02): BIND<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<p id="section-7.2-1">The SOCKS command code <code>CD</code> in requests defines two values:<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.2-2.1">
+            <p id="section-7.2-2.1.1">1 (0x01): CONNECT<a href="#section-7.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.2-2.2">
+            <p id="section-7.2-2.2.1">2 (0x02): BIND<a href="#section-7.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 <div id="socks-reply-code-cd">
@@ -1661,11 +1667,21 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-socks-reply-code-cd">
 <a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-socks-reply-code-cd" class="section-name selfRef">SOCKS Reply Code (CD)</a>
         </h3>
-<p id="section-7.3-1">The SOCKS reply code <code>CD</code> in replies defines four values:
-* 90 (0x5A): Request granted
-* 91 (0x5B): Request rejected or failed
-* 92 (0x5C): Request rejected because SOCKS server cannot connect to <code>identd</code> on the client
-* 93 (0x5D): Request rejected because the client program and <code>identd</code> report different user-ids<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<p id="section-7.3-1">The SOCKS reply code <code>CD</code> in replies defines four values:<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.3-2.1">
+            <p id="section-7.3-2.1.1">90 (0x5A): Request granted<a href="#section-7.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.3-2.2">
+            <p id="section-7.3-2.2.1">91 (0x5B): Request rejected or failed<a href="#section-7.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.3-2.3">
+            <p id="section-7.3-2.3.1">92 (0x5C): Request rejected because SOCKS server cannot connect to <code>identd</code> on the client<a href="#section-7.3-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.3-2.4">
+            <p id="section-7.3-2.4.1">93 (0x5D): Request rejected because the client program and <code>identd</code> report different user-ids<a href="#section-7.3-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 <div id="port-number">

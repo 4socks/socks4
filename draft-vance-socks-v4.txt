@@ -373,7 +373,7 @@ Table of Contents
 
 6.  Security Considerations
 
-   See Appendix A
+   See Appendix A.
 
 7.  IANA Considerations
 
@@ -392,16 +392,25 @@ Table of Contents
 
 7.2.  SOCKS Command Code (CD)
 
-   The SOCKS command code CD in requests defines two values: * 1 (0x01):
-   CONNECT * 2 (0x02): BIND
+   The SOCKS command code CD in requests defines two values:
+
+   *  1 (0x01): CONNECT
+
+   *  2 (0x02): BIND
 
 7.3.  SOCKS Reply Code (CD)
 
-   The SOCKS reply code CD in replies defines four values: * 90 (0x5A):
-   Request granted * 91 (0x5B): Request rejected or failed * 92 (0x5C):
-   Request rejected because SOCKS server cannot connect to identd on the
-   client * 93 (0x5D): Request rejected because the client program and
-   identd report different user-ids
+   The SOCKS reply code CD in replies defines four values:
+
+   *  90 (0x5A): Request granted
+
+   *  91 (0x5B): Request rejected or failed
+
+   *  92 (0x5C): Request rejected because SOCKS server cannot connect to
+      identd on the client
+
+   *  93 (0x5D): Request rejected because the client program and identd
+      report different user-ids
 
 7.4.  Port Number
 
