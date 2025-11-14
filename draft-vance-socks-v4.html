@@ -1191,44 +1191,15 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
                 <p id="section-toc.1-1.9.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-authentication-and-authoriz" class="internal xref">Authentication and Authorization Deficiencies</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1.2.1">
-                    <p id="section-toc.1-1.9.2.1.2.1.1"><a href="#appendix-A.1.1" class="auto internal xref">A.1.1</a>.  <a href="#name-weak-client-identification-" class="internal xref">Weak Client Identification Mechanism</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1.2.2">
-                    <p id="section-toc.1-1.9.2.1.2.2.1"><a href="#appendix-A.1.2" class="auto internal xref">A.1.2</a>.  <a href="#name-policy-dependent-authorizat" class="internal xref">Policy-Dependent Authorization</a></p>
-</li>
-                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
                 <p id="section-toc.1-1.9.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-data-integrity-and-transpor" class="internal xref">Data Integrity and Transport Limitations</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2.2.1">
-                    <p id="section-toc.1-1.9.2.2.2.1.1"><a href="#appendix-A.2.1" class="auto internal xref">A.2.1</a>.  <a href="#name-absence-of-confidentiality-" class="internal xref">Absence of Confidentiality (Plaintext Relay)</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2.2.2">
-                    <p id="section-toc.1-1.9.2.2.2.2.1"><a href="#appendix-A.2.2" class="auto internal xref">A.2.2</a>.  <a href="#name-protocol-scope-restriction" class="internal xref">Protocol Scope Restriction</a></p>
-</li>
-                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.3">
                 <p id="section-toc.1-1.9.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-vulnerabilities-associated-" class="internal xref">Vulnerabilities Associated with the BIND Operation</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.3.2.1">
-                    <p id="section-toc.1-1.9.2.3.2.1.1"><a href="#appendix-A.3.1" class="auto internal xref">A.3.1</a>.  <a href="#name-source-address-verification" class="internal xref">Source Address Verification Bypass</a></p>
-</li>
-                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4">
                 <p id="section-toc.1-1.9.2.4.1"><a href="#appendix-A.4" class="auto internal xref">A.4</a>.  <a href="#name-denial-of-service-dos-vecto" class="internal xref">Denial of Service (DoS) Vector</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4.2.1">
-                    <p id="section-toc.1-1.9.2.4.2.1.1"><a href="#appendix-A.4.1" class="auto internal xref">A.4.1</a>.  <a href="#name-resource-exhaustion-potenti" class="internal xref">Resource Exhaustion Potential</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4.2.2">
-                    <p id="section-toc.1-1.9.2.4.2.2.1"><a href="#appendix-A.4.2" class="auto internal xref">A.4.2</a>.  <a href="#name-inadequate-mitigations" class="internal xref">Inadequate Mitigations</a></p>
-</li>
-                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.5">
                 <p id="section-toc.1-1.9.2.5.1"><a href="#appendix-A.5" class="auto internal xref">A.5</a>.  <a href="#name-recommended-mitigation-and-" class="internal xref">Recommended Mitigation and Deployment Practices</a></p>
@@ -1704,36 +1675,13 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-security-analysis">
 <a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-security-analysis" class="section-name selfRef">Security Analysis</a>
       </h2>
-<p id="appendix-A-1">The SOCKS Version 4 (SOCKSv4) protocol, designed for TCP proxy traversal of network firewalls, operates exclusively at the session layer and <strong>inherently lacks robust security mechanisms</strong>. Its deployment and operational policy must be rigorously evaluated against the deficiencies outlined herein.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">The SOCKS Version 4 (SOCKSv4) protocol, designed exclusively for TCP proxy traversal across network firewalls, is fundamentally weak from a security perspective as it operates solely at the session layer and lacks intrinsic security mechanisms. Any deployment of SOCKSv4 must be critically assessed against its inherent deficiencies.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <div id="authentication-and-authorization-deficiencies">
 <section id="appendix-A.1">
         <h3 id="name-authentication-and-authoriz">
 <a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-authentication-and-authoriz" class="section-name selfRef">Authentication and Authorization Deficiencies</a>
         </h3>
-<div id="weak-client-identification-mechanism">
-<section id="appendix-A.1.1">
-          <h4 id="name-weak-client-identification-">
-<a href="#appendix-A.1.1" class="section-number selfRef">A.1.1. </a><a href="#name-weak-client-identification-" class="section-name selfRef">Weak Client Identification Mechanism</a>
-          </h4>
-<p id="appendix-A.1.1-1">The SOCKSv4 request format incorporates a <strong><code>USERID</code></strong> field. This field is designated for rudimentary client identification, typically intended for conjunction with the <strong>IDENT protocol</strong> (specified in [RFC 1413]).<a href="#appendix-A.1.1-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="appendix-A.1.1-2.1">
-              <p id="appendix-A.1.1-2.1.1"><strong>Ident Protocol Vulnerability:</strong> Reliance on IDENT constitutes a <strong>significant security risk</strong>. The IDENT protocol operates via an untrusted daemon resident on the client host, rendering the identification process susceptible to trivial <strong>spoofing or malicious disabling</strong>.<a href="#appendix-A.1.1-2.1.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="appendix-A.1.1-2.2">
-              <p id="appendix-A.1.1-2.2.1"><strong>Absence of Strong Authentication:</strong> SOCKSv4 <strong>lacks integrated provisions</strong> for strong client-to-server or server-to-client authentication. This includes the absence of any mechanism for verifying user credentials, such as passwords, or employing cryptographic challenge-response methods.<a href="#appendix-A.1.1-2.2.1" class="pilcrow">¶</a></p>
-</li>
-          </ul>
-</section>
-</div>
-<div id="policy-dependent-authorization">
-<section id="appendix-A.1.2">
-          <h4 id="name-policy-dependent-authorizat">
-<a href="#appendix-A.1.2" class="section-number selfRef">A.1.2. </a><a href="#name-policy-dependent-authorizat" class="section-name selfRef">Policy-Dependent Authorization</a>
-          </h4>
-<p id="appendix-A.1.2-1">Access control (authorization) for SOCKSv4 services is <strong>exclusively managed</strong> by the local configuration and security policy of the SOCKS server implementation. A failure in the server's configuration or a weakness in its policy can directly result in <strong>unauthorized network access</strong> across the protective boundary of the firewall.<a href="#appendix-A.1.2-1" class="pilcrow">¶</a></p>
-</section>
-</div>
+<p id="appendix-A.1-1">SOCKSv4's client identification relies on the USERID field, often intended for use with the IDENT protocol (specified in RFC 1413). This reliance constitutes a major security risk because the IDENT protocol depends on an untrusted daemon on the client host, making the identification process susceptible to trivial spoofing or malicious disabling. Crucially, SOCKSv4 entirely lacks integrated provisions for strong client-to-server or server-to-client authentication, offering no mechanisms for verifying user credentials, passwords, or employing cryptographic challenge-response methods. Consequently, access control (authorization) is managed exclusively by the SOCKS server's local configuration and security policy. A failure in the server's policy or configuration directly risks granting unauthorized network access across the protective boundary of the firewall.<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="data-integrity-and-transport-limitations">
@@ -1741,22 +1689,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-data-integrity-and-transpor">
 <a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-data-integrity-and-transpor" class="section-name selfRef">Data Integrity and Transport Limitations</a>
         </h3>
-<div id="absence-of-confidentiality-plaintext-relay">
-<section id="appendix-A.2.1">
-          <h4 id="name-absence-of-confidentiality-">
-<a href="#appendix-A.2.1" class="section-number selfRef">A.2.1. </a><a href="#name-absence-of-confidentiality-" class="section-name selfRef">Absence of Confidentiality (Plaintext Relay)</a>
-          </h4>
-<p id="appendix-A.2.1-1">SOCKSv4 functions as a session layer relay and <strong>does not incorporate any encryption</strong> capabilities for the application data stream. All application traffic traversing the SOCKS proxy is forwarded in <strong>plaintext</strong>. This inherent vulnerability exposes all transmitted data to <strong>passive network eavesdropping</strong> and interception.<a href="#appendix-A.2.1-1" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="protocol-scope-restriction">
-<section id="appendix-A.2.2">
-          <h4 id="name-protocol-scope-restriction">
-<a href="#appendix-A.2.2" class="section-number selfRef">A.2.2. </a><a href="#name-protocol-scope-restriction" class="section-name selfRef">Protocol Scope Restriction</a>
-          </h4>
-<p id="appendix-A.2.2-1">The SOCKSv4 protocol is <strong>strictly confined</strong> to the proxying of <strong>Transmission Control Protocol (TCP)</strong> connections. It provides <strong>no native support</strong> for the relay of <strong>User Datagram Protocol (UDP)</strong> traffic or other protocols operating at the IP layer.<a href="#appendix-A.2.2-1" class="pilcrow">¶</a></p>
-</section>
-</div>
+<p id="appendix-A.2-1">SOCKSv4 does not incorporate any encryption capabilities for the application data stream. As a session layer relay, it forwards all application traffic, including sensitive data, in plaintext. This inherent vulnerability exposes all transmitted data to passive network eavesdropping and interception, resulting in a total absence of confidentiality. Furthermore, the protocol’s operational scope is strictly confined to proxying Transmission Control Protocol (TCP) connections. It provides no native support for the relay of User Datagram Protocol (UDP) traffic or other IP-layer protocols, limiting its utility and scope of protection.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="vulnerabilities-associated-with-the-bind-operation">
@@ -1764,23 +1697,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-vulnerabilities-associated-">
 <a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-vulnerabilities-associated-" class="section-name selfRef">Vulnerabilities Associated with the BIND Operation</a>
         </h3>
-<p id="appendix-A.3-1">The <strong>BIND</strong> command, utilized to establish a socket for an anticipated inbound connection (a callback) from an application server, introduces distinct security challenges.<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
-<div id="source-address-verification-bypass">
-<section id="appendix-A.3.1">
-          <h4 id="name-source-address-verification">
-<a href="#appendix-A.3.1" class="section-number selfRef">A.3.1. </a><a href="#name-source-address-verification" class="section-name selfRef">Source Address Verification Bypass</a>
-          </h4>
-<p id="appendix-A.3.1-1">The SOCKS server attempts a rudimentary security check during the BIND operation by comparing the source IP address of the incoming connection with the target address (<code>DSTIP</code>) specified in the client's request.<a href="#appendix-A.3.1-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="appendix-A.3.1-2.1">
-              <p id="appendix-A.3.1-2.1.1">IP Address Spoofing Risk: A malicious actor could potentially forge the source IP address of the inbound connection, thereby bypassing this basic server check and facilitating the establishment of an unauthorized session.<a href="#appendix-A.3.1-2.1.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="appendix-A.3.1-2.2">
-              <p id="appendix-A.3.1-2.2.1"><strong>NAT/PAT Incompatibility:</strong> In network topologies employing <strong>Network Address Translation (NAT)</strong> or <strong>Port Address Translation (PAT)</strong>, the source IP address is structurally altered. This modification renders the BIND source address verification mechanism <strong>unreliable, ineffectual, or operationally complex</strong> to maintain.<a href="#appendix-A.3.1-2.2.1" class="pilcrow">¶</a></p>
-</li>
-          </ul>
-</section>
-</div>
+<p id="appendix-A.3-1">The BIND command, used for establishing a socket for an anticipated inbound connection (a callback) from an application server, introduces distinct security challenges. The SOCKS server attempts a rudimentary security check by comparing the source IP address of the incoming connection with the target address (DSTIP) specified in the client's request. However, a malicious actor can easily forge the source IP address of the inbound connection, potentially bypassing this basic server check and facilitating an unauthorized session. Moreover, in network topologies employing Network Address Translation (NAT) or Port Address Translation (PAT), the source IP address is structurally altered, rendering the BIND source address verification mechanism unreliable, ineffectual, or operationally complex to maintain.<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="denial-of-service-dos-vector">
@@ -1788,22 +1705,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-denial-of-service-dos-vecto">
 <a href="#appendix-A.4" class="section-number selfRef">A.4. </a><a href="#name-denial-of-service-dos-vecto" class="section-name selfRef">Denial of Service (DoS) Vector</a>
         </h3>
-<div id="resource-exhaustion-potential">
-<section id="appendix-A.4.1">
-          <h4 id="name-resource-exhaustion-potenti">
-<a href="#appendix-A.4.1" class="section-number selfRef">A.4.1. </a><a href="#name-resource-exhaustion-potenti" class="section-name selfRef">Resource Exhaustion Potential</a>
-          </h4>
-<p id="appendix-A.4.1-1">Each successful SOCKS connection consumes finite server resources, including active sockets, allocated memory, and network bandwidth. A malicious client can exploit this by initiating a <strong>large volume of connection attempts</strong>—particularly through the resource-intensive <strong>BIND operation</strong>—to rapidly exhaust the SOCKS server's capacity. This constitutes a direct vector for a <strong>Denial of Service</strong> attack against legitimate users.<a href="#appendix-A.4.1-1" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="inadequate-mitigations">
-<section id="appendix-A.4.2">
-          <h4 id="name-inadequate-mitigations">
-<a href="#appendix-A.4.2" class="section-number selfRef">A.4.2. </a><a href="#name-inadequate-mitigations" class="section-name selfRef">Inadequate Mitigations</a>
-          </h4>
-<p id="appendix-A.4.2-1">Although the protocol specifies a basic connection establishment <strong>timeout mechanism (2 minutes)</strong>, this measure is insufficient in scope and rigor to fully mitigate the risks associated with sophisticated DoS attacks.<a href="#appendix-A.4.2-1" class="pilcrow">¶</a></p>
-</section>
-</div>
+<p id="appendix-A.4-1">Every successful SOCKS connection consumes finite server resources, including active sockets, allocated memory, and network bandwidth. A direct vector for a Denial of Service attack exists where a malicious client can exploit this resource consumption by initiating a large volume of connection attempts, particularly through the resource-intensive BIND operation, to rapidly exhaust the SOCKS server’s capacity. Although the protocol specifies a basic connection establishment timeout mechanism (2 minutes), this measure is entirely insufficient in scope and rigor to fully mitigate the risks associated with sophisticated DoS attacks.<a href="#appendix-A.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="recommended-mitigation-and-deployment-practices">
@@ -1811,18 +1713,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-recommended-mitigation-and-">
 <a href="#appendix-A.5" class="section-number selfRef">A.5. </a><a href="#name-recommended-mitigation-and-" class="section-name selfRef">Recommended Mitigation and Deployment Practices</a>
         </h3>
-<p id="appendix-A.5-1">Given the security deficiencies of SOCKSv4, deployment should be guided by the following principles:<a href="#appendix-A.5-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="appendix-A.5-2">
-<li id="appendix-A.5-2.1">
-            <p id="appendix-A.5-2.1.1">Strict Operational Environment: SOCKSv4 is only recommended for use in environments designated as highly trusted and subject to stringent local policy control*.<a href="#appendix-A.5-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li id="appendix-A.5-2.2">
-            <p id="appendix-A.5-2.2.1">Layered Security via Encrypted Tunnels: Where SOCKSv4 must transport sensitive application traffic, the protocol must be encapsulated within an existing secure transport layer, such as a Transport Layer Security (TLS/SSL) or IPsec tunnel, to establish confidentiality and integrity.<a href="#appendix-A.5-2.2.1" class="pilcrow">¶</a></p>
-</li>
-          <li id="appendix-A.5-2.3">
-            <p id="appendix-A.5-2.3.1">Protocol Migration: Operators should actively plan for the migration to or substitution with a more secure protocol version, specifically SOCKS Version 5 ([RFC 1928]), which incorporates native, robust authentication methods.<a href="#appendix-A.5-2.3.1" class="pilcrow">¶</a></p>
-</li>
-        </ol>
+<p id="appendix-A.5-1">Given SOCKSv4's security deficiencies, its deployment should be strictly limited to environments designated as highly trusted and subject to stringent local policy control. Where SOCKSv4 must transport sensitive application traffic, the protocol must be encapsulated within an existing secure transport layer, such as a Transport Layer Security (TLS/SSL) or IPsec tunnel, to establish the essential confidentiality and integrity mechanisms that SOCKSv4 lacks. Operators should actively plan for migration to SOCKS Version 5 (RFC 1928), which incorporates native, robust authentication methods.<a href="#appendix-A.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
