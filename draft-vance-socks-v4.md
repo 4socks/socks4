@@ -193,6 +193,62 @@ See {{existing-values}} for the existing values used within the protocol.
 
 --- back
 
+# Common Operational Extensions
+
+The content of this appendix is Informative, not Normative. It describes extensions and interpretations of the SOCKSv4 protocol that have been widely adopted in practical deployments and client implementations to enhance functionality and compatibility.
+
+## Domain Name Support: SOCKS Protocol Version 4A (SOCKSv4a)
+
+The SOCKSv4 protocol originally required the client to resolve the target domain name before sending the request. As this is impractical in many environments, the SOCKSv4a extension was widely adopted to allow the SOCKS server to perform domain name resolution.
+
+Clients using this extension must follow these rules:
+
+### SOCKSv4a Request Format
+
+When a client wishes to connect using a domain name instead of an IP address, the request format follows the CONNECT/BIND format, but with modifications to DSTIP and the end of the request:
+
+| Field | Description | Size (bytes) | SOCKSv4a Usage |
+| :--- | :--- | :--- | :--- |
+| VN | Version Number (4) | 1 | Unchanged. |
+| CD | Command Code (1 or 2) | 1 | Unchanged. |
+| DSTPORT | Destination Port | 2 | Unchanged. |
+| DSTIP | Destination IP Address | 4 | MUST be set to 0.0.0.1 (0x00000001). |
+| USERID | User ID | variable | Unchanged. |
+| NULL | Null Terminator (0x00) | 1 | Terminates USERID. |
+| DOMAIN | Target Domain Name | variable | New field: Null-terminated string. |
+| NULL | Final Null Terminator | 1 | New field: Terminates DOMAIN. |
+{: \#socks4a-req-format title="SOCKSv4a Request Format"}
+
+A SOCKSv4a client, when sending a request, must append the target domain name string after the NULL terminator of USERID, and terminate the entire request with a second NULL byte.
+
+### SOCKSv4a Server Processing
+
+When a SOCKS server receives a request where the DSTIP field is 0.0.0.1, it MUST perform the following actions:
+
+1.  Treat 0.0.0.1 as a special signal and MUST NOT attempt to connect to this IP address.
+2.  Start reading data after the USERID's NULL terminator, interpreting it as the target domain name string (DOMAIN), until the next NULL terminator is encountered.
+3.  The server MUST attempt to resolve this domain name.
+4.  If resolution is successful, the server attempts to connect to the obtained IP address. If the connection succeeds, it replies 90. If the connection fails, it replies 91.
+5.  If resolution fails, the server MUST reply 91 and close the connection.
+
+## Use of DSTIP/DSTPORT in BIND Requests for Access Control
+
+Although DSTIP and DSTPORT in the BIND request (Section 4.1) are intended to identify the application server, many SOCKS server and firewall implementations use them as an Access Control List (ACL) for the inbound connection.
+
+* DSTIP as Source Address Restriction: The server strictly requires the IP address of the inbound connection to MUST match the DSTIP specified in the BIND request.
+* DSTPORT as Source Port Restriction (less common): Some implementations may attempt to verify that the source port of the inbound connection matches the DSTPORT in the BIND request. Since the source port of an application server is usually randomly allocated by the operating system, this usage is generally considered unreliable or misleading and is ignored in most implementations.
+
+When initiating a BIND request, a client SHOULD ensure that DSTIP is the address of the application server it expects to receive the connection from, to improve compatibility.
+
+## Explanation of Timeout Mechanism
+
+As mandated by Section 5, the SOCKS server MUST employ time limits. In common implementations, timeouts usually trigger under the following circumstances:
+
+* CONNECT Timeout: The server is unable to establish a connection with DSTIP:DSTPORT within the specified time.
+* Timeout after the first BIND reply: After the SOCKS server successfully binds the listening socket (sent the first 90 reply), but fails to receive an inbound connection from the application server within the specified time.
+
+When a timeout occurs, the server MUST immediately close the connection with the client and abort all pending network operations.
+
 # Security Analysis
 
 The SOCKS Version 4 (SOCKSv4) protocol, designed exclusively for TCP proxy traversal across network firewalls, is fundamentally weak from a security perspective as it operates solely at the session layer and lacks intrinsic security mechanisms. Any deployment of SOCKSv4 must be critically assessed against its inherent deficiencies.
