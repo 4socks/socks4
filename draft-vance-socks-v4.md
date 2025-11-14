@@ -27,6 +27,7 @@ informative:
   RFC9293:
   RFC1928:
   RFC1929:
+  RFC3552:
   RFC3365:
 
 ...
