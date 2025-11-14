@@ -187,34 +187,9 @@ See {{security-analysis}}.
 
 # IANA Considerations
 
-This document describes the SOCKS Version 4 protocol, which is presented as a historical record. This protocol does not define any new protocol fields, codes, or registries that require assignment by the Internet Assigned Numbers Authority (IANA).
+No IANA actions required.
 
-The existing values used within the protocol are summarized below:
-
-## SOCKS Protocol Version Number (VN)
-
-* The SOCKS protocol version number `VN` in requests is 4 (0x04).
-* The SOCKS protocol version number `VN` in replies is 0 (0x00).
-
-## SOCKS Command Code (CD)
-
-The SOCKS command code `CD` in requests defines two values:
-
-* 1 (0x01): CONNECT
-* 2 (0x02): BIND
-
-## SOCKS Reply Code (CD)
-
-The SOCKS reply code `CD` in replies defines four values:
-
-* 90 (0x5A): Request granted
-* 91 (0x5B): Request rejected or failed
-* 92 (0x5C): Request rejected because SOCKS server cannot connect to `identd` on the client
-* 93 (0x5D): Request rejected because the client program and `identd` report different user-ids
-
-## Port Number
-
-The SOCKS protocol is conventionally known to use TCP port 1080 for its service. This port number has already been registered in the IANA Service Name and Transport Protocol Port Number Registry for the `socks` service.
+See {{existing-values}} for the existing values used within the protocol.
 
 --- back
 
@@ -274,6 +249,35 @@ Given the security deficiencies of SOCKSv4, deployment should be guided by the f
 1. Strict Operational Environment: SOCKSv4 is only recommended for use in environments designated as highly trusted and subject to stringent local policy control*.
 2.  Layered Security via Encrypted Tunnels: Where SOCKSv4 must transport sensitive application traffic, the protocol must be encapsulated within an existing secure transport layer, such as a Transport Layer Security (TLS/SSL) or IPsec tunnel, to establish confidentiality and integrity.
 3.  Protocol Migration: Operators should actively plan for the migration to or substitution with a more secure protocol version, specifically SOCKS Version 5 ([RFC 1928]), which incorporates native, robust authentication methods.
+
+# Existing Values
+
+The existing values used within the protocol are summarized below:
+
+## SOCKS Protocol Version Number (VN)
+
+* The SOCKS protocol version number `VN` in requests is 4 (0x04).
+* The SOCKS protocol version number `VN` in replies is 0 (0x00).
+
+## SOCKS Command Code (CD)
+
+The SOCKS command code `CD` in requests defines two values:
+
+* 1 (0x01): CONNECT
+* 2 (0x02): BIND
+
+## SOCKS Reply Code (CD)
+
+The SOCKS reply code `CD` in replies defines four values:
+
+* 90 (0x5A): Request granted
+* 91 (0x5B): Request rejected or failed
+* 92 (0x5C): Request rejected because SOCKS server cannot connect to `identd` on the client
+* 93 (0x5D): Request rejected because the client program and `identd` report different user-ids
+
+## Port Number
+
+The SOCKS protocol is conventionally known to use TCP port 1080 for its service. This port number has already been registered in the IANA Service Name and Transport Protocol Port Number Registry for the `socks` service.
 
 # Original Auther
 {:numbered="false"}
