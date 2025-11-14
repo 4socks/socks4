@@ -24,7 +24,7 @@ normative:
 
 informative:
   RFC791:
-  RFC793:
+  RFC9293:
   RFC1928:
   RFC1929:
   RFC3365:
