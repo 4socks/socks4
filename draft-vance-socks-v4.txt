@@ -4,8 +4,8 @@
 
 Network Working Group                                        D. J. Vance
 Internet-Draft                                               Independent
-Intended status: Historic                                8 November 2025
-Expires: 12 May 2026
+Intended status: Historic                               14 November 2025
+Expires: 18 May 2026
 
 
                  SOCKS Protocol Version 4 Specification
@@ -51,7 +51,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 May 2026.
+   This Internet-Draft will expire on 18 May 2026.
 
 Copyright Notice
 
@@ -79,10 +79,6 @@ Table of Contents
    5.  Timeout Mechanism
    6.  Security Considerations
    7.  IANA Considerations
-     7.1.  SOCKS Protocol Version Number (VN)
-     7.2.  SOCKS Command Code (CD)
-     7.3.  SOCKS Reply Code (CD)
-     7.4.  Port Number
    8.  References
      8.1.  Normative References
      8.2.  Informative References
@@ -99,6 +95,11 @@ Table of Contents
        A.4.1.  Resource Exhaustion Potential
        A.4.2.  Inadequate Mitigations
      A.5.  Recommended Mitigation and Deployment Practices
+   Appendix B.  Existing Values
+     B.1.  SOCKS Protocol Version Number (VN)
+     B.2.  SOCKS Command Code (CD)
+     B.3.  SOCKS Reply Code (CD)
+     B.4.  Port Number
    Original Auther
    Author's Address
 
@@ -377,47 +378,9 @@ Table of Contents
 
 7.  IANA Considerations
 
-   This document describes the SOCKS Version 4 protocol, which is
-   presented as a historical record.  This protocol does not define any
-   new protocol fields, codes, or registries that require assignment by
-   the Internet Assigned Numbers Authority (IANA).
+   No IANA actions required.
 
-   The existing values used within the protocol are summarized below:
-
-7.1.  SOCKS Protocol Version Number (VN)
-
-   *  The SOCKS protocol version number VN in requests is 4 (0x04).
-
-   *  The SOCKS protocol version number VN in replies is 0 (0x00).
-
-7.2.  SOCKS Command Code (CD)
-
-   The SOCKS command code CD in requests defines two values:
-
-   *  1 (0x01): CONNECT
-
-   *  2 (0x02): BIND
-
-7.3.  SOCKS Reply Code (CD)
-
-   The SOCKS reply code CD in replies defines four values:
-
-   *  90 (0x5A): Request granted
-
-   *  91 (0x5B): Request rejected or failed
-
-   *  92 (0x5C): Request rejected because SOCKS server cannot connect to
-      identd on the client
-
-   *  93 (0x5D): Request rejected because the client program and identd
-      report different user-ids
-
-7.4.  Port Number
-
-   The SOCKS protocol is conventionally known to use TCP port 1080 for
-   its service.  This port number has already been registered in the
-   IANA Service Name and Transport Protocol Port Number Registry for the
-   socks service.
+   See Appendix B for the existing values used within the protocol.
 
 8.  References
 
@@ -575,6 +538,45 @@ A.5.  Recommended Mitigation and Deployment Practices
        migration to or substitution with a more secure protocol version,
        specifically SOCKS Version 5 ([RFC 1928]), which incorporates
        native, robust authentication methods.
+
+Appendix B.  Existing Values
+
+   The existing values used within the protocol are summarized below:
+
+B.1.  SOCKS Protocol Version Number (VN)
+
+   *  The SOCKS protocol version number VN in requests is 4 (0x04).
+
+   *  The SOCKS protocol version number VN in replies is 0 (0x00).
+
+B.2.  SOCKS Command Code (CD)
+
+   The SOCKS command code CD in requests defines two values:
+
+   *  1 (0x01): CONNECT
+
+   *  2 (0x02): BIND
+
+B.3.  SOCKS Reply Code (CD)
+
+   The SOCKS reply code CD in replies defines four values:
+
+   *  90 (0x5A): Request granted
+
+   *  91 (0x5B): Request rejected or failed
+
+   *  92 (0x5C): Request rejected because SOCKS server cannot connect to
+      identd on the client
+
+   *  93 (0x5D): Request rejected because the client program and identd
+      report different user-ids
+
+B.4.  Port Number
+
+   The SOCKS protocol is conventionally known to use TCP port 1080 for
+   its service.  This port number has already been registered in the
+   IANA Service Name and Transport Protocol Port Number Registry for the
+   socks service.
 
 Original Auther
 
