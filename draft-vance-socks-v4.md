@@ -32,8 +32,6 @@ informative:
 
 --- abstract
 
-This document is published as a historical record of the SOCKS 4 protocol. The original spec does not have an Abstract, so the Abstract below is added afterwards.
-
 This document describes SOCKS version 4, a protocol designed to facilitate TCP proxy services across a network firewall. SOCKS operates at the session layer, providing application users with transparent access to network services on the other side of the firewall. It is application-protocol independent, allowing it to support a wide range of services, including those utilizing encryption, while maintaining minimum processing overhead by simply relaying data after initial access control checks. The protocol defines two primary operations: CONNECT for establishing outbound connections to an application server, and BIND for preparing for and accepting inbound connections initiated by an application server.
 
 
