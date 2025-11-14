@@ -78,17 +78,23 @@ Table of Contents
    8.  References
      8.1.  Normative References
      8.2.  Informative References
-   Appendix A.  Security Analysis
-     A.1.  Authentication and Authorization Deficiencies
-     A.2.  Data Integrity and Transport Limitations
-     A.3.  Vulnerabilities Associated with the BIND Operation
-     A.4.  Denial of Service (DoS) Vector
-     A.5.  Recommended Mitigation and Deployment Practices
-   Appendix B.  Existing Values
-     B.1.  SOCKS Protocol Version Number (VN)
-     B.2.  SOCKS Command Code (CD)
-     B.3.  SOCKS Reply Code (CD)
-     B.4.  Port Number
+   Appendix A.  Common Operational Extensions
+     A.1.  Domain Name Support: SOCKS Protocol Version 4A (SOCKSv4a)
+       A.1.1.  SOCKSv4a Request Format
+       A.1.2.  SOCKSv4a Server Processing
+     A.2.  Use of DSTIP/DSTPORT in BIND Requests for Access Control
+     A.3.  Explanation of Timeout Mechanism
+   Appendix B.  Security Analysis
+     B.1.  Authentication and Authorization Deficiencies
+     B.2.  Data Integrity and Transport Limitations
+     B.3.  Vulnerabilities Associated with the BIND Operation
+     B.4.  Denial of Service (DoS) Vector
+     B.5.  Recommended Mitigation and Deployment Practices
+   Appendix C.  Existing Values
+     C.1.  SOCKS Protocol Version Number (VN)
+     C.2.  SOCKS Command Code (CD)
+     C.3.  SOCKS Reply Code (CD)
+     C.4.  Port Number
    Original Auther
    Author's Address
 
@@ -363,13 +369,13 @@ Table of Contents
 
 6.  Security Considerations
 
-   See Appendix A.
+   See Appendix B.
 
 7.  IANA Considerations
 
    No IANA actions required.
 
-   See Appendix B for the existing values used within the protocol.
+   See Appendix C for the existing values used within the protocol.
 
 8.  References
 
@@ -420,7 +426,123 @@ Table of Contents
               STD 7, RFC 9293, DOI 10.17487/RFC9293, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9293>.
 
-Appendix A.  Security Analysis
+Appendix A.  Common Operational Extensions
+
+   The content of this appendix is Informative, not Normative.  It
+   describes extensions and interpretations of the SOCKSv4 protocol that
+   have been widely adopted in practical deployments and client
+   implementations to enhance functionality and compatibility.
+
+A.1.  Domain Name Support: SOCKS Protocol Version 4A (SOCKSv4a)
+
+   The SOCKSv4 protocol originally required the client to resolve the
+   target domain name before sending the request.  As this is
+   impractical in many environments, the SOCKSv4a extension was widely
+   adopted to allow the SOCKS server to perform domain name resolution.
+
+   Clients using this extension must follow these rules:
+
+A.1.1.  SOCKSv4a Request Format
+
+   When a client wishes to connect using a domain name instead of an IP
+   address, the request format follows the CONNECT/BIND format, but with
+   modifications to DSTIP and the end of the request:
+
+   +=========+=================+==============+=======================+
+   | Field   | Description     | Size (bytes) | SOCKSv4a Usage        |
+   +=========+=================+==============+=======================+
+   | VN      | Version Number  | 1            | Unchanged.            |
+   |         | (4)             |              |                       |
+   +---------+-----------------+--------------+-----------------------+
+   | CD      | Command Code (1 | 1            | Unchanged.            |
+   |         | or 2)           |              |                       |
+   +---------+-----------------+--------------+-----------------------+
+   | DSTPORT | Destination     | 2            | Unchanged.            |
+   |         | Port            |              |                       |
+   +---------+-----------------+--------------+-----------------------+
+   | DSTIP   | Destination IP  | 4            | MUST be set to        |
+   |         | Address         |              | 0.0.0.1 (0x00000001). |
+   +---------+-----------------+--------------+-----------------------+
+   | USERID  | User ID         | variable     | Unchanged.            |
+   +---------+-----------------+--------------+-----------------------+
+   | NULL    | Null Terminator | 1            | Terminates USERID.    |
+   |         | (0x00)          |              |                       |
+   +---------+-----------------+--------------+-----------------------+
+   | DOMAIN  | Target Domain   | variable     | New field: Null-      |
+   |         | Name            |              | terminated string.    |
+   +---------+-----------------+--------------+-----------------------+
+   | NULL    | Final Null      | 1            | New field: Terminates |
+   |         | Terminator      |              | DOMAIN.               |
+   +---------+-----------------+--------------+-----------------------+
+
+                     Table 5: SOCKSv4a Request Format
+
+   A SOCKSv4a client, when sending a request, must append the target
+   domain name string after the NULL terminator of USERID, and terminate
+   the entire request with a second NULL byte.
+
+A.1.2.  SOCKSv4a Server Processing
+
+   When a SOCKS server receives a request where the DSTIP field is
+   0.0.0.1, it MUST perform the following actions:
+
+   1.  Treat 0.0.0.1 as a special signal and MUST NOT attempt to connect
+       to this IP address.
+
+   2.  Start reading data after the USERID's NULL terminator,
+       interpreting it as the target domain name string (DOMAIN), until
+       the next NULL terminator is encountered.
+
+   3.  The server MUST attempt to resolve this domain name.
+
+   4.  If resolution is successful, the server attempts to connect to
+       the obtained IP address.  If the connection succeeds, it replies
+       90.  If the connection fails, it replies 91.
+
+   5.  If resolution fails, the server MUST reply 91 and close the
+       connection.
+
+A.2.  Use of DSTIP/DSTPORT in BIND Requests for Access Control
+
+   Although DSTIP and DSTPORT in the BIND request (Section 4.1) are
+   intended to identify the application server, many SOCKS server and
+   firewall implementations use them as an Access Control List (ACL) for
+   the inbound connection.
+
+   *  DSTIP as Source Address Restriction: The server strictly requires
+      the IP address of the inbound connection to MUST match the DSTIP
+      specified in the BIND request.
+
+   *  DSTPORT as Source Port Restriction (less common): Some
+      implementations may attempt to verify that the source port of the
+      inbound connection matches the DSTPORT in the BIND request.  Since
+      the source port of an application server is usually randomly
+      allocated by the operating system, this usage is generally
+      considered unreliable or misleading and is ignored in most
+      implementations.
+
+   When initiating a BIND request, a client SHOULD ensure that DSTIP is
+   the address of the application server it expects to receive the
+   connection from, to improve compatibility.
+
+A.3.  Explanation of Timeout Mechanism
+
+   As mandated by Section 5, the SOCKS server MUST employ time limits.
+   In common implementations, timeouts usually trigger under the
+   following circumstances:
+
+   *  CONNECT Timeout: The server is unable to establish a connection
+      with DSTIP:DSTPORT within the specified time.
+
+   *  Timeout after the first BIND reply: After the SOCKS server
+      successfully binds the listening socket (sent the first 90 reply),
+      but fails to receive an inbound connection from the application
+      server within the specified time.
+
+   When a timeout occurs, the server MUST immediately close the
+   connection with the client and abort all pending network operations.
+
+Appendix B.  Security Analysis
 
    The SOCKS Version 4 (SOCKSv4) protocol, designed exclusively for TCP
    proxy traversal across network firewalls, is fundamentally weak from
@@ -428,7 +550,7 @@ Appendix A.  Security Analysis
    lacks intrinsic security mechanisms.  Any deployment of SOCKSv4 must
    be critically assessed against its inherent deficiencies.
 
-A.1.  Authentication and Authorization Deficiencies
+B.1.  Authentication and Authorization Deficiencies
 
    SOCKSv4's client identification relies on the USERID field, often
    intended for use with the IDENT protocol (specified in RFC 1413).
@@ -445,7 +567,7 @@ A.1.  Authentication and Authorization Deficiencies
    risks granting unauthorized network access across the protective
    boundary of the firewall.
 
-A.2.  Data Integrity and Transport Limitations
+B.2.  Data Integrity and Transport Limitations
 
    SOCKSv4 does not incorporate any encryption capabilities for the
    application data stream.  As a session layer relay, it forwards all
@@ -458,7 +580,7 @@ A.2.  Data Integrity and Transport Limitations
    Datagram Protocol (UDP) traffic or other IP-layer protocols, limiting
    its utility and scope of protection.
 
-A.3.  Vulnerabilities Associated with the BIND Operation
+B.3.  Vulnerabilities Associated with the BIND Operation
 
    The BIND command, used for establishing a socket for an anticipated
    inbound connection (a callback) from an application server,
@@ -474,7 +596,7 @@ A.3.  Vulnerabilities Associated with the BIND Operation
    mechanism unreliable, ineffectual, or operationally complex to
    maintain.
 
-A.4.  Denial of Service (DoS) Vector
+B.4.  Denial of Service (DoS) Vector
 
    Every successful SOCKS connection consumes finite server resources,
    including active sockets, allocated memory, and network bandwidth.  A
@@ -487,7 +609,7 @@ A.4.  Denial of Service (DoS) Vector
    insufficient in scope and rigor to fully mitigate the risks
    associated with sophisticated DoS attacks.
 
-A.5.  Recommended Mitigation and Deployment Practices
+B.5.  Recommended Mitigation and Deployment Practices
 
    Given SOCKSv4's security deficiencies, its deployment should be
    strictly limited to environments designated as highly trusted and
@@ -500,17 +622,17 @@ A.5.  Recommended Mitigation and Deployment Practices
    5 (RFC 1928), which incorporates native, robust authentication
    methods.
 
-Appendix B.  Existing Values
+Appendix C.  Existing Values
 
    The existing values used within the protocol are summarized below:
 
-B.1.  SOCKS Protocol Version Number (VN)
+C.1.  SOCKS Protocol Version Number (VN)
 
    *  The SOCKS protocol version number VN in requests is 4 (0x04).
 
    *  The SOCKS protocol version number VN in replies is 0 (0x00).
 
-B.2.  SOCKS Command Code (CD)
+C.2.  SOCKS Command Code (CD)
 
    The SOCKS command code CD in requests defines two values:
 
@@ -518,7 +640,7 @@ B.2.  SOCKS Command Code (CD)
 
    *  2 (0x02): BIND
 
-B.3.  SOCKS Reply Code (CD)
+C.3.  SOCKS Reply Code (CD)
 
    The SOCKS reply code CD in replies defines four values:
 
@@ -532,7 +654,7 @@ B.3.  SOCKS Reply Code (CD)
    *  93 (0x5D): Request rejected because the client program and identd
       report different user-ids
 
-B.4.  Port Number
+C.4.  Port Number
 
    The SOCKS protocol is conventionally known to use TCP port 1080 for
    its service.  This port number has already been registered in the
