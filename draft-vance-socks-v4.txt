@@ -4,8 +4,8 @@
 
 Network Working Group                                        D. J. Vance
 Internet-Draft                                               Independent
-Intended status: Historic                               14 November 2025
-Expires: 18 May 2026
+Intended status: Historic                               15 November 2025
+Expires: 19 May 2026
 
 
                  SOCKS Protocol Version 4 Specification
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 May 2026.
+   This Internet-Draft will expire on 19 May 2026.
 
 Copyright Notice
 
@@ -79,7 +79,7 @@ Table of Contents
      8.1.  Normative References
      8.2.  Informative References
    Appendix A.  Common Operational Extensions
-     A.1.  Domain Name Support: SOCKS Protocol Version 4A (SOCKSv4a)
+     A.1.  SOCKS Protocol Version 4A
        A.1.1.  SOCKSv4a Request Format
        A.1.2.  SOCKSv4a Server Processing
      A.2.  Use of DSTIP/DSTPORT in BIND Requests for Access Control
@@ -212,6 +212,12 @@ Table of Contents
 
    A reply packet MUST be sent to the client upon the establishment of
    the connection, rejection of the request, or operational failure.
+
+   When the DSTIP field is 0.0.0.1, which the protocol SOCKS4a (See
+   Appendix A.1) uses for a client wishes to connect using a domain name
+   instead of an IP address, SOCKS4 implementations MUST treat the the
+   DSTIP field 0.0.0.1 as a normal DSTIP value and treat the following
+   messages as the specification.
 
 3.3.  CONNECT Reply Packet Format
 
@@ -433,7 +439,7 @@ Appendix A.  Common Operational Extensions
    have been widely adopted in practical deployments and client
    implementations to enhance functionality and compatibility.
 
-A.1.  Domain Name Support: SOCKS Protocol Version 4A (SOCKSv4a)
+A.1.  SOCKS Protocol Version 4A
 
    The SOCKSv4 protocol originally required the client to resolve the
    target domain name before sending the request.  As this is
@@ -443,6 +449,11 @@ A.1.  Domain Name Support: SOCKS Protocol Version 4A (SOCKSv4a)
    Clients using this extension must follow these rules:
 
 A.1.1.  SOCKSv4a Request Format
+
+   SOCKS4a, though share a same version number with SOCKS4, is a
+   complete independent protocol.  The specification will be published
+   elsewhere.  The content below is just a simple summary of SOCKS4a,
+   and it should never be treated as a Normative standard.
 
    When a client wishes to connect using a domain name instead of an IP
    address, the request format follows the CONNECT/BIND format, but with

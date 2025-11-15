@@ -1046,7 +1046,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Vance</td>
-<td class="center">Expires 18 May 2026</td>
+<td class="center">Expires 19 May 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1059,12 +1059,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-vance-socks-v4-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-14" class="published">14 November 2025</time>
+<time datetime="2025-11-15" class="published">15 November 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Historic</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-05-18">18 May 2026</time></dd>
+<dd class="expires"><time datetime="2026-05-19">19 May 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1106,7 +1106,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 18 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 19 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1190,7 +1190,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-common-operational-extensio" class="internal xref">Common Operational Extensions</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
-                <p id="section-toc.1-1.9.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-domain-name-support-socks-p" class="internal xref">Domain Name Support: SOCKS Protocol Version 4A (SOCKSv4a)</a></p>
+                <p id="section-toc.1-1.9.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-socks-protocol-version-4a" class="internal xref">SOCKS Protocol Version 4A</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1.2.1">
                     <p id="section-toc.1-1.9.2.1.2.1.1"><a href="#appendix-A.1.1" class="auto internal xref">A.1.1</a>.  <a href="#name-socksv4a-request-format" class="internal xref">SOCKSv4a Request Format</a></p>
@@ -1394,6 +1394,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <p id="section-3.2-1">The SOCKS server <span class="bcp14">MUST</span> determine whether to grant the request based on criteria such as the source IP address, DSTIP, DSTPORT, USERID, and information obtained via IDENT (cf. RFC 1413).<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2-2">If the request is granted, the SOCKS server <span class="bcp14">MUST</span> attempt to establish a TCP connection to the specified DSTPORT on the DSTIP.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <p id="section-3.2-3">A reply packet <span class="bcp14">MUST</span> be sent to the client upon the establishment of the connection, rejection of the request, or operational failure.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-4">When the DSTIP field is 0.0.0.1, which the protocol SOCKS4a (See <a href="#socks-protocol-version-4a" class="auto internal xref">Appendix A.1</a>) uses for a client wishes to connect using a domain name instead of an IP address, SOCKS4 implementations <span class="bcp14">MUST</span> treat the the DSTIP field 0.0.0.1 as a normal DSTIP value and treat the following messages as the specification.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="connect-reply-packet-format">
@@ -1698,10 +1699,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-common-operational-extensio" class="section-name selfRef">Common Operational Extensions</a>
       </h2>
 <p id="appendix-A-1">The content of this appendix is Informative, not Normative. It describes extensions and interpretations of the SOCKSv4 protocol that have been widely adopted in practical deployments and client implementations to enhance functionality and compatibility.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
-<div id="domain-name-support-socks-protocol-version-4a-socksv4a">
+<div id="socks-protocol-version-4a">
 <section id="appendix-A.1">
-        <h3 id="name-domain-name-support-socks-p">
-<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-domain-name-support-socks-p" class="section-name selfRef">Domain Name Support: SOCKS Protocol Version 4A (SOCKSv4a)</a>
+        <h3 id="name-socks-protocol-version-4a">
+<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-socks-protocol-version-4a" class="section-name selfRef">SOCKS Protocol Version 4A</a>
         </h3>
 <p id="appendix-A.1-1">The SOCKSv4 protocol originally required the client to resolve the target domain name before sending the request. As this is impractical in many environments, the SOCKSv4a extension was widely adopted to allow the SOCKS server to perform domain name resolution.<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
 <p id="appendix-A.1-2">Clients using this extension must follow these rules:<a href="#appendix-A.1-2" class="pilcrow">¶</a></p>
@@ -1710,7 +1711,8 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
           <h4 id="name-socksv4a-request-format">
 <a href="#appendix-A.1.1" class="section-number selfRef">A.1.1. </a><a href="#name-socksv4a-request-format" class="section-name selfRef">SOCKSv4a Request Format</a>
           </h4>
-<p id="appendix-A.1.1-1">When a client wishes to connect using a domain name instead of an IP address, the request format follows the CONNECT/BIND format, but with modifications to DSTIP and the end of the request:<a href="#appendix-A.1.1-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.1.1-1">SOCKS4a, though share a same version number with SOCKS4, is a complete independent protocol. The specification will be published elsewhere. The content below is just a simple summary of SOCKS4a, and it should never be treated as a Normative standard.<a href="#appendix-A.1.1-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.1.1-2">When a client wishes to connect using a domain name instead of an IP address, the request format follows the CONNECT/BIND format, but with modifications to DSTIP and the end of the request:<a href="#appendix-A.1.1-2" class="pilcrow">¶</a></p>
 <span id="name-socksv4a-request-format-2"></span><table class="center" id="table-5">
             <caption>
 <a href="#table-5" class="selfRef">Table 5</a>:
@@ -1776,7 +1778,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
               </tr>
             </tbody>
           </table>
-<p id="appendix-A.1.1-3">A SOCKSv4a client, when sending a request, must append the target domain name string after the NULL terminator of USERID, and terminate the entire request with a second NULL byte.<a href="#appendix-A.1.1-3" class="pilcrow">¶</a></p>
+<p id="appendix-A.1.1-4">A SOCKSv4a client, when sending a request, must append the target domain name string after the NULL terminator of USERID, and terminate the entire request with a second NULL byte.<a href="#appendix-A.1.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="socksv4a-server-processing">
