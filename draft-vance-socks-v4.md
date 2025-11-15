@@ -98,6 +98,8 @@ If the request is granted, the SOCKS server MUST attempt to establish a TCP conn
 
 A reply packet MUST be sent to the client upon the establishment of the connection, rejection of the request, or operational failure.
 
+When the DSTIP field is 0.0.0.1, which the protocol SOCKS4a (See {{socks-protocol-version-4a}}) uses for a client wishes to connect using a domain name instead of an IP address, SOCKS4 implementations MUST treat the the DSTIP field 0.0.0.1 as a normal DSTIP value and treat the following messages as the specification.
+
 ## CONNECT Reply Packet Format
 
 The SOCKS server MUST send a reply packet with the following structure:
@@ -197,13 +199,15 @@ See {{existing-values}} for the existing values used within the protocol.
 
 The content of this appendix is Informative, not Normative. It describes extensions and interpretations of the SOCKSv4 protocol that have been widely adopted in practical deployments and client implementations to enhance functionality and compatibility.
 
-## Domain Name Support: SOCKS Protocol Version 4A (SOCKSv4a)
+## SOCKS Protocol Version 4A
 
 The SOCKSv4 protocol originally required the client to resolve the target domain name before sending the request. As this is impractical in many environments, the SOCKSv4a extension was widely adopted to allow the SOCKS server to perform domain name resolution.
 
 Clients using this extension must follow these rules:
 
 ### SOCKSv4a Request Format
+
+SOCKS4a, though share a same version number with SOCKS4, is a complete independent protocol. The specification will be published elsewhere. The content below is just a simple summary of SOCKS4a, and it should never be treated as a Normative standard.
 
 When a client wishes to connect using a domain name instead of an IP address, the request format follows the CONNECT/BIND format, but with modifications to DSTIP and the end of the request:
 
