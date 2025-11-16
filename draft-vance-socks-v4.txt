@@ -4,8 +4,8 @@
 
 Network Working Group                                        D. J. Vance
 Internet-Draft                                               Independent
-Intended status: Historic                               15 November 2025
-Expires: 19 May 2026
+Intended status: Historic                               16 November 2025
+Expires: 20 May 2026
 
 
                  SOCKS Protocol Version 4 Specification
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 May 2026.
+   This Internet-Draft will expire on 20 May 2026.
 
 Copyright Notice
 
@@ -328,19 +328,18 @@ Table of Contents
 
    If the request is granted (CD = 90):
 
-   1. The SOCKS server MUST obtain a local socket and begin listening
-   for an incoming connection. 2. The SOCKS server MUST send a first
-   reply packet where the DSTPORT and DSTIP fields are meaningful:     -
+   * The SOCKS server MUST obtain a local socket and begin listening for
+   an incoming connection. * The SOCKS server MUST send a first reply
+   packet where the DSTPORT and DSTIP fields are meaningful:     -
    DSTPORT MUST contain the port number of the newly listening socket
    (network byte order).     - DSTIP MUST contain the IP address of the
-   SOCKS server's listening interface (network byte order). 3.  If the
+   SOCKS server's listening interface (network byte order). * If the
    SOCKS server returns a DSTIP of 0 (the value of constant
    'INADDR_ANY'), the client MUST replace this value with the IP address
-   of the SOCKS server to which the client is currently connected. 4. 
-   The client MUST use this IP address and port to inform the
-   application server via the primary connection, enabling the
-   application server to initiate the anticipated inbound connection to
-   the SOCKS server.
+   of the SOCKS server to which the client is currently connected. * The
+   client MUST use this IP address and port to inform the application
+   server via the primary connection, enabling the application server to
+   initiate the anticipated inbound connection to the SOCKS server.
 
 4.3.  BIND Second Reply (Connection Established)
 
