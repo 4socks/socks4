@@ -161,10 +161,10 @@ If the request is rejected (CD != 90), the SOCKS server MUST close its connectio
 
 If the request is granted (CD = 90):
 
-* The SOCKS server MUST obtain a local socket and begin listening for an incoming connection.
-* The SOCKS server MUST send a first reply packet in which the DSTPORT and DSTIP fields are meaningful: DSTPORT MUST contain, in network byte order, the port number of the newly listening socket, and DSTIP MUST contain, in network byte order, the IP address of the SOCKS server's listening interface.
-* If the SOCKS server returns a DSTIP of 0 (the value of constant 'INADDR\_ANY'), the client MUST replace this value with the IP address of the SOCKS server to which the client is currently connected.
-* The client MUST use this IP address and port to inform the application server via the primary connection, enabling the application server to initiate the anticipated inbound connection to the SOCKS server.
+- The SOCKS server MUST obtain a local socket and begin listening for an incoming connection.
+- The SOCKS server MUST send a first reply packet in which the DSTPORT and DSTIP fields are meaningful: DSTPORT MUST contain, in network byte order, the port number of the newly listening socket, and DSTIP MUST contain, in network byte order, the IP address of the SOCKS server's listening interface.
+- If the SOCKS server returns a DSTIP of 0 (the value of constant 'INADDR\_ANY'), the client MUST replace this value with the IP address of the SOCKS server to which the client is currently connected.
+- The client MUST use this IP address and port to inform the application server via the primary connection, enabling the application server to initiate the anticipated inbound connection to the SOCKS server.
 
 ## BIND Second Reply (Connection Established)
 
