@@ -1575,10 +1575,20 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <p id="section-4.2-1">The SOCKS server <span class="bcp14">MUST</span> first decide whether to grant the BIND request. The reply format <span class="bcp14">MUST</span> be the same as the CONNECT reply format.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.2-2">If the request is rejected (CD != 90), the SOCKS server <span class="bcp14">MUST</span> close its connection to the client immediately.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <p id="section-4.2-3">If the request is granted (CD = 90):<a href="#section-4.2-3" class="pilcrow">¶</a></p>
-<p id="section-4.2-4">* The SOCKS server <span class="bcp14">MUST</span> obtain a local socket and begin listening for an incoming connection.
-* The SOCKS server <span class="bcp14">MUST</span> send a first reply packet in which the DSTPORT and DSTIP fields are meaningful: DSTPORT <span class="bcp14">MUST</span> contain, in network byte order, the port number of the newly listening socket, and DSTIP <span class="bcp14">MUST</span> contain, in network byte order, the IP address of the SOCKS server's listening interface.
-* If the SOCKS server returns a DSTIP of 0 (the value of constant 'INADDR_ANY'), the client <span class="bcp14">MUST</span> replace this value with the IP address of the SOCKS server to which the client is currently connected.
-* The client <span class="bcp14">MUST</span> use this IP address and port to inform the application server via the primary connection, enabling the application server to initiate the anticipated inbound connection to the SOCKS server.<a href="#section-4.2-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2-4.1">
+            <p id="section-4.2-4.1.1">The SOCKS server <span class="bcp14">MUST</span> obtain a local socket and begin listening for an incoming connection.<a href="#section-4.2-4.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-4.2">
+            <p id="section-4.2-4.2.1">The SOCKS server <span class="bcp14">MUST</span> send a first reply packet in which the DSTPORT and DSTIP fields are meaningful: DSTPORT <span class="bcp14">MUST</span> contain, in network byte order, the port number of the newly listening socket, and DSTIP <span class="bcp14">MUST</span> contain, in network byte order, the IP address of the SOCKS server's listening interface.<a href="#section-4.2-4.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-4.3">
+            <p id="section-4.2-4.3.1">If the SOCKS server returns a DSTIP of 0 (the value of constant 'INADDR_ANY'), the client <span class="bcp14">MUST</span> replace this value with the IP address of the SOCKS server to which the client is currently connected.<a href="#section-4.2-4.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-4.4">
+            <p id="section-4.2-4.4.1">The client <span class="bcp14">MUST</span> use this IP address and port to inform the application server via the primary connection, enabling the application server to initiate the anticipated inbound connection to the SOCKS server.<a href="#section-4.2-4.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
 </section>
 </div>
 <div id="bind-second-reply-connection-established">
