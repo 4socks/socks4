@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>SOCKS Protocol Version 4 Specification</title>
+<meta content="Daniel James Vance" name="author">
+<meta content="
+       This document describes SOCKS version 4, a protocol designed to facilitate TCP proxy services across a network firewall. SOCKS operates at the session layer, providing application users with transparent access to network services on the other side of the firewall. It is application-protocol independent, allowing it to support a wide range of services, including those utilizing encryption, while maintaining minimum processing overhead by simply relaying data after initial access control checks. The protocol defines two primary operations: CONNECT for establishing outbound connections to an application server, and BIND for preparing for and accepting inbound connections initiated by an application server. 
+    " name="description">
+<meta content="xml2rfc 3.31.0" name="generator">
+<meta content="draft-vance-socks-v4-latest" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.31.0
+    Python 3.12.12
+    ConfigArgParse 1.7
+    google-i18n-address 3.1.1
+    intervaltree 3.2.1
+    Jinja2 3.1.6
+    lxml 6.0.2
+    platformdirs 4.5.1
+    pycountry 24.6.1
+    PyYAML 6.0.3
+    requests 2.32.5
+    wcwidth 0.3.0
+-->
+<link href="draft-vance-socks-v4.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Lora SemiBold'), local('Lora-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light dark;
+  --background-color: #fff;
+  --text-color: #222;
+  --title-color: #191919;
+  --link-color: #2a6496;
+  --highlight-color: #f9f9f9;
+  --line-color: #eee;
+  --pilcrow-weak: #ddd;
+  --pilcrow-strong: #bbb;
+  --small-font-size: 14.5px;
+  --font-mono: 'Oxygen Mono', monospace;
+  --font-title: "Sofia Sans Semi Condensed", sans-serif;
+  scrollbar-color: #bbb #eee;
+}
+body {
+  max-width: 600px;
+  margin: 75px auto;
+  padding: 0 5px;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font: 16px/22px "Lora", serif;
+  scroll-behavior: smooth;
+}
+
+.ears {
+  display: none;
+}
+
+/* headings */
+section {
+  clear: both;
+}
+.section-number {
+  padding-right: 0.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  font-weight: 680;
+  margin: 0.8em 0 0.3em;
+  font-size-adjust: 0.5;
+  color: var(--title-color);
+}
+h1#title {
+  font-size: 32px;
+  line-height: 40px;
+  clear: both;
+}
+h1#title, h1#rfcnum {
+  margin: 1.5em 0 0.2em;
+}
+h1#rfcnum + h1#title {
+  margin: 0.2em 0;
+}
+
+h1, h2, h3 {
+  font-size: 22px;
+  line-height: 27px;
+}
+h4, h5, h6 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* general structure */
+.author {
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+#abstract+p {
+  font-size: 18px;
+  line-height: 24px;
+}
+#abstract+p code, #abstract+p samp, #abstract+p tt {
+  font-size: 16px;
+  line-height: 0;
+}
+
+p {
+  padding: 0;
+  margin: 0.5em 0;
+  text-align: left;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+/* font-family isn't space-separated, but =~ will have to do */
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 0.5em 2em;
+  & :is(ol, ul) {
+    margin-left: 1em;
+  }
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+  & li {
+    margin-top: 0.5em;
+  }
+}
+:is(ul, ol).compact, .ulCompact, .olCompact {
+  margin: 0 0 0 2em;
+  & li {
+    margin: 0;
+    & :first-child { margin-top: 0; }
+    & :last-child { margin-bottom: 0; }
+  }
+}
+
+/* definition lists */
+dl {
+  clear: left;
+  --indent: 3ch;
+  /* --indent: attr(indent ch); not supported in any browser, but we can dream */
+  &.olPercent {
+    --indent: 5ch;
+    & > dt {
+      min-width: calc(var(--indent) - 2ch);
+    }
+  }
+  &.olPercent > dt {
+    float: none;
+  }
+
+  dl > dd > & {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+  }
+}
+dl:not(.dlNewline) > dt {
+  float: left;
+  margin-right: 2ch;
+  min-width: 8ch;
+}
+dl > dd {
+  margin-bottom: .8em;
+  margin-left: var(--indent) !important; /* stupid element overrides */
+  min-height: 2ex;
+}
+:is(dl.compact, .dlCompact) > dd {
+  margin-bottom: 0;
+  & > :is(:first-child, .break:first-child + *) {
+    margin-top: 0;
+  }
+  & > :is(:last-child) {
+    margin-bottom: 0;
+  }
+}
+:is(dd, span).break {
+  display: none;
+}
+
+/* links */
+a, a[href].selfRef:hover {
+  text-decoration: none;
+}
+a[href] {
+  color: var(--link-color);
+}
+a[href].selfRef, .iref + a[href].internal {
+  color: var(--text-color);
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+a[href].selfRef:hover {
+  background-color: var(--highlight-color);
+}
+a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
+  white-space: nowrap;
+}
+
+/* Figures */
+tt, code, pre {
+  background-color: var(--highlight-color);
+  font: 14px/22px var(--font-mono);
+}
+tt, code {
+  /* changing the font for inline elements leads to different ascender
+     and descender heights; as we want to retain baseline alignment,
+     remove leading to avoid altering the final height of lines
+     note: this fails if these blocks take an entire line,
+     a different solution would be great */
+  line-height: 0;
+}
+:is(h1, h2, h3, h4, h5, h6) :is(tt, code) {
+  font-size: 84%;
+}
+pre {
+  border: 1px solid var(--line-color);
+  font-size: 13.5px;
+  line-height: 16px;
+  letter-spacing: -0.2px;
+  margin: 5px;
+  padding: 5px;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0.5em 0;
+  padding: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption, caption {
+  font-style: italic;
+  margin: 0.5em 1.5em;
+  text-align: left;
+  caption-side: bottom;
+}
+@media screen {
+  /* Auto-collapse boilerplate. */
+  :is(#status-of-memo, #copyright) p {
+    margin: -2px 0;
+    max-height: 0;
+    transition: max-height 2s ease, margin 0.5s ease 0.5s;
+    overflow: hidden;
+  }
+  :is(#status-of-memo, #copyright):hover p,
+  :is(#status-of-memo, #copyright) h2:target ~ p {
+    margin: 0.5em 0;
+    max-height: 500px;
+    overflow: auto;
+  }
+  pre, svg {
+    display: inline-block;
+    /* In the horizontal direction, sometimes people make over-sized figures.
+       Scrollbars for those is therefore necessary: auto adds them as necessary..
+       In the vertical direction, the line-height can combine with the font
+       asender/descender height to produce scrollbars: hidden avoids that. */
+    overflow: auto hidden;
+  }
+  pre {
+    max-width: 100%;
+    width: calc(100% - 22px - 1em);
+  }
+  svg {
+    max-width: calc(100% - 22px - 1em);
+  }
+  figure pre {
+    display: block;
+    width: calc(100% - 25px);
+  }
+  :is(pre, svg) + .pilcrow {
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-bottom: 8px;
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 0 2em;
+  font-style: italic;
+}
+blockquote {
+  margin: 1em 0;
+  border-left: 2px var(--pilcrow-strong) solid;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: auto;
+  max-width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+}
+table.right {
+  margin-left: auto;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+table.left {
+  margin-right: auto;
+}
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
+thead, tbody {
+  border: 1px solid var(--line-color);
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+th {
+  background-color: var(--line-color);
+}
+:is(tr:nth-child(2n), thead+tbody > tr:nth-child(2n+1)) > td {
+  background-color: var(--background-color);
+}
+:is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
+  background-color: var(--highlight-color);
+}
+table caption {
+  margin: 0;
+  padding: 3px 0 3px 1em;
+}
+table p {
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  margin-left: 3px;
+  opacity: 0.2;
+  user-select: none;
+  &[href] {
+    color: var(--pilcrow-weak);
+    &:hover { text-decoration: none; }
+  }
+}
+@media not print {
+  :hover > a.pilcrow, a.pilcrow:focus {
+    opacity: 1;
+  }
+  a.pilcrow[href]:hover {
+    color: var(--pilcrow-strong);
+    background-color: transparent;
+  }
+}
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid var(--line-color);
+}
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: 600;
+  font-size: var(--small-font-size);
+}
+.role {
+  font-variant: all-small-caps;
+}
+sub, sup {
+  line-height: 1;
+  font-size: 80%;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: var(--small-font-size);
+  line-height: 18px;
+  --identifier-width: 15ch;
+  & dt {
+    width: var(--identifier-width);
+    min-width: var(--identifier-width);
+    clear: left;
+    float: left;
+    text-align: right;
+    margin-right: 1ch;
+  }
+  & dd {
+    margin: 0;
+    margin-left: calc(1em + var(--identifier-width)) !important;
+    min-width: 5em;
+  }
+  & .authors {
+    & .author {
+      display: inline-block;
+      margin-right: 1.5em;
+    }
+    & .org {
+      font-style: italic;
+    }
+  }
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+
+  & nav {
+    & ul {
+      margin: 0 0.5em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    & li {
+      line-height: 1.3em;
+      margin: 2px 0;
+      padding-left: 1.2em;
+      text-indent: -1.2em;
+    }
+  }
+  & a.xref {
+    white-space: normal;
+  }
+}
+
+.references {
+  & > dt {
+    text-align: right;
+    font-weight: bold;
+    min-width: 10ch;
+    margin-right: 1.5ch;
+    &:target::before {
+      content: "⇒";
+      margin: 0 10px 0 -25px;
+    }
+  }
+  & > dd {
+    margin-left: 12ch !important;
+    overflow: visible;
+    & .refInstance {
+      margin-bottom: 0.8em;
+    }
+    & .ascii {
+      margin-bottom: 0.25em;
+    }
+  }
+}
+
+#rfc\.index\.index + ul {
+  margin-left: 0;
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  max-width: 20em;
+  margin: 1em auto 1em 0;
+
+  & .nameRole {
+    font-weight: 700;
+    margin-left: 0;
+  }
+  & .label {
+    margin: 0.5em 0;
+  }
+  & .type {
+    display: none;
+  }
+  & .alternative-contact {
+    margin: 0.5em 0 0.25em 0;
+  }
+  & .non-ascii {
+    margin: 0 0 0 2em;
+  }
+  & div.left {
+    text-align: left;
+  }
+  & div.right {
+    text-align: right;
+  }
+}
+
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+@media (min-width: 500px) {
+  #authors-addresses > section {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  #authors-addresses > section > h2 {
+    column-span: all;
+  }
+  /* hack for break-inside: avoid-column */
+  #authors-addresses address {
+    display: inline-block;
+    break-inside: avoid-column;
+  }
+}
+
+/* Comments */
+.rfcEditorRemove p:first-of-type {
+  font-style: italic;
+}
+.cref {
+  background-color: rgba(249, 232, 105, 0.3);
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+
+@media screen {
+  #toc nav {
+    font-family: var(--font-title);
+    font-weight: 360;
+    & > ul { margin-bottom: 2em; }
+    & ul {
+      margin: 0 0 0 4px;
+      & :is(p, li) {
+        margin: 2px 0;
+      }
+    }
+  }
+  #toc a.toplink {
+    float: right;
+  }
+}
+@media not screen {
+  #toc a.toplink {
+    display: none;
+  }
+}
+
+
+/* TOC layout for smaller screens */
+@media screen and (max-width: 929px) {
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 1px 0 0 0;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    opacity: 0.6;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 2px 0 2px 6px;
+    padding-right: 1em;
+    font-size: 18px;
+    line-height: 24px;
+    min-width: 190px;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+    &::before { /* css hamburger */
+      float: right;
+      position: relative;
+      width: 1em;
+      height: 1px;
+      left: -164px;
+      margin: 8px 0 0 0;
+      background: white none repeat scroll 0 0;
+      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+      content: "";
+    }
+  }
+  #toc nav {
+    display: none;
+    background-color: var(--background-color);
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+  #toc.active {
+    opacity: 1;
+    & nav { display: block; }
+  }
+  /* Make the collapsed ToC header render white on gray also when it's a link */
+  #toc h2 a,
+  #toc h2 a:is(:link, :focus, :hover),
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+  #toc a.toplink {
+    margin: 2px 0.5em 0;
+  }
+}
+
+/* TOC layout for wide screens */
+@media screen and (min-width: 930px) {
+  body {
+    padding-right: 360px;
+    padding-right: calc(min(180px + 20%, 500px));
+  }
+  #toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 480px);
+    width: 312px;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 2em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+  #toc a.toplink {
+    margin: 8px 0.5em 0;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre, .vcard {
+    page-break-inside: avoid;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  :is(h2, h3, h4, h5, h6)+*, dd {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+}
+
+/* Dark mode. */
+@media (prefers-color-scheme: dark) {
+:root {
+  --background-color: #121212;
+  --text-color: #f0f0f0;
+  --title-color: #fff;
+  --link-color: #4da4f0;
+  --highlight-color: #282828;
+  --line-color: #444;
+  --pilcrow-weak: #444;
+  --pilcrow-strong: #666;
+  scrollbar-color: #777 #333;
+}
+}
+
+/* SVG Trick: a prefix match works because only black and white are allowed */
+svg :is([stroke="black"], [stroke^="#000"]) {
+  stroke: var(--text-color);
+}
+svg :is([stroke="white"], [stroke^="#fff"]) {
+  stroke: var(--background-color);
+}
+svg :is([fill="black"], [fill^="#000"], :not([fill])) {
+  fill: var(--text-color);
+}
+svg :is([fill="white"], [fill^="#fff"]) {
+  fill: var(--background-color);
+}
+</style>
+
+</head>
+<body class="xml2rfc">
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">SOCKS4 SPEC</td>
+<td class="right">February 2026</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Vance</td>
+<td class="center">Expires 5 August 2026</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">Network Working Group</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-vance-socks-v4-latest</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2026-02-01" class="published">1 February 2026</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Historic</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2026-08-05">5 August 2026</time></dd>
+<dt class="label-authors">Author:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">D. J. Vance</div>
+<div class="org">Independent</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">SOCKS Protocol Version 4 Specification</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">This document describes SOCKS version 4, a protocol designed to facilitate TCP proxy services across a network firewall. SOCKS operates at the session layer, providing application users with transparent access to network services on the other side of the firewall. It is application-protocol independent, allowing it to support a wide range of services, including those utilizing encryption, while maintaining minimum processing overhead by simply relaying data after initial access control checks. The protocol defines two primary operations: CONNECT for establishing outbound connections to an application server, and BIND for preparing for and accepting inbound connections initiated by an application server.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<section class="note rfcEditorRemove" id="section-note.1">
+      <h2 id="name-discussion-venues">
+<a href="#name-discussion-venues" class="section-name selfRef">Discussion Venues</a>
+      </h2>
+<p id="section-note.1-1">This note is to be removed before publishing as an RFC.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+<p id="section-note.1-2">Source for this draft and an issue tracker can be found at
+    <span><a href="https://github.com/4socks/socks4">https://github.com/4socks/socks4</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 5 August 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2026 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-terminology" class="internal xref">Conventions and Terminology</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-connect-operation" class="internal xref">CONNECT Operation</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-connect-request-packet-form" class="internal xref">CONNECT Request Packet Format</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-connect-processing-and-repl" class="internal xref">CONNECT Processing and Reply</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-connect-reply-packet-format" class="internal xref">CONNECT Reply Packet Format</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-bind-operation" class="internal xref">BIND Operation</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-bind-request-packet-format" class="internal xref">BIND Request Packet Format</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-bind-first-reply-socket-ass" class="internal xref">BIND First Reply (Socket Assignment)</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-bind-second-reply-connectio" class="internal xref">BIND Second Reply (Connection Established)</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-timeout-mechanism" class="internal xref">Timeout Mechanism</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-common-operational-extensio" class="internal xref">Common Operational Extensions</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
+                <p id="section-toc.1-1.9.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-socks-protocol-version-4a" class="internal xref">SOCKS Protocol Version 4A</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1.2.1">
+                    <p id="section-toc.1-1.9.2.1.2.1.1"><a href="#appendix-A.1.1" class="auto internal xref">A.1.1</a>.  <a href="#name-socksv4a-request-format" class="internal xref">SOCKSv4a Request Format</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1.2.2">
+                    <p id="section-toc.1-1.9.2.1.2.2.1"><a href="#appendix-A.1.2" class="auto internal xref">A.1.2</a>.  <a href="#name-socksv4a-server-processing" class="internal xref">SOCKSv4a Server Processing</a></p>
+</li>
+                </ul>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
+                <p id="section-toc.1-1.9.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-use-of-dstip-dstport-in-bin" class="internal xref">Use of DSTIP/DSTPORT in BIND Requests for Access Control</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.3">
+                <p id="section-toc.1-1.9.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-explanation-of-timeout-mech" class="internal xref">Explanation of Timeout Mechanism</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-security-analysis" class="internal xref">Security Analysis</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.1">
+                <p id="section-toc.1-1.10.2.1.1"><a href="#appendix-B.1" class="auto internal xref">B.1</a>.  <a href="#name-authentication-and-authoriz" class="internal xref">Authentication and Authorization Deficiencies</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.2">
+                <p id="section-toc.1-1.10.2.2.1"><a href="#appendix-B.2" class="auto internal xref">B.2</a>.  <a href="#name-data-integrity-and-transpor" class="internal xref">Data Integrity and Transport Limitations</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.3">
+                <p id="section-toc.1-1.10.2.3.1"><a href="#appendix-B.3" class="auto internal xref">B.3</a>.  <a href="#name-vulnerabilities-associated-" class="internal xref">Vulnerabilities Associated with the BIND Operation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.4">
+                <p id="section-toc.1-1.10.2.4.1"><a href="#appendix-B.4" class="auto internal xref">B.4</a>.  <a href="#name-denial-of-service-dos-vecto" class="internal xref">Denial of Service (DoS) Vector</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.5">
+                <p id="section-toc.1-1.10.2.5.1"><a href="#appendix-B.5" class="auto internal xref">B.5</a>.  <a href="#name-recommended-mitigation-and-" class="internal xref">Recommended Mitigation and Deployment Practices</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#appendix-C" class="auto internal xref">Appendix C</a>.  <a href="#name-existing-values" class="internal xref">Existing Values</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1">
+                <p id="section-toc.1-1.11.2.1.1"><a href="#appendix-C.1" class="auto internal xref">C.1</a>.  <a href="#name-socks-protocol-version-numb" class="internal xref">SOCKS Protocol Version Number (VN)</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
+                <p id="section-toc.1-1.11.2.2.1"><a href="#appendix-C.2" class="auto internal xref">C.2</a>.  <a href="#name-socks-command-code-cd" class="internal xref">SOCKS Command Code (CD)</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.3">
+                <p id="section-toc.1-1.11.2.3.1"><a href="#appendix-C.3" class="auto internal xref">C.3</a>.  <a href="#name-socks-reply-code-cd" class="internal xref">SOCKS Reply Code (CD)</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.4">
+                <p id="section-toc.1-1.11.2.4.1"><a href="#appendix-C.4" class="auto internal xref">C.4</a>.  <a href="#name-port-number" class="internal xref">Port Number</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-original-auther" class="internal xref">Original Auther</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#appendix-E" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">The SOCKS protocol, Version 4 (SOCKSv4), <span class="bcp14">SHALL</span> be used to relay TCP sessions between an application client and an an application server via a SOCKS server, often positioned at a firewall host. The protocol <span class="bcp14">MUST</span> provide transparent access across the firewall for application users.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">The protocol <span class="bcp14">MUST</span> be application-protocol independent, allowing it to be used for various services, including, but not limited to, telnet, ftp, finger, whois, gopher, and WWW (World Wide Web).<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">The SOCKS server <span class="bcp14">MUST</span> apply access control mechanisms at the beginning of each TCP session. Following successful establishment, the SOCKS server <span class="bcp14">MUST</span> simply relay data between the client and the application server, incurring minimum processing overhead. The protocol inherently supports applications utilizing encryption, as the SOCKS server is not required to interpret the application protocol's payload.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">Two primary operations are defined: CONNECT and BIND.<a href="#section-1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="conventions-and-terminology">
+<section id="section-2">
+      <h2 id="name-conventions-and-terminology">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-conventions-and-terminology" class="section-name selfRef">Conventions and Terminology</a>
+      </h2>
+<p id="section-2-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
+"<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
+described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
+appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-2">This specification uses the following terms:<a href="#section-2-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2-3.1">
+          <p id="section-2-3.1.1">Client (Application Client): The program requesting a connection to an application server through the SOCKS server.<a href="#section-2-3.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-2-3.2">
+          <p id="section-2-3.2.1">SOCKS Server: The host, typically at a firewall, that intermediates the connection between the Client and the Application Server.<a href="#section-2-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-2-3.3">
+          <p id="section-2-3.3.1">Application Server: The host to which the Client ultimately wishes to connect (e.g., a Telnet daemon, an HTTP server).<a href="#section-2-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-2-3.4">
+          <p id="section-2-3.4.1">TCP Session: A connection established using the Transmission Control Protocol (TCP). SOCKSv4 only supports TCP sessions.<a href="#section-2-3.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-2-3.5">
+          <p id="section-2-3.5.1">DSTIP (Destination IP): The IP address of the Application Server, as specified in the SOCKS request.<a href="#section-2-3.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-2-3.6">
+          <p id="section-2-3.6.1">DSTPORT (Destination Port): The port number of the Application Server, as specified in the SOCKS request.<a href="#section-2-3.6.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-2-3.7">
+          <p id="section-2-3.7.1">USERID: A variable-length, NULL-terminated string identifying the client's user on the local system.<a href="#section-2-3.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-2-3.8">
+          <p id="section-2-3.8.1">NULL: A byte of all zero bits, used to terminate the USERID field.<a href="#section-2-3.8.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-2-3.9">
+          <p id="section-2-3.9.1">IDENT: A protocol (as described in RFC 1413) used by the SOCKS server to verify the user identity of the client.<a href="#section-2-3.9.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<div id="connect-operation">
+<section id="section-3">
+      <h2 id="name-connect-operation">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-connect-operation" class="section-name selfRef">CONNECT Operation</a>
+      </h2>
+<p id="section-3-1">The client <span class="bcp14">MUST</span> initiate a CONNECT request when it desires to establish an outbound TCP connection to an application server.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<div id="connect-request-packet-format">
+<section id="section-3.1">
+        <h3 id="name-connect-request-packet-form">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-connect-request-packet-form" class="section-name selfRef">CONNECT Request Packet Format</a>
+        </h3>
+<p id="section-3.1-1">The client <span class="bcp14">MUST</span> send a request packet with the following structure:<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<span id="name-connect-request-packet-forma"></span><table class="center" id="table-1">
+          <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-connect-request-packet-forma" class="selfRef">CONNECT Request Packet Format</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Field</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-center" rowspan="1" colspan="1">Size (bytes)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">VN</td>
+              <td class="text-left" rowspan="1" colspan="1">Version Number</td>
+              <td class="text-center" rowspan="1" colspan="1">1</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">CD</td>
+              <td class="text-left" rowspan="1" colspan="1">Command Code</td>
+              <td class="text-center" rowspan="1" colspan="1">1</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">DSTPORT</td>
+              <td class="text-left" rowspan="1" colspan="1">Destination Port</td>
+              <td class="text-center" rowspan="1" colspan="1">2</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">DSTIP</td>
+              <td class="text-left" rowspan="1" colspan="1">Destination IP Address</td>
+              <td class="text-center" rowspan="1" colspan="1">4</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">USERID</td>
+              <td class="text-left" rowspan="1" colspan="1">User ID</td>
+              <td class="text-center" rowspan="1" colspan="1">variable</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">NULL</td>
+              <td class="text-left" rowspan="1" colspan="1">Null Terminator</td>
+              <td class="text-center" rowspan="1" colspan="1">1</td>
+            </tr>
+          </tbody>
+        </table>
+<ul class="normal">
+<li class="normal" id="section-3.1-3.1">
+            <p id="section-3.1-3.1.1">VN (Version Number): <span class="bcp14">MUST</span> be 4, representing the SOCKS protocol version.<a href="#section-3.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.1-3.2">
+            <p id="section-3.1-3.2.1">CD (Command Code): <span class="bcp14">MUST</span> be 1, indicating a CONNECT request.<a href="#section-3.1-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.1-3.3">
+            <p id="section-3.1-3.3.1">DSTPORT (Destination Port): The port number of the application server (network byte order).<a href="#section-3.1-3.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.1-3.4">
+            <p id="section-3.1-3.4.1">DSTIP (Destination IP): The IP address of the application server (network byte order).<a href="#section-3.1-3.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.1-3.5">
+            <p id="section-3.1-3.5.1">USERID (User Identifier): A string of characters representing the client's user ID.<a href="#section-3.1-3.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.1-3.6">
+            <p id="section-3.1-3.6.1">NULL: A single byte with a value of all zero bits, terminating the USERID field.<a href="#section-3.1-3.6.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="connect-processing-and-reply">
+<section id="section-3.2">
+        <h3 id="name-connect-processing-and-repl">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-connect-processing-and-repl" class="section-name selfRef">CONNECT Processing and Reply</a>
+        </h3>
+<p id="section-3.2-1">The SOCKS server <span class="bcp14">MUST</span> determine whether to grant the request based on criteria such as the source IP address, DSTIP, DSTPORT, USERID, and information obtained via IDENT (cf. RFC 1413).<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">If the request is granted, the SOCKS server <span class="bcp14">MUST</span> attempt to establish a TCP connection to the specified DSTPORT on the DSTIP.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.2-3">A reply packet <span class="bcp14">MUST</span> be sent to the client upon the establishment of the connection, rejection of the request, or operational failure.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-4">When the DSTIP field is 0.0.0.1, which the protocol SOCKSv4a (See <a href="#socks-protocol-version-4a" class="auto internal xref">Appendix A.1</a>) uses for a client wishes to connect using a domain name instead of an IP address, SOCKSv4 implementations <span class="bcp14">MUST</span> treat the the DSTIP field 0.0.0.1 as a normal DSTIP value and treat the following messages as the specification.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="connect-reply-packet-format">
+<section id="section-3.3">
+        <h3 id="name-connect-reply-packet-format">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-connect-reply-packet-format" class="section-name selfRef">CONNECT Reply Packet Format</a>
+        </h3>
+<p id="section-3.3-1">The SOCKS server <span class="bcp14">MUST</span> send a reply packet with the following structure:<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<span id="name-connect-reply-packet-format-2"></span><table class="center" id="table-2">
+          <caption>
+<a href="#table-2" class="selfRef">Table 2</a>:
+<a href="#name-connect-reply-packet-format-2" class="selfRef">CONNECT Reply Packet Format</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Field</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-center" rowspan="1" colspan="1">Size (bytes)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">VN</td>
+              <td class="text-left" rowspan="1" colspan="1">Version Number</td>
+              <td class="text-center" rowspan="1" colspan="1">1</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">CD</td>
+              <td class="text-left" rowspan="1" colspan="1">Command Code</td>
+              <td class="text-center" rowspan="1" colspan="1">1</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">DSTPORT</td>
+              <td class="text-left" rowspan="1" colspan="1">Destination Port</td>
+              <td class="text-center" rowspan="1" colspan="1">2</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">DSTIP</td>
+              <td class="text-left" rowspan="1" colspan="1">Destination IP Address</td>
+              <td class="text-center" rowspan="1" colspan="1">4</td>
+            </tr>
+          </tbody>
+        </table>
+<ul class="normal">
+<li class="normal" id="section-3.3-3.1">
+            <p id="section-3.3-3.1.1">VN: <span class="bcp14">MUST</span> be 0, representing the reply version code.<a href="#section-3.3-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-3.3-3.2">
+            <p id="section-3.3-3.2.1">CD (Result Code): The SOCKS server <span class="bcp14">MUST</span> use one of the following values:<a href="#section-3.3-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<span id="name-result-codes"></span><div id="socks-version-4-reply-codes">
+<table class="center" id="table-3">
+          <caption>
+<a href="#table-3" class="selfRef">Table 3</a>:
+<a href="#name-result-codes" class="selfRef">Result Codes</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Reply Code</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">90</td>
+              <td class="text-left" rowspan="1" colspan="1">Request granted (Connection successful).</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">91</td>
+              <td class="text-left" rowspan="1" colspan="1">Request rejected or failed.</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">92</td>
+              <td class="text-left" rowspan="1" colspan="1">Request rejected due to inability to connect to <code>identd</code> on the client.</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">93</td>
+              <td class="text-left" rowspan="1" colspan="1">Request rejected because the client program and <code>identd</code> report different user-IDs.</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<ul class="normal">
+<li class="normal" id="section-3.3-5.1">
+            <p id="section-3.3-5.1.1">DSTPORT and DSTIP: These fields <span class="bcp14">MUST</span> be ignored by the client in a CONNECT reply.<a href="#section-3.3-5.1.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-3.3-6">If the request is rejected or failed (CD != 90), the SOCKS server <span class="bcp14">MUST</span> close its connection to the client immediately after sending the reply.<a href="#section-3.3-6" class="pilcrow">¶</a></p>
+<p id="section-3.3-7">If the request is successful (CD = 90), the SOCKS server <span class="bcp14">MUST</span> immediately begin relaying traffic in both directions between the client connection and the established application server connection. The client <span class="bcp14">MUST</span> then treat its connection to the SOCKS server as if it were a direct connection to the application server.<a href="#section-3.3-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="bind-operation">
+<section id="section-4">
+      <h2 id="name-bind-operation">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-bind-operation" class="section-name selfRef">BIND Operation</a>
+      </h2>
+<p id="section-4-1">The client <span class="bcp14">MUST</span> initiate a BIND request when it requires the SOCKS server to prepare for an inbound connection from an application server. This operation is typically used for protocols that involve a secondary data connection originating from the server (e.g., FTP's active mode). A BIND request <span class="bcp14">SHOULD</span> only be sent after a primary connection to the application server has been successfully established using a CONNECT request.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<div id="bind-request-packet-format">
+<section id="section-4.1">
+        <h3 id="name-bind-request-packet-format">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-bind-request-packet-format" class="section-name selfRef">BIND Request Packet Format</a>
+        </h3>
+<p id="section-4.1-1">The client <span class="bcp14">MUST</span> send a request packet identical in format to the CONNECT request:<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<span id="name-bind-request-packet-format-2"></span><div id="socks-version-4-request-format">
+<table class="center" id="table-4">
+          <caption>
+<a href="#table-4" class="selfRef">Table 4</a>:
+<a href="#name-bind-request-packet-format-2" class="selfRef">BIND Request Packet Format</a>
+          </caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Field</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-center" rowspan="1" colspan="1">Size (bytes)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">VN</td>
+              <td class="text-left" rowspan="1" colspan="1">Version Number (must be 4)</td>
+              <td class="text-center" rowspan="1" colspan="1">1</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">CD</td>
+              <td class="text-left" rowspan="1" colspan="1">Command Code (1 for CONNECT, 2 for BIND)</td>
+              <td class="text-center" rowspan="1" colspan="1">1</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">DSTPORT</td>
+              <td class="text-left" rowspan="1" colspan="1">Destination Port (Network Byte Order)</td>
+              <td class="text-center" rowspan="1" colspan="1">2</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">DSTIP</td>
+              <td class="text-left" rowspan="1" colspan="1">Destination IP Address</td>
+              <td class="text-center" rowspan="1" colspan="1">4</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">USERID</td>
+              <td class="text-left" rowspan="1" colspan="1">User ID (String of Octets)</td>
+              <td class="text-center" rowspan="1" colspan="1">variable</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">NULL</td>
+              <td class="text-left" rowspan="1" colspan="1">Null Terminator (0x00)</td>
+              <td class="text-center" rowspan="1" colspan="1">1</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+<ul class="normal">
+<li class="normal" id="section-4.1-3.1">
+            <p id="section-4.1-3.1.1">VN: <span class="bcp14">MUST</span> be 4.<a href="#section-4.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-3.2">
+            <p id="section-4.1-3.2.1">CD: <span class="bcp14">MUST</span> be 2, indicating a BIND request.<a href="#section-4.1-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-3.3">
+            <p id="section-4.1-3.3.1">DSTPORT: The port number of the primary connection to the application server.<a href="#section-4.1-3.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-3.4">
+            <p id="section-4.1-3.4.1">DSTIP: The IP address of the application server.<a href="#section-4.1-3.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-3.5">
+            <p id="section-4.1-3.5.1">USERID and NULL: As defined for the CONNECT request.<a href="#section-4.1-3.5.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="bind-first-reply-socket-assignment">
+<section id="section-4.2">
+        <h3 id="name-bind-first-reply-socket-ass">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-bind-first-reply-socket-ass" class="section-name selfRef">BIND First Reply (Socket Assignment)</a>
+        </h3>
+<p id="section-4.2-1">The SOCKS server <span class="bcp14">MUST</span> first decide whether to grant the BIND request. The reply format <span class="bcp14">MUST</span> be the same as the CONNECT reply format.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">If the request is rejected (CD != 90), the SOCKS server <span class="bcp14">MUST</span> close its connection to the client immediately.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-3">If the request is granted (CD = 90):<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2-4.1">
+            <p id="section-4.2-4.1.1">The SOCKS server <span class="bcp14">MUST</span> obtain a local socket and begin listening for an incoming connection.<a href="#section-4.2-4.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-4.2">
+            <p id="section-4.2-4.2.1">The SOCKS server <span class="bcp14">MUST</span> send a first reply packet in which the DSTPORT and DSTIP fields are meaningful: DSTPORT <span class="bcp14">MUST</span> contain, in network byte order, the port number of the newly listening socket, and DSTIP <span class="bcp14">MUST</span> contain, in network byte order, the IP address of the SOCKS server's listening interface.<a href="#section-4.2-4.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-4.3">
+            <p id="section-4.2-4.3.1">If the SOCKS server returns a DSTIP of 0 (the value of constant 'INADDR_ANY'), the client <span class="bcp14">MUST</span> replace this value with the IP address of the SOCKS server to which the client is currently connected.<a href="#section-4.2-4.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.2-4.4">
+            <p id="section-4.2-4.4.1">The client <span class="bcp14">MUST</span> use this IP address and port to inform the application server via the primary connection, enabling the application server to initiate the anticipated inbound connection to the SOCKS server.<a href="#section-4.2-4.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="bind-second-reply-connection-established">
+<section id="section-4.3">
+        <h3 id="name-bind-second-reply-connectio">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-bind-second-reply-connectio" class="section-name selfRef">BIND Second Reply (Connection Established)</a>
+        </h3>
+<p id="section-4.3-1">The SOCKS server <span class="bcp14">MUST</span> send a second reply packet to the client once the anticipated inbound connection from the application server is established. The reply format <span class="bcp14">MUST</span> be the same as the first reply.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<p id="section-4.3-2">The SOCKS server <span class="bcp14">MUST</span> check the IP address of the newly connected application server host against the DSTIP value specified in the client's original BIND request.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.3-3.1">
+            <p id="section-4.3-3.1.1">If the IP addresses match: The CD field in the second reply <span class="bcp14">MUST</span> be set to 90. The SOCKS server <span class="bcp14">MUST</span> then prepare to relay traffic between the client connection and the new application server connection.<a href="#section-4.3-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.3-3.2">
+            <p id="section-4.3-3.2.1">If a mismatch is found: The CD field in the second reply <span class="bcp14">MUST</span> be set to 91. The SOCKS server <span class="bcp14">MUST</span> immediately close both the client connection and the connection from the application server.<a href="#section-4.3-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.3-4">Upon a successful second reply, the client <span class="bcp14">MUST</span> perform I/O on its connection to the SOCKS server as if it were directly connected to the application server.<a href="#section-4.3-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="timeout-mechanism">
+<section id="section-5">
+      <h2 id="name-timeout-mechanism">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-timeout-mechanism" class="section-name selfRef">Timeout Mechanism</a>
+      </h2>
+<p id="section-5-1">For both CONNECT and BIND operations, the SOCKS server <span class="bcp14">MUST</span> employ a time limit for the establishment of its connection with the application server (e.g., 2 minutes). If the connection is not established before the time limit expires, the SOCKS server <span class="bcp14">MUST</span> close its connection to the client and abort the operation.<a href="#section-5-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="security-considerations">
+<section id="section-6">
+      <h2 id="name-security-considerations">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-6-1">See <a href="#security-analysis" class="auto internal xref">Appendix B</a>.<a href="#section-6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana-considerations">
+<section id="section-7">
+      <h2 id="name-iana-considerations">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<p id="section-7-1">No IANA actions required.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">See <a href="#existing-values" class="auto internal xref">Appendix C</a> for the existing values used within the protocol.<a href="#section-7-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-combined-references">
+<section id="section-8">
+      <h2 id="name-references">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<div id="sec-normative-references">
+<section id="section-8.1">
+        <h3 id="name-normative-references">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="RFC1413">[RFC1413]</dt>
+        <dd>
+<span class="refAuthor">St. Johns, M.</span>, <span class="refTitle">"Identification Protocol"</span>, <span class="seriesInfo">RFC 1413</span>, <span class="seriesInfo">DOI 10.17487/RFC1413</span>, <time datetime="1993-02" class="refDate">February 1993</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc1413">https://www.rfc-editor.org/rfc/rfc1413</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+        <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="SOCKS4">[SOCKS4]</dt>
+      <dd>
+<span class="refAuthor">Lee, Y.-D.</span>, <span class="refTitle">"SOCKS: A protocol for TCP proxy across firewalls"</span>, <span>n.d.</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-8.2">
+        <h3 id="name-informative-references">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="RFC1928">[RFC1928]</dt>
+        <dd>
+<span class="refAuthor">Leech, M.</span>, <span class="refAuthor">Ganis, M.</span>, <span class="refAuthor">Lee, Y.</span>, <span class="refAuthor">Kuris, R.</span>, <span class="refAuthor">Koblas, D.</span>, and <span class="refAuthor">L. Jones</span>, <span class="refTitle">"SOCKS Protocol Version 5"</span>, <span class="seriesInfo">RFC 1928</span>, <span class="seriesInfo">DOI 10.17487/RFC1928</span>, <time datetime="1996-03" class="refDate">March 1996</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc1928">https://www.rfc-editor.org/rfc/rfc1928</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC1929">[RFC1929]</dt>
+        <dd>
+<span class="refAuthor">Leech, M.</span>, <span class="refTitle">"Username/Password Authentication for SOCKS V5"</span>, <span class="seriesInfo">RFC 1929</span>, <span class="seriesInfo">DOI 10.17487/RFC1929</span>, <time datetime="1996-03" class="refDate">March 1996</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc1929">https://www.rfc-editor.org/rfc/rfc1929</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3365">[RFC3365]</dt>
+        <dd>
+<span class="refAuthor">Schiller, J.</span>, <span class="refTitle">"Strong Security Requirements for Internet Engineering Task Force Standard Protocols"</span>, <span class="seriesInfo">BCP 61</span>, <span class="seriesInfo">RFC 3365</span>, <span class="seriesInfo">DOI 10.17487/RFC3365</span>, <time datetime="2002-08" class="refDate">August 2002</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3365">https://www.rfc-editor.org/rfc/rfc3365</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC3552">[RFC3552]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span> and <span class="refAuthor">B. Korver</span>, <span class="refTitle">"Guidelines for Writing RFC Text on Security Considerations"</span>, <span class="seriesInfo">BCP 72</span>, <span class="seriesInfo">RFC 3552</span>, <span class="seriesInfo">DOI 10.17487/RFC3552</span>, <time datetime="2003-07" class="refDate">July 2003</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3552">https://www.rfc-editor.org/rfc/rfc3552</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC791">[RFC791]</dt>
+        <dd>
+<span class="refAuthor">Postel, J.</span>, <span class="refTitle">"Internet Protocol"</span>, <span class="seriesInfo">STD 5</span>, <span class="seriesInfo">RFC 791</span>, <span class="seriesInfo">DOI 10.17487/RFC0791</span>, <time datetime="1981-09" class="refDate">September 1981</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc791">https://www.rfc-editor.org/rfc/rfc791</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9293">[RFC9293]</dt>
+      <dd>
+<span class="refAuthor">Eddy, W., Ed.</span>, <span class="refTitle">"Transmission Control Protocol (TCP)"</span>, <span class="seriesInfo">STD 7</span>, <span class="seriesInfo">RFC 9293</span>, <span class="seriesInfo">DOI 10.17487/RFC9293</span>, <time datetime="2022-08" class="refDate">August 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9293">https://www.rfc-editor.org/rfc/rfc9293</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+</section>
+</div>
+<div id="common-operational-extensions">
+<section id="appendix-A">
+      <h2 id="name-common-operational-extensio">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-common-operational-extensio" class="section-name selfRef">Common Operational Extensions</a>
+      </h2>
+<p id="appendix-A-1">The content of this appendix is Informative, not Normative. It describes extensions and interpretations of the SOCKSv4 protocol that have been widely adopted in practical deployments and client implementations to enhance functionality and compatibility.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<div id="socks-protocol-version-4a">
+<section id="appendix-A.1">
+        <h3 id="name-socks-protocol-version-4a">
+<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-socks-protocol-version-4a" class="section-name selfRef">SOCKS Protocol Version 4A</a>
+        </h3>
+<p id="appendix-A.1-1">The SOCKSv4 protocol originally required the client to resolve the target domain name before sending the request. As this is impractical in many environments, the SOCKSv4a protocol was widely adopted to allow the SOCKS server to perform domain name resolution.<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.1-2">SOCKSv4a, though share a same version number with SOCKSv4, is treated as a complete independent protocol here. The specification will be published elsewhere. The content below is just a simple summary of SOCKSv4a, and it should never be treated as a Normative standard.<a href="#appendix-A.1-2" class="pilcrow">¶</a></p>
+<p id="appendix-A.1-3">Clients using this protocol must follow these rules:<a href="#appendix-A.1-3" class="pilcrow">¶</a></p>
+<div id="socksv4a-request-format">
+<section id="appendix-A.1.1">
+          <h4 id="name-socksv4a-request-format">
+<a href="#appendix-A.1.1" class="section-number selfRef">A.1.1. </a><a href="#name-socksv4a-request-format" class="section-name selfRef">SOCKSv4a Request Format</a>
+          </h4>
+<p id="appendix-A.1.1-1">When a client wishes to connect using a domain name instead of an IP address, the request format follows the CONNECT/BIND format, but with modifications to DSTIP and the end of the request:<a href="#appendix-A.1.1-1" class="pilcrow">¶</a></p>
+<span id="name-socksv4a-request-format-2"></span><table class="center" id="table-5">
+            <caption>
+<a href="#table-5" class="selfRef">Table 5</a>:
+<a href="#name-socksv4a-request-format-2" class="selfRef">SOCKSv4a Request Format</a>
+            </caption>
+<thead>
+              <tr>
+                <th class="text-left" rowspan="1" colspan="1">Field</th>
+                <th class="text-left" rowspan="1" colspan="1">Description</th>
+                <th class="text-left" rowspan="1" colspan="1">Size (bytes)</th>
+                <th class="text-left" rowspan="1" colspan="1">SOCKSv4a Usage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">VN</td>
+                <td class="text-left" rowspan="1" colspan="1">Version Number (4)</td>
+                <td class="text-left" rowspan="1" colspan="1">1</td>
+                <td class="text-left" rowspan="1" colspan="1">Unchanged.</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">CD</td>
+                <td class="text-left" rowspan="1" colspan="1">Command Code (1 or 2)</td>
+                <td class="text-left" rowspan="1" colspan="1">1</td>
+                <td class="text-left" rowspan="1" colspan="1">Unchanged.</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">DSTPORT</td>
+                <td class="text-left" rowspan="1" colspan="1">Destination Port</td>
+                <td class="text-left" rowspan="1" colspan="1">2</td>
+                <td class="text-left" rowspan="1" colspan="1">Unchanged.</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">DSTIP</td>
+                <td class="text-left" rowspan="1" colspan="1">Destination IP Address</td>
+                <td class="text-left" rowspan="1" colspan="1">4</td>
+                <td class="text-left" rowspan="1" colspan="1">
+                  <span class="bcp14">MUST</span> be set to 0.0.0.1 (0x00000001).</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">USERID</td>
+                <td class="text-left" rowspan="1" colspan="1">User ID</td>
+                <td class="text-left" rowspan="1" colspan="1">variable</td>
+                <td class="text-left" rowspan="1" colspan="1">Unchanged.</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">NULL</td>
+                <td class="text-left" rowspan="1" colspan="1">Null Terminator (0x00)</td>
+                <td class="text-left" rowspan="1" colspan="1">1</td>
+                <td class="text-left" rowspan="1" colspan="1">Terminates USERID.</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">DOMAIN</td>
+                <td class="text-left" rowspan="1" colspan="1">Target Domain Name</td>
+                <td class="text-left" rowspan="1" colspan="1">variable</td>
+                <td class="text-left" rowspan="1" colspan="1">New field: Null-terminated string.</td>
+              </tr>
+              <tr>
+                <td class="text-left" rowspan="1" colspan="1">NULL</td>
+                <td class="text-left" rowspan="1" colspan="1">Final Null Terminator</td>
+                <td class="text-left" rowspan="1" colspan="1">1</td>
+                <td class="text-left" rowspan="1" colspan="1">New field: Terminates DOMAIN.</td>
+              </tr>
+            </tbody>
+          </table>
+<p id="appendix-A.1.1-3">A SOCKSv4a client, when sending a request, must append the target domain name string after the NULL terminator of USERID, and terminate the entire request with a second NULL byte.<a href="#appendix-A.1.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="socksv4a-server-processing">
+<section id="appendix-A.1.2">
+          <h4 id="name-socksv4a-server-processing">
+<a href="#appendix-A.1.2" class="section-number selfRef">A.1.2. </a><a href="#name-socksv4a-server-processing" class="section-name selfRef">SOCKSv4a Server Processing</a>
+          </h4>
+<p id="appendix-A.1.2-1">When a SOCKSv4a server receives a request where the DSTIP field is 0.0.0.1, it <span class="bcp14">MUST</span> perform the following actions:<a href="#appendix-A.1.2-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="appendix-A.1.2-2">
+<li id="appendix-A.1.2-2.1">
+              <p id="appendix-A.1.2-2.1.1">Treat 0.0.0.1 as a special signal and <span class="bcp14">MUST NOT</span> attempt to connect to this IP address.<a href="#appendix-A.1.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="appendix-A.1.2-2.2">
+              <p id="appendix-A.1.2-2.2.1">Start reading data after the USERID's NULL terminator, interpreting it as the target domain name string (DOMAIN), until the next NULL terminator is encountered.<a href="#appendix-A.1.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="appendix-A.1.2-2.3">
+              <p id="appendix-A.1.2-2.3.1">The server <span class="bcp14">MUST</span> attempt to resolve this domain name.<a href="#appendix-A.1.2-2.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="appendix-A.1.2-2.4">
+              <p id="appendix-A.1.2-2.4.1">If resolution is successful, the server attempts to connect to the obtained IP address. If the connection succeeds, it replies 90. If the connection fails, it replies 91.<a href="#appendix-A.1.2-2.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li id="appendix-A.1.2-2.5">
+              <p id="appendix-A.1.2-2.5.1">If resolution fails, the server <span class="bcp14">MUST</span> reply 91 and close the connection.<a href="#appendix-A.1.2-2.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ol>
+</section>
+</div>
+</section>
+</div>
+<div id="use-of-dstipdstport-in-bind-requests-for-access-control">
+<section id="appendix-A.2">
+        <h3 id="name-use-of-dstip-dstport-in-bin">
+<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-use-of-dstip-dstport-in-bin" class="section-name selfRef">Use of DSTIP/DSTPORT in BIND Requests for Access Control</a>
+        </h3>
+<p id="appendix-A.2-1">Although DSTIP and DSTPORT in the BIND request (Section 4.1) are intended to identify the application server, many SOCKS server and firewall implementations use them as an Access Control List (ACL) for the inbound connection.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-A.2-2.1">
+            <p id="appendix-A.2-2.1.1">DSTIP as Source Address Restriction: The server strictly requires the IP address of the inbound connection to <span class="bcp14">MUST</span> match the DSTIP specified in the BIND request.<a href="#appendix-A.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.2-2.2">
+            <p id="appendix-A.2-2.2.1">DSTPORT as Source Port Restriction (less common): Some implementations may attempt to verify that the source port of the inbound connection matches the DSTPORT in the BIND request. Since the source port of an application server is usually randomly allocated by the operating system, this usage is generally considered unreliable or misleading and is ignored in most implementations.<a href="#appendix-A.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="appendix-A.2-3">When initiating a BIND request, a client <span class="bcp14">SHOULD</span> ensure that DSTIP is the address of the application server it expects to receive the connection from, to improve compatibility.<a href="#appendix-A.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="explanation-of-timeout-mechanism">
+<section id="appendix-A.3">
+        <h3 id="name-explanation-of-timeout-mech">
+<a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-explanation-of-timeout-mech" class="section-name selfRef">Explanation of Timeout Mechanism</a>
+        </h3>
+<p id="appendix-A.3-1">As mandated by Section 5, the SOCKS server <span class="bcp14">MUST</span> employ time limits. In common implementations, timeouts usually trigger under the following circumstances:<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-A.3-2.1">
+            <p id="appendix-A.3-2.1.1">CONNECT Timeout: The server is unable to establish a connection with DSTIP:DSTPORT within the specified time.<a href="#appendix-A.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.3-2.2">
+            <p id="appendix-A.3-2.2.1">Timeout after the first BIND reply: After the SOCKS server successfully binds the listening socket (sent the first 90 reply), but fails to receive an inbound connection from the application server within the specified time.<a href="#appendix-A.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="appendix-A.3-3">When a timeout occurs, the server <span class="bcp14">MUST</span> immediately close the connection with the client and abort all pending network operations.<a href="#appendix-A.3-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="security-analysis">
+<section id="appendix-B">
+      <h2 id="name-security-analysis">
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-security-analysis" class="section-name selfRef">Security Analysis</a>
+      </h2>
+<p id="appendix-B-1">The SOCKS Version 4 (SOCKSv4) protocol, designed exclusively for TCP proxy traversal across network firewalls, is fundamentally weak from a security perspective as it operates solely at the session layer and lacks intrinsic security mechanisms. Any deployment of SOCKSv4 must be critically assessed against its inherent deficiencies.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<div id="authentication-and-authorization-deficiencies">
+<section id="appendix-B.1">
+        <h3 id="name-authentication-and-authoriz">
+<a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-authentication-and-authoriz" class="section-name selfRef">Authentication and Authorization Deficiencies</a>
+        </h3>
+<p id="appendix-B.1-1">SOCKSv4's client identification relies on the USERID field, often intended for use with the IDENT protocol (specified in RFC 1413). This reliance constitutes a major security risk because the IDENT protocol depends on an untrusted daemon on the client host, making the identification process susceptible to trivial spoofing or malicious disabling. Crucially, SOCKSv4 entirely lacks integrated provisions for strong client-to-server or server-to-client authentication, offering no mechanisms for verifying user credentials, passwords, or employing cryptographic challenge-response methods. Consequently, access control (authorization) is managed exclusively by the SOCKS server's local configuration and security policy. A failure in the server's policy or configuration directly risks granting unauthorized network access across the protective boundary of the firewall.<a href="#appendix-B.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="data-integrity-and-transport-limitations">
+<section id="appendix-B.2">
+        <h3 id="name-data-integrity-and-transpor">
+<a href="#appendix-B.2" class="section-number selfRef">B.2. </a><a href="#name-data-integrity-and-transpor" class="section-name selfRef">Data Integrity and Transport Limitations</a>
+        </h3>
+<p id="appendix-B.2-1">SOCKSv4 does not incorporate any encryption capabilities for the application data stream. As a session layer relay, it forwards all application traffic, including sensitive data, in plaintext. This inherent vulnerability exposes all transmitted data to passive network eavesdropping and interception, resulting in a total absence of confidentiality. Furthermore, the protocol’s operational scope is strictly confined to proxying Transmission Control Protocol (TCP) connections. It provides no native support for the relay of User Datagram Protocol (UDP) traffic or other IP-layer protocols, limiting its utility and scope of protection.<a href="#appendix-B.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="vulnerabilities-associated-with-the-bind-operation">
+<section id="appendix-B.3">
+        <h3 id="name-vulnerabilities-associated-">
+<a href="#appendix-B.3" class="section-number selfRef">B.3. </a><a href="#name-vulnerabilities-associated-" class="section-name selfRef">Vulnerabilities Associated with the BIND Operation</a>
+        </h3>
+<p id="appendix-B.3-1">The BIND command, used for establishing a socket for an anticipated inbound connection (a callback) from an application server, introduces distinct security challenges. The SOCKS server attempts a rudimentary security check by comparing the source IP address of the incoming connection with the target address (DSTIP) specified in the client's request. However, a malicious actor can easily forge the source IP address of the inbound connection, potentially bypassing this basic server check and facilitating an unauthorized session. Moreover, in network topologies employing Network Address Translation (NAT) or Port Address Translation (PAT), the source IP address is structurally altered, rendering the BIND source address verification mechanism unreliable, ineffectual, or operationally complex to maintain.<a href="#appendix-B.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="denial-of-service-dos-vector">
+<section id="appendix-B.4">
+        <h3 id="name-denial-of-service-dos-vecto">
+<a href="#appendix-B.4" class="section-number selfRef">B.4. </a><a href="#name-denial-of-service-dos-vecto" class="section-name selfRef">Denial of Service (DoS) Vector</a>
+        </h3>
+<p id="appendix-B.4-1">Every successful SOCKS connection consumes finite server resources, including active sockets, allocated memory, and network bandwidth. A direct vector for a Denial of Service attack exists where a malicious client can exploit this resource consumption by initiating a large volume of connection attempts, particularly through the resource-intensive BIND operation, to rapidly exhaust the SOCKS server’s capacity. Although the protocol specifies a basic connection establishment timeout mechanism (2 minutes), this measure is entirely insufficient in scope and rigor to fully mitigate the risks associated with sophisticated DoS attacks.<a href="#appendix-B.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="recommended-mitigation-and-deployment-practices">
+<section id="appendix-B.5">
+        <h3 id="name-recommended-mitigation-and-">
+<a href="#appendix-B.5" class="section-number selfRef">B.5. </a><a href="#name-recommended-mitigation-and-" class="section-name selfRef">Recommended Mitigation and Deployment Practices</a>
+        </h3>
+<p id="appendix-B.5-1">Given SOCKSv4's security deficiencies, its deployment should be strictly limited to environments designated as highly trusted and subject to stringent local policy control. Where SOCKSv4 must transport sensitive application traffic, the protocol must be encapsulated within an existing secure transport layer, such as a Transport Layer Security (TLS/SSL) or IPsec tunnel, to establish the essential confidentiality and integrity mechanisms that SOCKSv4 lacks. Operators should actively plan for migration to SOCKS Version 5 (RFC 1928), which incorporates native, robust authentication methods.<a href="#appendix-B.5-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="existing-values">
+<section id="appendix-C">
+      <h2 id="name-existing-values">
+<a href="#appendix-C" class="section-number selfRef">Appendix C. </a><a href="#name-existing-values" class="section-name selfRef">Existing Values</a>
+      </h2>
+<p id="appendix-C-1">The existing values used within the protocol are summarized below:<a href="#appendix-C-1" class="pilcrow">¶</a></p>
+<div id="socks-protocol-version-number-vn">
+<section id="appendix-C.1">
+        <h3 id="name-socks-protocol-version-numb">
+<a href="#appendix-C.1" class="section-number selfRef">C.1. </a><a href="#name-socks-protocol-version-numb" class="section-name selfRef">SOCKS Protocol Version Number (VN)</a>
+        </h3>
+<ul class="normal">
+<li class="normal" id="appendix-C.1-1.1">
+            <p id="appendix-C.1-1.1.1">The SOCKS protocol version number <code>VN</code> in requests is 4 (0x04).<a href="#appendix-C.1-1.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.1-1.2">
+            <p id="appendix-C.1-1.2.1">The SOCKS protocol version number <code>VN</code> in replies is 0 (0x00).<a href="#appendix-C.1-1.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="socks-command-code-cd">
+<section id="appendix-C.2">
+        <h3 id="name-socks-command-code-cd">
+<a href="#appendix-C.2" class="section-number selfRef">C.2. </a><a href="#name-socks-command-code-cd" class="section-name selfRef">SOCKS Command Code (CD)</a>
+        </h3>
+<p id="appendix-C.2-1">The SOCKS command code <code>CD</code> in requests defines two values:<a href="#appendix-C.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-C.2-2.1">
+            <p id="appendix-C.2-2.1.1">1 (0x01): CONNECT<a href="#appendix-C.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.2-2.2">
+            <p id="appendix-C.2-2.2.1">2 (0x02): BIND<a href="#appendix-C.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="socks-reply-code-cd">
+<section id="appendix-C.3">
+        <h3 id="name-socks-reply-code-cd">
+<a href="#appendix-C.3" class="section-number selfRef">C.3. </a><a href="#name-socks-reply-code-cd" class="section-name selfRef">SOCKS Reply Code (CD)</a>
+        </h3>
+<p id="appendix-C.3-1">The SOCKS reply code <code>CD</code> in replies defines four values:<a href="#appendix-C.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-C.3-2.1">
+            <p id="appendix-C.3-2.1.1">90 (0x5A): Request granted<a href="#appendix-C.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.3-2.2">
+            <p id="appendix-C.3-2.2.1">91 (0x5B): Request rejected or failed<a href="#appendix-C.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.3-2.3">
+            <p id="appendix-C.3-2.3.1">92 (0x5C): Request rejected because SOCKS server cannot connect to <code>identd</code> on the client<a href="#appendix-C.3-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-C.3-2.4">
+            <p id="appendix-C.3-2.4.1">93 (0x5D): Request rejected because the client program and <code>identd</code> report different user-ids<a href="#appendix-C.3-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="port-number">
+<section id="appendix-C.4">
+        <h3 id="name-port-number">
+<a href="#appendix-C.4" class="section-number selfRef">C.4. </a><a href="#name-port-number" class="section-name selfRef">Port Number</a>
+        </h3>
+<p id="appendix-C.4-1">The SOCKS protocol is conventionally known to use TCP port 1080 for its service. This port number has already been registered in the IANA Service Name and Transport Protocol Port Number Registry for the <code>socks</code> service.<a href="#appendix-C.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="original-auther">
+<section id="appendix-D">
+      <h2 id="name-original-auther">
+<a href="#name-original-auther" class="section-name selfRef">Original Auther</a>
+      </h2>
+<div class="alignLeft art-text artwork" id="appendix-D-1">
+<pre>
+      Ying-Da Lee
+      Principal Member Technical Staff
+      NEC Systems Laboratory, CSTC
+      ylee@syl.dl.nec.com
+
+      David Koblas
+      Netskope
+</pre><a href="#appendix-D-1" class="pilcrow">¶</a>
+</div>
+<p id="appendix-D-2">We sincerely apologize that, due to the document's long history and the passage of time, many early contributors may not have been formally included in this list. We extend our deepest gratitude to all who have contributed to this work. If you believe your name should be added to the acknowledgments, please contact the draft maintainers.<a href="#appendix-D-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-E">
+      <h2 id="name-authors-address">
+<a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Daniel James Vance</span></div>
+<div dir="auto" class="left"><span class="org">Independent</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:djvanc@outlook.com" class="email">djvanc@outlook.com</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
