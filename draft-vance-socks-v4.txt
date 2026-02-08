@@ -95,7 +95,7 @@ Table of Contents
      C.2.  SOCKS Command Code
      C.3.  SOCKS Reply Code
      C.4.  Port Number
-   Original Auther
+   Original Author
    Author's Address
 
 1.  Introduction
@@ -685,7 +685,7 @@ C.4.  Port Number
    IANA Service Name and Transport Protocol Port Number Registry for the
    socks service.
 
-Original Auther
+Original Author
 
          Ying-Da Lee
          Principal Member Technical Staff
