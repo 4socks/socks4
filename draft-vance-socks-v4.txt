@@ -405,6 +405,9 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
+   [SOCKS]    Koblas, D., "SOCKS", 1992 Usenix Security Symposium ,
+              1992.
+
    [SOCKS4]   Lee, Y.-D., "SOCKS: A protocol for TCP proxy across
               firewalls", n.d..
 
