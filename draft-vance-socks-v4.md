@@ -21,6 +21,13 @@ normative:
          name: Ying-Da Lee
          org: NEC Systems Laboratory, CSTC
          email: ylee@syl.dl.nec.com
+  SOCKS:
+       title: "SOCKS"
+       author:
+         name: David Koblas
+         org: Netskope
+       seriesinfo: 1992 Usenix Security Symposium
+       date: 1992
 
 informative:
   RFC791:
