@@ -153,7 +153,7 @@ The client MUST send a request packet identical in format to the CONNECT request
 - DSTIP: The IP address of the application server.
 - USERID and NULL: As defined for the CONNECT request.
 
-## BIND First Reply (Socket Assignment)
+## BIND First Reply
 
 The SOCKS server MUST first decide whether to grant the BIND request. The reply format MUST be the same as the CONNECT reply format.
 
@@ -166,7 +166,7 @@ If the request is granted (CD = 90):
 - If the SOCKS server returns a DSTIP of 0 (the value of constant 'INADDR\_ANY'), the client MUST replace this value with the IP address of the SOCKS server to which the client is currently connected.
 - The client MUST use this IP address and port to inform the application server via the primary connection, enabling the application server to initiate the anticipated inbound connection to the SOCKS server.
 
-## BIND Second Reply (Connection Established)
+## BIND Second Reply
 
 The SOCKS server MUST send a second reply packet to the client once the anticipated inbound connection from the application server is established. The reply format MUST be the same as the first reply.
 
@@ -235,7 +235,7 @@ When a SOCKSv4a server receives a request where the DSTIP field is 0.0.0.1, it M
 
 ## Use of DSTIP/DSTPORT in BIND Requests for Access Control
 
-Although DSTIP and DSTPORT in the BIND request (Section 4.1) are intended to identify the application server, many SOCKS server and firewall implementations use them as an Access Control List (ACL) for the inbound connection.
+Although DSTIP and DSTPORT in the BIND request are intended to identify the application server, many SOCKS server and firewall implementations use them as an Access Control List (ACL) for the inbound connection.
 
 * DSTIP as Source Address Restriction: The server strictly requires the IP address of the inbound connection to MUST match the DSTIP specified in the BIND request.
 * DSTPORT as Source Port Restriction (less common): Some implementations may attempt to verify that the source port of the inbound connection matches the DSTPORT in the BIND request. Since the source port of an application server is usually randomly allocated by the operating system, this usage is generally considered unreliable or misleading and is ignored in most implementations.
