@@ -1222,7 +1222,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.10.2.3.1"><a href="#appendix-B.3" class="auto internal xref">B.3</a>.  <a href="#name-vulnerabilities-associated-" class="internal xref">Vulnerabilities Associated with the BIND Operation</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.4">
-                <p id="section-toc.1-1.10.2.4.1"><a href="#appendix-B.4" class="auto internal xref">B.4</a>.  <a href="#name-denial-of-service-dos-vecto" class="internal xref">Denial of Service (DoS) Vector</a></p>
+                <p id="section-toc.1-1.10.2.4.1"><a href="#appendix-B.4" class="auto internal xref">B.4</a>.  <a href="#name-denial-of-service-vector" class="internal xref">Denial of Service Vector</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10.2.5">
                 <p id="section-toc.1-1.10.2.5.1"><a href="#appendix-B.5" class="auto internal xref">B.5</a>.  <a href="#name-recommended-mitigation-and-" class="internal xref">Recommended Mitigation and Deployment Practices</a></p>
@@ -1883,10 +1883,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <p id="appendix-B.3-1">The BIND command, used for establishing a socket for an anticipated inbound connection (a callback) from an application server, introduces distinct security challenges. The SOCKS server attempts a rudimentary security check by comparing the source IP address of the incoming connection with the target address (DSTIP) specified in the client's request. However, a malicious actor can easily forge the source IP address of the inbound connection, potentially bypassing this basic server check and facilitating an unauthorized session. Moreover, in network topologies employing Network Address Translation (NAT) or Port Address Translation (PAT), the source IP address is structurally altered, rendering the BIND source address verification mechanism unreliable, ineffectual, or operationally complex to maintain.<a href="#appendix-B.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="denial-of-service-dos-vector">
+<div id="denial-of-service-vector">
 <section id="appendix-B.4">
-        <h3 id="name-denial-of-service-dos-vecto">
-<a href="#appendix-B.4" class="section-number selfRef">B.4. </a><a href="#name-denial-of-service-dos-vecto" class="section-name selfRef">Denial of Service (DoS) Vector</a>
+        <h3 id="name-denial-of-service-vector">
+<a href="#appendix-B.4" class="section-number selfRef">B.4. </a><a href="#name-denial-of-service-vector" class="section-name selfRef">Denial of Service Vector</a>
         </h3>
 <p id="appendix-B.4-1">Every successful SOCKS connection consumes finite server resources, including active sockets, allocated memory, and network bandwidth. A direct vector for a Denial of Service attack exists where a malicious client can exploit this resource consumption by initiating a large volume of connection attempts, particularly through the resource-intensive BIND operation, to rapidly exhaust the SOCKS server’s capacity. Although the protocol specifies a basic connection establishment timeout mechanism (2 minutes), this measure is entirely insufficient in scope and rigor to fully mitigate the risks associated with sophisticated DoS attacks.<a href="#appendix-B.4-1" class="pilcrow">¶</a></p>
 </section>

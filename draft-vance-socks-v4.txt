@@ -88,7 +88,7 @@ Table of Contents
      B.1.  Authentication and Authorization Deficiencies
      B.2.  Data Integrity and Transport Limitations
      B.3.  Vulnerabilities Associated with the BIND Operation
-     B.4.  Denial of Service (DoS) Vector
+     B.4.  Denial of Service Vector
      B.5.  Recommended Mitigation and Deployment Practices
    Appendix C.  Existing Values
      C.1.  SOCKS Protocol Version Number
@@ -612,7 +612,7 @@ B.3.  Vulnerabilities Associated with the BIND Operation
    mechanism unreliable, ineffectual, or operationally complex to
    maintain.
 
-B.4.  Denial of Service (DoS) Vector
+B.4.  Denial of Service Vector
 
    Every successful SOCKS connection consumes finite server resources,
    including active sockets, allocated memory, and network bandwidth.  A
