@@ -409,7 +409,8 @@ Table of Contents
               1992.
 
    [SOCKS4]   Lee, Y.-D., "SOCKS: A protocol for TCP proxy across
-              firewalls", n.d..
+              firewalls", n.d.,
+              <https://www.openssh.org/txt/socks4.protocol>.
 
 8.2.  Informative References
 
@@ -439,6 +440,10 @@ Table of Contents
    [RFC9293]  Eddy, W., Ed., "Transmission Control Protocol (TCP)",
               STD 7, RFC 9293, DOI 10.17487/RFC9293, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9293>.
+
+   [SOCKS4a]  Lee, Y.-D., "SOCKS 4A: A Simple Extension to SOCKS 4
+              Protocol", n.d.,
+              <https://www.openssh.org/txt/socks4a.protocol>.
 
 Appendix A.  Common Operational Extensions
 
