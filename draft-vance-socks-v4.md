@@ -1,5 +1,5 @@
 ---
-title: "SOCKS Protocol Version 4 Specification"
+title: "SOCKS Protocol Version 4"
 abbrev: "SOCKS4 SPEC"
 category: historic
 
