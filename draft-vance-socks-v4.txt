@@ -91,9 +91,9 @@ Table of Contents
      B.4.  Denial of Service (DoS) Vector
      B.5.  Recommended Mitigation and Deployment Practices
    Appendix C.  Existing Values
-     C.1.  SOCKS Protocol Version Number (VN)
-     C.2.  SOCKS Command Code (CD)
-     C.3.  SOCKS Reply Code (CD)
+     C.1.  SOCKS Protocol Version Number
+     C.2.  SOCKS Command Code
+     C.3.  SOCKS Reply Code
      C.4.  Port Number
    Original Auther
    Author's Address
@@ -642,13 +642,13 @@ Appendix C.  Existing Values
 
    The existing values used within the protocol are summarized below:
 
-C.1.  SOCKS Protocol Version Number (VN)
+C.1.  SOCKS Protocol Version Number
 
    *  The SOCKS protocol version number VN in requests is 4 (0x04).
 
    *  The SOCKS protocol version number VN in replies is 0 (0x00).
 
-C.2.  SOCKS Command Code (CD)
+C.2.  SOCKS Command Code
 
    The SOCKS command code CD in requests defines two values:
 
@@ -656,7 +656,7 @@ C.2.  SOCKS Command Code (CD)
 
    *  2 (0x02): BIND
 
-C.3.  SOCKS Reply Code (CD)
+C.3.  SOCKS Reply Code
 
    The SOCKS reply code CD in replies defines four values:
 
