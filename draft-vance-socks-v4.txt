@@ -70,8 +70,8 @@ Table of Contents
      3.3.  CONNECT Reply Packet Format
    4.  BIND Operation
      4.1.  BIND Request Packet Format
-     4.2.  BIND First Reply (Socket Assignment)
-     4.3.  BIND Second Reply (Connection Established)
+     4.2.  BIND First Reply
+     4.3.  BIND Second Reply
    5.  Timeout Mechanism
    6.  Security Considerations
    7.  IANA Considerations
@@ -318,7 +318,7 @@ Table of Contents
 
    *  USERID and NULL: As defined for the CONNECT request.
 
-4.2.  BIND First Reply (Socket Assignment)
+4.2.  BIND First Reply
 
    The SOCKS server MUST first decide whether to grant the BIND request.
    The reply format MUST be the same as the CONNECT reply format.
@@ -347,7 +347,7 @@ Table of Contents
       application server to initiate the anticipated inbound connection
       to the SOCKS server.
 
-4.3.  BIND Second Reply (Connection Established)
+4.3.  BIND Second Reply
 
    The SOCKS server MUST send a second reply packet to the client once
    the anticipated inbound connection from the application server is
@@ -520,10 +520,10 @@ A.1.2.  SOCKSv4a Server Processing
 
 A.2.  Use of DSTIP/DSTPORT in BIND Requests for Access Control
 
-   Although DSTIP and DSTPORT in the BIND request (Section 4.1) are
-   intended to identify the application server, many SOCKS server and
-   firewall implementations use them as an Access Control List (ACL) for
-   the inbound connection.
+   Although DSTIP and DSTPORT in the BIND request are intended to
+   identify the application server, many SOCKS server and firewall
+   implementations use them as an Access Control List (ACL) for the
+   inbound connection.
 
    *  DSTIP as Source Address Restriction: The server strictly requires
       the IP address of the inbound connection to MUST match the DSTIP

@@ -1160,10 +1160,10 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-bind-request-packet-format" class="internal xref">BIND Request Packet Format</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
-                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-bind-first-reply-socket-ass" class="internal xref">BIND First Reply (Socket Assignment)</a></p>
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-bind-first-reply" class="internal xref">BIND First Reply</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
-                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-bind-second-reply-connectio" class="internal xref">BIND Second Reply (Connection Established)</a></p>
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-bind-second-reply" class="internal xref">BIND Second Reply</a></p>
 </li>
             </ul>
 </li>
@@ -1568,10 +1568,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         </ul>
 </section>
 </div>
-<div id="bind-first-reply-socket-assignment">
+<div id="bind-first-reply">
 <section id="section-4.2">
-        <h3 id="name-bind-first-reply-socket-ass">
-<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-bind-first-reply-socket-ass" class="section-name selfRef">BIND First Reply (Socket Assignment)</a>
+        <h3 id="name-bind-first-reply">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-bind-first-reply" class="section-name selfRef">BIND First Reply</a>
         </h3>
 <p id="section-4.2-1">The SOCKS server <span class="bcp14">MUST</span> first decide whether to grant the BIND request. The reply format <span class="bcp14">MUST</span> be the same as the CONNECT reply format.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.2-2">If the request is rejected (CD != 90), the SOCKS server <span class="bcp14">MUST</span> close its connection to the client immediately.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
@@ -1592,10 +1592,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         </ul>
 </section>
 </div>
-<div id="bind-second-reply-connection-established">
+<div id="bind-second-reply">
 <section id="section-4.3">
-        <h3 id="name-bind-second-reply-connectio">
-<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-bind-second-reply-connectio" class="section-name selfRef">BIND Second Reply (Connection Established)</a>
+        <h3 id="name-bind-second-reply">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-bind-second-reply" class="section-name selfRef">BIND Second Reply</a>
         </h3>
 <p id="section-4.3-1">The SOCKS server <span class="bcp14">MUST</span> send a second reply packet to the client once the anticipated inbound connection from the application server is established. The reply format <span class="bcp14">MUST</span> be the same as the first reply.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
 <p id="section-4.3-2">The SOCKS server <span class="bcp14">MUST</span> check the IP address of the newly connected application server host against the DSTIP value specified in the client's original BIND request.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
@@ -1822,7 +1822,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-use-of-dstip-dstport-in-bin">
 <a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-use-of-dstip-dstport-in-bin" class="section-name selfRef">Use of DSTIP/DSTPORT in BIND Requests for Access Control</a>
         </h3>
-<p id="appendix-A.2-1">Although DSTIP and DSTPORT in the BIND request (Section 4.1) are intended to identify the application server, many SOCKS server and firewall implementations use them as an Access Control List (ACL) for the inbound connection.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.2-1">Although DSTIP and DSTPORT in the BIND request are intended to identify the application server, many SOCKS server and firewall implementations use them as an Access Control List (ACL) for the inbound connection.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="appendix-A.2-2.1">
             <p id="appendix-A.2-2.1.1">DSTIP as Source Address Restriction: The server strictly requires the IP address of the inbound connection to <span class="bcp14">MUST</span> match the DSTIP specified in the BIND request.<a href="#appendix-A.2-2.1.1" class="pilcrow">¶</a></p>
