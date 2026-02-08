@@ -20,7 +20,7 @@ normative:
        author:
          name: Ying-Da Lee
          org: NEC Systems Laboratory, CSTC
-         email: ylee@syl.dl.nec.com
+       target: https://www.openssh.org/txt/socks4.protocol
   SOCKS:
        title: "SOCKS"
        author:
@@ -36,6 +36,12 @@ informative:
   RFC1929:
   RFC3552:
   RFC3365:
+  SOCKS4a:
+       title: "SOCKS 4A: A  Simple Extension to SOCKS 4 Protocol"
+       author:
+         name: Ying-Da Lee
+         org: NEC Systems Laboratory, CSTC
+       target: https://www.openssh.org/txt/socks4a.protocol
 
 ...
 
