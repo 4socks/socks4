@@ -4,8 +4,8 @@
 
 Network Working Group                                        D. J. Vance
 Internet-Draft                                               Independent
-Intended status: Historic                               16 November 2025
-Expires: 20 May 2026
+Intended status: Historic                                8 February 2026
+Expires: 12 August 2026
 
 
                  SOCKS Protocol Version 4 Specification
@@ -47,11 +47,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 May 2026.
+   This Internet-Draft will expire on 12 August 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -215,9 +215,9 @@ Table of Contents
 
    When the DSTIP field is 0.0.0.1, which the protocol SOCKSv4a (See
    Appendix A.1) uses for a client wishes to connect using a domain name
-   instead of an IP address, SOCKSv4 implementations MUST treat the the
-   DSTIP field 0.0.0.1 as a normal DSTIP value and treat the following
-   messages as the specification.
+   instead of an IP address, SOCKSv4 implementations SHOULD treat the
+   the DSTIP field 0.0.0.1 as a normal DSTIP value and treat the
+   following messages as the specification.
 
 3.3.  CONNECT Reply Packet Format
 
