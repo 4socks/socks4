@@ -267,7 +267,7 @@ SOCKSv4 does not incorporate any encryption capabilities for the application dat
 
 The BIND command, used for establishing a socket for an anticipated inbound connection (a callback) from an application server, introduces distinct security challenges. The SOCKS server attempts a rudimentary security check by comparing the source IP address of the incoming connection with the target address (DSTIP) specified in the client's request. However, a malicious actor can easily forge the source IP address of the inbound connection, potentially bypassing this basic server check and facilitating an unauthorized session. Moreover, in network topologies employing Network Address Translation (NAT) or Port Address Translation (PAT), the source IP address is structurally altered, rendering the BIND source address verification mechanism unreliable, ineffectual, or operationally complex to maintain.
 
-## Denial of Service (DoS) Vector
+## Denial of Service Vector
 
 Every successful SOCKS connection consumes finite server resources, including active sockets, allocated memory, and network bandwidth. A direct vector for a Denial of Service attack exists where a malicious client can exploit this resource consumption by initiating a large volume of connection attempts, particularly through the resource-intensive BIND operation, to rapidly exhaust the SOCKS server’s capacity. Although the protocol specifies a basic connection establishment timeout mechanism (2 minutes), this measure is entirely insufficient in scope and rigor to fully mitigate the risks associated with sophisticated DoS attacks.
 
