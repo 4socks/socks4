@@ -279,19 +279,19 @@ Given SOCKSv4's security deficiencies, its deployment should be strictly limited
 
 The existing values used within the protocol are summarized below:
 
-## SOCKS Protocol Version Number (VN)
+## SOCKS Protocol Version Number
 
 * The SOCKS protocol version number `VN` in requests is 4 (0x04).
 * The SOCKS protocol version number `VN` in replies is 0 (0x00).
 
-## SOCKS Command Code (CD)
+## SOCKS Command Code
 
 The SOCKS command code `CD` in requests defines two values:
 
 * 1 (0x01): CONNECT
 * 2 (0x02): BIND
 
-## SOCKS Reply Code (CD)
+## SOCKS Reply Code
 
 The SOCKS reply code `CD` in replies defines four values:
 
