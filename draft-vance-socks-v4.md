@@ -98,7 +98,7 @@ If the request is granted, the SOCKS server MUST attempt to establish a TCP conn
 
 A reply packet MUST be sent to the client upon the establishment of the connection, rejection of the request, or operational failure.
 
-When the DSTIP field is 0.0.0.1, which the protocol SOCKSv4a (See {{socks-protocol-version-4a}}) uses for a client wishes to connect using a domain name instead of an IP address, SOCKSv4 implementations MUST treat the the DSTIP field 0.0.0.1 as a normal DSTIP value and treat the following messages as the specification.
+When the DSTIP field is 0.0.0.1, which the protocol SOCKSv4a (See {{socks-protocol-version-4a}}) uses for a client wishes to connect using a domain name instead of an IP address, SOCKSv4 implementations SHOULD treat the the DSTIP field 0.0.0.1 as a normal DSTIP value and treat the following messages as the specification.
 
 ## CONNECT Reply Packet Format
 
