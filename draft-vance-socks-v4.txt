@@ -8,7 +8,7 @@ Intended status: Historic                                8 February 2026
 Expires: 12 August 2026
 
 
-                 SOCKS Protocol Version 4 Specification
+                        SOCKS Protocol Version 4
                       draft-vance-socks-v4-latest
 
 Abstract
