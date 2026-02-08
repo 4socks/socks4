@@ -317,7 +317,7 @@ The SOCKS reply code `CD` in replies defines four values:
 
 The SOCKS protocol is conventionally known to use TCP port 1080 for its service. This port number has already been registered in the IANA Service Name and Transport Protocol Port Number Registry for the `socks` service.
 
-# Original Auther
+# Original Author
 {:numbered="false"}
 ~~~~
       Ying-Da Lee
