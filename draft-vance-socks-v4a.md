@@ -103,12 +103,6 @@ The `DOMAIN` field contains the fully qualified domain name (FQDN) of the applic
 * Termination: The field MUST be terminated by a single `NULL` (0x00) octet.
 * Length Constraints: The `DOMAIN` string (excluding the terminator) SHOULD NOT exceed **255 octets**, consistent with the maximum length of a FQDN defined in [RFC1035]. Servers SHOULD enforce a maximum buffer limit for this field to mitigate resource exhaustion attacks.
 
-为了符合 RFC 的严谨性和完整性，我们需要对服务器的**处理逻辑**、**字节流解析边界**以及**异常处理**进行更细致的描述。
-
-以下是优化后的 **Section 4. Server Processing**：
-
----
-
 # Server Processing
 
 Upon receipt of a client request, a SOCKS 4A compliant server MUST process the data according to the following sequential states:
