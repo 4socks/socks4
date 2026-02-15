@@ -73,9 +73,9 @@ Table of Contents
    7.  References
      7.1.  Normative References
      7.2.  Informative References
-   Appendix A.  Common Operational Usages
-     A.1.  Proxy Chaining
-     A.2.  Handling "Leaky" Clients
+   Appendix A.  Operational Considerations and Implementation Notes
+     A.1.  Proxy Chaining and Relaying
+     A.2.  Client-Side Resolution "Leakage" and Server Robustness
    Appendix B.  Security Analysis
      B.1.  DNS Privacy and information Leakage
      B.2.  Server-Side Request Forgery
@@ -361,25 +361,56 @@ Table of Contents
               STD 7, RFC 9293, DOI 10.17487/RFC9293, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9293>.
 
-Appendix A.  Common Operational Usages
+Appendix A.  Operational Considerations and Implementation Notes
 
-A.1.  Proxy Chaining
+   The following behaviors were observed in historical deployments of
+   SOCKS 4A to address specific network constraints and interoperability
+   challenges.
 
-   In complex network topologies, a "SOCKSified" server (a proxy that
-   acts as a client to another proxy) may receive a SOCKS 4A request.
-   If the intermediate server cannot resolve the domain name itself
-   (e.g., it is also behind a restrictive firewall), it MAY pass the
-   SOCKS 4A request intact to the next-hop upstream SOCKS server.  This
-   allows resolution to happen at the most external point of the
-   network.
+A.1.  Proxy Chaining and Relaying
 
-A.2.  Handling "Leaky" Clients
+   In multi-tiered network environments, a SOCKS server (the
+   "intermediate proxy") may itself be configured to use another SOCKS
+   server (the "upstream proxy") for outbound connectivity.  When an
+   intermediate proxy receives a SOCKS 4A request:
 
-   Some client implementations may attempt to send SOCKS 4A requests
-   even if they have already resolved the IP.  While the specification
-   suggests 4A is for clients that _cannot_ resolve names, servers
-   SHOULD accept 4A requests regardless of the client's local
-   capabilities to ensure maximum compatibility.
+   *  Recursive Resolution: The intermediate proxy may attempt to
+      resolve the DOMAIN locally.  If successful, it may then downgrade
+      the request to a standard SOCKSv4 CONNECT/BIND using the resolved
+      IPv4 address when communicating with the upstream proxy.
+
+   *  Transparent Relaying: If the intermediate proxy lacks DNS access
+      or is configured for "blind" relaying, it passes the SOCKS 4A
+      request—including the 0.0.0.x DSTIP signaling and the DOMAIN
+      field—intact to the upstream proxy.  This delegates the resolution
+      responsibility to the edge of the network.
+
+   This mechanism was frequently employed in "firewall-behind-firewall"
+   scenarios where only the outermost gateway possessed external name
+   resolution capabilities.
+
+A.2.  Client-Side Resolution "Leakage" and Server Robustness
+
+   While the SOCKS 4A extension was primarily designed for clients
+   unable to perform local DNS lookups, many "SOCKSified" application
+   libraries (such as those using LD_PRELOAD or global proxy settings)
+   exhibited "leaky" behavior.
+
+   *  Pre-resolution: A client might resolve a domain name locally but
+      still initiate a SOCKS 4A request using that domain name rather
+      than the resolved IP address.
+
+   *  Server Interoperability: To ensure maximum compatibility with
+      various client stacks, historical SOCKS 4A server implementations
+      typically did not validate whether the client _needed_ to use 4A.
+      A server would process any request matching the 0.0.0.x DSTIP
+      pattern as a 4A request, regardless of the client's network
+      location or supposed capabilities.
+
+   This permissive approach was essential for maintaining a uniform
+   interface across diverse application environments, though it
+   occasionally resulted in redundant DNS queries if both the client and
+   the server performed the same resolution.
 
 Appendix B.  Security Analysis
 

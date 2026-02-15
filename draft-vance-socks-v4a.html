@@ -1191,13 +1191,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-common-operational-usages" class="internal xref">Common Operational Usages</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-operational-considerations-" class="internal xref">Operational Considerations and Implementation Notes</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
-                <p id="section-toc.1-1.8.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-proxy-chaining" class="internal xref">Proxy Chaining</a></p>
+                <p id="section-toc.1-1.8.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-proxy-chaining-and-relaying" class="internal xref">Proxy Chaining and Relaying</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
-                <p id="section-toc.1-1.8.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-handling-leaky-clients" class="internal xref">Handling "Leaky" Clients</a></p>
+                <p id="section-toc.1-1.8.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-client-side-resolution-leak" class="internal xref">Client-Side Resolution "Leakage" and Server Robustness</a></p>
 </li>
             </ul>
 </li>
@@ -1587,25 +1587,44 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 </div>
 </section>
 </div>
-<div id="common-operational-usages">
+<div id="operational-considerations-and-implementation-notes">
 <section id="appendix-A">
-      <h2 id="name-common-operational-usages">
-<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-common-operational-usages" class="section-name selfRef">Common Operational Usages</a>
+      <h2 id="name-operational-considerations-">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-operational-considerations-" class="section-name selfRef">Operational Considerations and Implementation Notes</a>
       </h2>
-<div id="proxy-chaining">
+<p id="appendix-A-1">The following behaviors were observed in historical deployments of SOCKS 4A to address specific network constraints and interoperability challenges.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<div id="proxy-chaining-and-relaying">
 <section id="appendix-A.1">
-        <h3 id="name-proxy-chaining">
-<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-proxy-chaining" class="section-name selfRef">Proxy Chaining</a>
+        <h3 id="name-proxy-chaining-and-relaying">
+<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-proxy-chaining-and-relaying" class="section-name selfRef">Proxy Chaining and Relaying</a>
         </h3>
-<p id="appendix-A.1-1">In complex network topologies, a "SOCKSified" server (a proxy that acts as a client to another proxy) may receive a SOCKS 4A request. If the intermediate server cannot resolve the domain name itself (e.g., it is also behind a restrictive firewall), it <span class="bcp14">MAY</span> pass the SOCKS 4A request intact to the next-hop upstream SOCKS server. This allows resolution to happen at the most external point of the network.<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.1-1">In multi-tiered network environments, a SOCKS server (the "intermediate proxy") may itself be configured to use another SOCKS server (the "upstream proxy") for outbound connectivity. When an intermediate proxy receives a SOCKS 4A request:<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-A.1-2.1">
+            <p id="appendix-A.1-2.1.1">Recursive Resolution: The intermediate proxy may attempt to resolve the DOMAIN locally. If successful, it may then downgrade the request to a standard SOCKSv4 CONNECT/BIND using the resolved IPv4 address when communicating with the upstream proxy.<a href="#appendix-A.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.1-2.2">
+            <p id="appendix-A.1-2.2.1">Transparent Relaying: If the intermediate proxy lacks DNS access or is configured for "blind" relaying, it passes the SOCKS 4A request—including the 0.0.0.x DSTIP signaling and the DOMAIN field—intact to the upstream proxy. This delegates the resolution responsibility to the edge of the network.<a href="#appendix-A.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="appendix-A.1-3">This mechanism was frequently employed in "firewall-behind-firewall" scenarios where only the outermost gateway possessed external name resolution capabilities.<a href="#appendix-A.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="handling-leaky-clients">
+<div id="client-side-resolution-leakage-and-server-robustness">
 <section id="appendix-A.2">
-        <h3 id="name-handling-leaky-clients">
-<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-handling-leaky-clients" class="section-name selfRef">Handling "Leaky" Clients</a>
+        <h3 id="name-client-side-resolution-leak">
+<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-client-side-resolution-leak" class="section-name selfRef">Client-Side Resolution "Leakage" and Server Robustness</a>
         </h3>
-<p id="appendix-A.2-1">Some client implementations may attempt to send SOCKS 4A requests even if they have already resolved the IP. While the specification suggests 4A is for clients that <em>cannot</em> resolve names, servers <span class="bcp14">SHOULD</span> accept 4A requests regardless of the client's local capabilities to ensure maximum compatibility.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
+<p id="appendix-A.2-1">While the SOCKS 4A extension was primarily designed for clients unable to perform local DNS lookups, many "SOCKSified" application libraries (such as those using <code>LD_PRELOAD</code> or global proxy settings) exhibited "leaky" behavior.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-A.2-2.1">
+            <p id="appendix-A.2-2.1.1">Pre-resolution: A client might resolve a domain name locally but still initiate a SOCKS 4A request using that domain name rather than the resolved IP address.<a href="#appendix-A.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-A.2-2.2">
+            <p id="appendix-A.2-2.2.1">Server Interoperability: To ensure maximum compatibility with various client stacks, historical SOCKS 4A server implementations typically did not validate whether the client <em>needed</em> to use 4A. A server would process any request matching the 0.0.0.x DSTIP pattern as a 4A request, regardless of the client's network location or supposed capabilities.<a href="#appendix-A.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="appendix-A.2-3">This permissive approach was essential for maintaining a uniform interface across diverse application environments, though it occasionally resulted in redundant DNS queries if both the client and the server performed the same resolution.<a href="#appendix-A.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
