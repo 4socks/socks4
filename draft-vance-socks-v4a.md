@@ -103,16 +103,43 @@ The `DOMAIN` field contains the fully qualified domain name (FQDN) of the applic
 * Termination: The field MUST be terminated by a single `NULL` (0x00) octet.
 * Length Constraints: The `DOMAIN` string (excluding the terminator) SHOULD NOT exceed **255 octets**, consistent with the maximum length of a FQDN defined in [RFC1035]. Servers SHOULD enforce a maximum buffer limit for this field to mitigate resource exhaustion attacks.
 
+为了符合 RFC 的严谨性和完整性，我们需要对服务器的**处理逻辑**、**字节流解析边界**以及**异常处理**进行更细致的描述。
+
+以下是优化后的 **Section 4. Server Processing**：
+
+---
+
 # Server Processing
 
-Upon receiving a request packet, a SOCKS 4A compliant server MUST perform the following steps:
+Upon receipt of a client request, a SOCKS 4A compliant server MUST process the data according to the following sequential states:
 
-1. Inspection: Read the first 8 bytes of the request to evaluate `VN`, `CD`, `DSTPORT`, and `DSTIP`.
-2. Logic Trigger: If `DSTIP` matches the pattern `0.0.0.x` (where ): Firstly, the server MUST continue reading the stream to extract the `USERID` (up to the first `NULL`). The server MUST then continue reading to extract the `DOMAIN` string (up to the second `NULL`).
-3. Resolution: The server attempts to resolve the `DOMAIN` string to an IPv4 address.
-4. Action: If the domain resolves, the server proceeds with the connection to the resolved IP and `DSTPORT`. If the domain cannot be resolved, the server MUST send a reply with `CD=91` (request rejected or failed) and terminate the connection.
+## Initial Header Parsing
 
-When the SOCKS server has processed the request, it sends an 8-byte reply packet to the client:
+The server MUST first read the fixed-length 8-octet header. It SHALL evaluate the fields as follows:
+
+* VN: If the version number is not 4, the server SHOULD terminate the connection.
+* CD: The server determines the requested operation (CONNECT or BIND).
+* DSTPORT: The destination port is extracted for later use in the connection attempt.
+* DSTIP: The server inspects the four-octet destination IP address to determine the routing mode (Standard SOCKSv4 or SOCKS 4A).
+
+## Routing Mode Selection and Field Extraction
+
+The server MUST apply the following logic based on the `DSTIP` value:
+
+1. SOCKS 4A Signaling: If the first three octets of `DSTIP` are zero and the fourth octet is non-zero (0.0.0.x, where x != 0), the server SHALL enter the SOCKS 4A extended resolution mode. The server MUST continue to read the input stream to extract the `USERID` string, defined as all octets up to and including the first `NULL` (0x00) terminator. Immediately following the `USERID` terminator, the server MUST continue reading to extract the `DOMAIN` string, defined as all octets up to and including the second `NULL` (0x00) terminator.
+2. Standard SOCKSv4 Handling: If the `DSTIP` does not match the 0.0.0.x pattern (including the case of 0.0.0.0), the server MUST follow the standard SOCKSv4 procedure, extracting only the `USERID` field. In this mode, the server MUST NOT attempt to read or interpret any data following the first `NULL` terminator as a domain name.
+
+## Name Resolution and Execution
+
+In SOCKS 4A mode, once the `DOMAIN` string is extracted:
+
+* Resolution: The server SHALL attempt to resolve the ASCII-encoded domain name to a valid IPv4 address using the server's local DNS resolver or host lookup mechanism.
+* Successful Resolution: If the domain resolves to one or more IPv4 addresses, the server SHOULD attempt to establish the requested TCP session (for CONNECT) or bind a socket (for BIND) using the first resolvable and reachable address.
+* Resolution Failure: If the domain cannot be resolved, or if the resolver returns an error, the server MUST consider the request failed. It SHALL return a reply packet with `CD = 91` and MUST immediately close the connection to the client.
+
+## Response Generation
+
+Following the completion (success or failure) of the request processing, the server MUST return an 8-octet reply packet. For SOCKS 4A `CONNECT` operations, the `DSTPORT` and `DSTIP` fields in the reply are typically set to zero and SHOULD be ignored by the client. For `BIND` operations, these fields MUST contain the specific port and IP address where the SOCKS server is listening for the inbound connection.
 
 | Field | Description | Size (bytes) | Value/Notes |
 | --- | --- | --- | --- |
@@ -121,6 +148,7 @@ When the SOCKS server has processed the request, it sends an 8-byte reply packet
 | DSTPORT | Destination Port | 2 | Ignored for CONNECT; provided for BIND |
 | DSTIP | Destination IP | 4 | Ignored for CONNECT; provided for BIND |
 {: #socks4a-rep-format title="SOCKS 4A Reply Structure"}
+
 
 # Security Considerations
 
