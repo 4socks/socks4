@@ -73,7 +73,7 @@ Table of Contents
    7.  References
      7.1.  Normative References
      7.2.  Informative References
-   Appendix A.  Common Operational Extensions
+   Appendix A.  Common Operational Usages
      A.1.  Proxy Chaining
      A.2.  Handling "Leaky" Clients
    Appendix B.  Security Analysis
@@ -361,7 +361,7 @@ Table of Contents
               STD 7, RFC 9293, DOI 10.17487/RFC9293, August 2022,
               <https://www.rfc-editor.org/rfc/rfc9293>.
 
-Appendix A.  Common Operational Extensions
+Appendix A.  Common Operational Usages
 
 A.1.  Proxy Chaining
 
