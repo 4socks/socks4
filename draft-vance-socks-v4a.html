@@ -1158,6 +1158,20 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-server-processing" class="internal xref">Server Processing</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-initial-header-parsing" class="internal xref">Initial Header Parsing</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-routing-mode-selection-and-" class="internal xref">Routing Mode Selection and Field Extraction</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-name-resolution-and-executi" class="internal xref">Name Resolution and Execution</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
+                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="auto internal xref">4.4</a>.  <a href="#name-response-generation" class="internal xref">Response Generation</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
@@ -1366,63 +1380,113 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-server-processing">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-server-processing" class="section-name selfRef">Server Processing</a>
       </h2>
-<p id="section-4-1">Upon receiving a request packet, a SOCKS 4A compliant server <span class="bcp14">MUST</span> perform the following steps:<a href="#section-4-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-4-2">
-<li id="section-4-2.1">
-          <p id="section-4-2.1.1">Inspection: Read the first 8 bytes of the request to evaluate <code>VN</code>, <code>CD</code>, <code>DSTPORT</code>, and <code>DSTIP</code>.<a href="#section-4-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-4-1">Upon receipt of a client request, a SOCKS 4A compliant server <span class="bcp14">MUST</span> process the data according to the following sequential states:<a href="#section-4-1" class="pilcrow">¶</a></p>
+<div id="initial-header-parsing">
+<section id="section-4.1">
+        <h3 id="name-initial-header-parsing">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-initial-header-parsing" class="section-name selfRef">Initial Header Parsing</a>
+        </h3>
+<p id="section-4.1-1">The server <span class="bcp14">MUST</span> first read the fixed-length 8-octet header. It <span class="bcp14">SHALL</span> evaluate the fields as follows:<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-2.1">
+            <p id="section-4.1-2.1.1">VN: If the version number is not 4, the server <span class="bcp14">SHOULD</span> terminate the connection.<a href="#section-4.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-4-2.2">
-          <p id="section-4-2.2.1">Logic Trigger: If <code>DSTIP</code> matches the pattern <code>0.0.0.x</code> (where ): Firstly, the server <span class="bcp14">MUST</span> continue reading the stream to extract the <code>USERID</code> (up to the first <code>NULL</code>). The server <span class="bcp14">MUST</span> then continue reading to extract the <code>DOMAIN</code> string (up to the second <code>NULL</code>).<a href="#section-4-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-4.1-2.2">
+            <p id="section-4.1-2.2.1">CD: The server determines the requested operation (CONNECT or BIND).<a href="#section-4.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-4-2.3">
-          <p id="section-4-2.3.1">Resolution: The server attempts to resolve the <code>DOMAIN</code> string to an IPv4 address.<a href="#section-4-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-4.1-2.3">
+            <p id="section-4.1-2.3.1">DSTPORT: The destination port is extracted for later use in the connection attempt.<a href="#section-4.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li id="section-4-2.4">
-          <p id="section-4-2.4.1">Action: If the domain resolves, the server proceeds with the connection to the resolved IP and <code>DSTPORT</code>. If the domain cannot be resolved, the server <span class="bcp14">MUST</span> send a reply with <code>CD=91</code> (request rejected or failed) and terminate the connection.<a href="#section-4-2.4.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-4.1-2.4">
+            <p id="section-4.1-2.4.1">DSTIP: The server inspects the four-octet destination IP address to determine the routing mode (Standard SOCKSv4 or SOCKS 4A).<a href="#section-4.1-2.4.1" class="pilcrow">¶</a></p>
 </li>
-      </ol>
-<p id="section-4-3">When the SOCKS server has processed the request, it sends an 8-byte reply packet to the client:<a href="#section-4-3" class="pilcrow">¶</a></p>
+        </ul>
+</section>
+</div>
+<div id="routing-mode-selection-and-field-extraction">
+<section id="section-4.2">
+        <h3 id="name-routing-mode-selection-and-">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-routing-mode-selection-and-" class="section-name selfRef">Routing Mode Selection and Field Extraction</a>
+        </h3>
+<p id="section-4.2-1">The server <span class="bcp14">MUST</span> apply the following logic based on the <code>DSTIP</code> value:<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-4.2-2">
+<li id="section-4.2-2.1">
+            <p id="section-4.2-2.1.1">SOCKS 4A Signaling: If the first three octets of <code>DSTIP</code> are zero and the fourth octet is non-zero (0.0.0.x, where x != 0), the server <span class="bcp14">SHALL</span> enter the SOCKS 4A extended resolution mode. The server <span class="bcp14">MUST</span> continue to read the input stream to extract the <code>USERID</code> string, defined as all octets up to and including the first <code>NULL</code> (0x00) terminator. Immediately following the <code>USERID</code> terminator, the server <span class="bcp14">MUST</span> continue reading to extract the <code>DOMAIN</code> string, defined as all octets up to and including the second <code>NULL</code> (0x00) terminator.<a href="#section-4.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-4.2-2.2">
+            <p id="section-4.2-2.2.1">Standard SOCKSv4 Handling: If the <code>DSTIP</code> does not match the 0.0.0.x pattern (including the case of 0.0.0.0), the server <span class="bcp14">MUST</span> follow the standard SOCKSv4 procedure, extracting only the <code>USERID</code> field. In this mode, the server <span class="bcp14">MUST NOT</span> attempt to read or interpret any data following the first <code>NULL</code> terminator as a domain name.<a href="#section-4.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+</section>
+</div>
+<div id="name-resolution-and-execution">
+<section id="section-4.3">
+        <h3 id="name-name-resolution-and-executi">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-name-resolution-and-executi" class="section-name selfRef">Name Resolution and Execution</a>
+        </h3>
+<p id="section-4.3-1">In SOCKS 4A mode, once the <code>DOMAIN</code> string is extracted:<a href="#section-4.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.3-2.1">
+            <p id="section-4.3-2.1.1">Resolution: The server <span class="bcp14">SHALL</span> attempt to resolve the ASCII-encoded domain name to a valid IPv4 address using the server's local DNS resolver or host lookup mechanism.<a href="#section-4.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.3-2.2">
+            <p id="section-4.3-2.2.1">Successful Resolution: If the domain resolves to one or more IPv4 addresses, the server <span class="bcp14">SHOULD</span> attempt to establish the requested TCP session (for CONNECT) or bind a socket (for BIND) using the first resolvable and reachable address.<a href="#section-4.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.3-2.3">
+            <p id="section-4.3-2.3.1">Resolution Failure: If the domain cannot be resolved, or if the resolver returns an error, the server <span class="bcp14">MUST</span> consider the request failed. It <span class="bcp14">SHALL</span> return a reply packet with <code>CD = 91</code> and <span class="bcp14">MUST</span> immediately close the connection to the client.<a href="#section-4.3-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="response-generation">
+<section id="section-4.4">
+        <h3 id="name-response-generation">
+<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-response-generation" class="section-name selfRef">Response Generation</a>
+        </h3>
+<p id="section-4.4-1">Following the completion (success or failure) of the request processing, the server <span class="bcp14">MUST</span> return an 8-octet reply packet. For SOCKS 4A <code>CONNECT</code> operations, the <code>DSTPORT</code> and <code>DSTIP</code> fields in the reply are typically set to zero and <span class="bcp14">SHOULD</span> be ignored by the client. For <code>BIND</code> operations, these fields <span class="bcp14">MUST</span> contain the specific port and IP address where the SOCKS server is listening for the inbound connection.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
 <span id="name-socks-4a-reply-structure"></span><div id="socks4a-rep-format">
 <table class="center" id="table-2">
-        <caption>
+          <caption>
 <a href="#table-2" class="selfRef">Table 2</a>:
 <a href="#name-socks-4a-reply-structure" class="selfRef">SOCKS 4A Reply Structure</a>
-        </caption>
+          </caption>
 <thead>
-          <tr>
-            <th class="text-left" rowspan="1" colspan="1">Field</th>
-            <th class="text-left" rowspan="1" colspan="1">Description</th>
-            <th class="text-left" rowspan="1" colspan="1">Size (bytes)</th>
-            <th class="text-left" rowspan="1" colspan="1">Value/Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">VN</td>
-            <td class="text-left" rowspan="1" colspan="1">Reply Version</td>
-            <td class="text-left" rowspan="1" colspan="1">1</td>
-            <td class="text-left" rowspan="1" colspan="1">0x00 (Null byte)</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">CD</td>
-            <td class="text-left" rowspan="1" colspan="1">Result Code</td>
-            <td class="text-left" rowspan="1" colspan="1">1</td>
-            <td class="text-left" rowspan="1" colspan="1">0x5A (Granted), 0x5B (Rejected/Failed), etc.</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">DSTPORT</td>
-            <td class="text-left" rowspan="1" colspan="1">Destination Port</td>
-            <td class="text-left" rowspan="1" colspan="1">2</td>
-            <td class="text-left" rowspan="1" colspan="1">Ignored for CONNECT; provided for BIND</td>
-          </tr>
-          <tr>
-            <td class="text-left" rowspan="1" colspan="1">DSTIP</td>
-            <td class="text-left" rowspan="1" colspan="1">Destination IP</td>
-            <td class="text-left" rowspan="1" colspan="1">4</td>
-            <td class="text-left" rowspan="1" colspan="1">Ignored for CONNECT; provided for BIND</td>
-          </tr>
-        </tbody>
-      </table>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Field</th>
+              <th class="text-left" rowspan="1" colspan="1">Description</th>
+              <th class="text-left" rowspan="1" colspan="1">Size (bytes)</th>
+              <th class="text-left" rowspan="1" colspan="1">Value/Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">VN</td>
+              <td class="text-left" rowspan="1" colspan="1">Reply Version</td>
+              <td class="text-left" rowspan="1" colspan="1">1</td>
+              <td class="text-left" rowspan="1" colspan="1">0x00 (Null byte)</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">CD</td>
+              <td class="text-left" rowspan="1" colspan="1">Result Code</td>
+              <td class="text-left" rowspan="1" colspan="1">1</td>
+              <td class="text-left" rowspan="1" colspan="1">0x5A (Granted), 0x5B (Rejected/Failed), etc.</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">DSTPORT</td>
+              <td class="text-left" rowspan="1" colspan="1">Destination Port</td>
+              <td class="text-left" rowspan="1" colspan="1">2</td>
+              <td class="text-left" rowspan="1" colspan="1">Ignored for CONNECT; provided for BIND</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">DSTIP</td>
+              <td class="text-left" rowspan="1" colspan="1">Destination IP</td>
+              <td class="text-left" rowspan="1" colspan="1">4</td>
+              <td class="text-left" rowspan="1" colspan="1">Ignored for CONNECT; provided for BIND</td>
+            </tr>
+          </tbody>
+        </table>
+</div>
+</section>
 </div>
 </section>
 </div>
