@@ -154,7 +154,7 @@ No IANA actions required.
 
 --- back
 
-# Common Operational Extensions
+# Common Operational Usages
 
 ## Proxy Chaining
 
