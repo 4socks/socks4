@@ -4,8 +4,8 @@
 
 Network Working Group                                        D. J. Vance
 Internet-Draft                                               Independent
-Intended status: Historic                               13 February 2026
-Expires: 17 August 2026
+Intended status: Historic                               15 February 2026
+Expires: 19 August 2026
 
 
                        SOCKS Protocol Version 4A
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 August 2026.
+   This Internet-Draft will expire on 19 August 2026.
 
 Copyright Notice
 
