@@ -117,7 +117,7 @@ To ensure compatibility with widespread protocol extensions (notably SOCKSv4a), 
 
 - If the first three octets of the DSTIP are zero and the fourth octet is non-zero (the range 0.0.0.x), the SOCKS server MUST NOT attempt to establish a TCP connection to this literal IP address.
 
-- A SOCKSv4 server without SOCKSv4a support MUST treat such a DSTIP as an unreachable destination and return a reply with CD = 91.
+- A SOCKSv4 server without SOCKSv4a support MUST treat such a DSTIP as an unreachable destination and return a reply with CD = 91. An implementation conforming to this protocol MUST NOT process any octets encountered after the initial NULL octet that terminates the USERID field.
 
 ## CONNECT Reply Packet Format
 
