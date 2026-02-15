@@ -225,7 +225,10 @@ Table of Contents
       attempt to establish a TCP connection to this literal IP address.
 
    *  A SOCKSv4 server without SOCKSv4a support MUST treat such a DSTIP
-      as an unreachable destination and return a reply with CD = 91.
+      as an unreachable destination and return a reply with CD = 91.  An
+      implementation conforming to this protocol MUST NOT process any
+      octets encountered after the initial NULL octet that terminates
+      the USERID field.
 
 3.3.  CONNECT Reply Packet Format
 

@@ -1412,7 +1412,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
               <p id="section-3.2.1-2.1.1">If the first three octets of the DSTIP are zero and the fourth octet is non-zero (the range 0.0.0.x), the SOCKS server <span class="bcp14">MUST NOT</span> attempt to establish a TCP connection to this literal IP address.<a href="#section-3.2.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-3.2.1-2.2">
-              <p id="section-3.2.1-2.2.1">A SOCKSv4 server without SOCKSv4a support <span class="bcp14">MUST</span> treat such a DSTIP as an unreachable destination and return a reply with CD = 91.<a href="#section-3.2.1-2.2.1" class="pilcrow">¶</a></p>
+              <p id="section-3.2.1-2.2.1">A SOCKSv4 server without SOCKSv4a support <span class="bcp14">MUST</span> treat such a DSTIP as an unreachable destination and return a reply with CD = 91. An implementation conforming to this protocol <span class="bcp14">MUST NOT</span> process any octets encountered after the initial NULL octet that terminates the USERID field.<a href="#section-3.2.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
