@@ -211,6 +211,10 @@ SOCKS 4A, like its predecessor, provides no facility for session encryption, mes
 
 Implementations requiring confidentiality or integrity MUST wrap the SOCKS 4A transaction in a secure transport layer, such as TLS or an SSH tunnel.
 
+# Example Implementations
+
+TODO
+
 # Original Author
 {:numbered="false"}
 ~~~~
@@ -221,6 +225,19 @@ Implementations requiring confidentiality or integrity MUST wrap the SOCKS 4A tr
 
       David Koblas
       Netskope
+~~~~
+
+We sincerely apologize that, due to the document's long history and the passage of time, many early contributors may not have been formally included in this list. We extend our deepest gratitude to all who have contributed to this work. If you believe your name should be added to the acknowledgments, please contact the draft maintainers.
+
+# Contributers
+{:numbered="false"}
+~~~~
+      George G. Michaelson
+      Asia-Pacific Network Information Centre
+      6 Cordelia St
+      South Brisbane QLD 4101
+      Australia
+      Email: ggm@apnic.net
 ~~~~
 
 We sincerely apologize that, due to the document's long history and the passage of time, many early contributors may not have been formally included in this list. We extend our deepest gratitude to all who have contributed to this work. If you believe your name should be added to the acknowledgments, please contact the draft maintainers.
