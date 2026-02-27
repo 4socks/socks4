@@ -4,8 +4,8 @@
 
 Network Working Group                                        D. J. Vance
 Internet-Draft                                               Independent
-Intended status: Historic                               15 February 2026
-Expires: 19 August 2026
+Intended status: Historic                               27 February 2026
+Expires: 31 August 2026
 
 
                        SOCKS Protocol Version 4A
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 August 2026.
+   This Internet-Draft will expire on 31 August 2026.
 
 Copyright Notice
 
@@ -81,7 +81,9 @@ Table of Contents
      B.2.  Server-Side Request Forgery
      B.3.  Denial of Service and Resource Exhaustion
      B.4.  Lack of Cryptographic Integrity and Authentication
+   Appendix C.  Example Implementations
    Original Author
+   Contributers
    Author's Address
 
 1.  Introduction
@@ -493,6 +495,10 @@ B.4.  Lack of Cryptographic Integrity and Authentication
    SOCKS 4A transaction in a secure transport layer, such as TLS or an
    SSH tunnel.
 
+Appendix C.  Example Implementations
+
+   TODO
+
 Original Author
 
          Ying-Da Lee
@@ -502,6 +508,22 @@ Original Author
 
          David Koblas
          Netskope
+
+   We sincerely apologize that, due to the document's long history and
+   the passage of time, many early contributors may not have been
+   formally included in this list.  We extend our deepest gratitude to
+   all who have contributed to this work.  If you believe your name
+   should be added to the acknowledgments, please contact the draft
+   maintainers.
+
+Contributers
+
+         George G. Michaelson
+         Asia-Pacific Network Information Centre
+         6 Cordelia St
+         South Brisbane QLD 4101
+         Australia
+         Email: ggm@apnic.net
 
    We sincerely apologize that, due to the document's long history and
    the passage of time, many early contributors may not have been
