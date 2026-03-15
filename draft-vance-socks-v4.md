@@ -1,6 +1,6 @@
 ---
 title: "SOCKS Protocol Version 4"
-abbrev: "SOCKS4 SPEC"
+abbrev: "SOCKS4"
 category: historic
 
 docname: draft-vance-socks-v4-latest
