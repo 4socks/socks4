@@ -229,7 +229,7 @@ TODO
 
 We sincerely apologize that, due to the document's long history and the passage of time, many early contributors may not have been formally included in this list. We extend our deepest gratitude to all who have contributed to this work. If you believe your name should be added to the acknowledgments, please contact the draft maintainers.
 
-# Contributers
+# Contributors
 {:numbered="false"}
 ~~~~
       George G. Michaelson
@@ -237,5 +237,5 @@ We sincerely apologize that, due to the document's long history and the passage 
       6 Cordelia St
       South Brisbane QLD 4101
       Australia
-      Email: ggm@apnic.net
+      Email: ggm@algebras.org
 ~~~~
