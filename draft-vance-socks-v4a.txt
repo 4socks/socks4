@@ -4,8 +4,8 @@
 
 Network Working Group                                        D. J. Vance
 Internet-Draft                                               Independent
-Intended status: Historic                                  15 March 2026
-Expires: 16 September 2026
+Intended status: Historic                                  25 March 2026
+Expires: 26 September 2026
 
 
                        SOCKS Protocol Version 4A
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 September 2026.
+   This Internet-Draft will expire on 26 September 2026.
 
 Copyright Notice
 
@@ -83,7 +83,7 @@ Table of Contents
      B.4.  Lack of Cryptographic Integrity and Authentication
    Appendix C.  Example Implementations
    Original Author
-   Contributers
+   Contributors
    Author's Address
 
 1.  Introduction
@@ -516,14 +516,14 @@ Original Author
    should be added to the acknowledgments, please contact the draft
    maintainers.
 
-Contributers
+Contributors
 
          George G. Michaelson
          Asia-Pacific Network Information Centre
          6 Cordelia St
          South Brisbane QLD 4101
          Australia
-         Email: ggm@apnic.net
+         Email: ggm@algebras.org
 
 Author's Address
 
