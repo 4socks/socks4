@@ -76,7 +76,7 @@ This specification uses the following terms:
 * DSTPORT (Destination Port): The port number of the Application Server, as specified in the SOCKS request.
 * USERID: A variable-length, NULL-terminated string identifying the client's user on the local system.
 * NULL: A byte of all zero bits, used to terminate the USERID field.
-* IDENT: A protocol (as described in RFC 1413) used by the SOCKS server to verify the user identity of the client.
+* IDENT: A protocol (as described in {{RFC1413}}) used by the SOCKS server to verify the user identity of the client.
 
 # CONNECT Operation
 
@@ -105,7 +105,7 @@ The client MUST send a request packet with the following structure:
 
 ## CONNECT Processing and Reply
 
-The SOCKS server MUST determine whether to grant the request based on criteria such as the source IP address, DSTIP, DSTPORT, USERID, and information obtained via IDENT (cf. RFC 1413).
+The SOCKS server MUST determine whether to grant the request based on criteria such as the source IP address, DSTIP, DSTPORT, USERID, and information obtained via IDENT (cf. {{RFC1413}}).
 
 If the request is granted, the SOCKS server MUST attempt to establish a TCP connection to the specified DSTPORT on the DSTIP.
 
