@@ -30,6 +30,7 @@ normative:
        date: 1992
 
 informative:
+  RFC768:
   RFC791:
   RFC9293:
   RFC1928:
@@ -276,11 +277,11 @@ The SOCKS Version 4 (SOCKSv4) protocol, designed exclusively for TCP proxy trave
 
 ## Authentication and Authorization Deficiencies
 
-SOCKSv4's client identification relies on the USERID field, often intended for use with the IDENT protocol (specified in RFC 1413). This reliance constitutes a major security risk because the IDENT protocol depends on an untrusted daemon on the client host, making the identification process susceptible to trivial spoofing or malicious disabling. Crucially, SOCKSv4 entirely lacks integrated provisions for strong client-to-server or server-to-client authentication, offering no mechanisms for verifying user credentials, passwords, or employing cryptographic challenge-response methods. Consequently, access control (authorization) is managed exclusively by the SOCKS server's local configuration and security policy. A failure in the server's policy or configuration directly risks granting unauthorized network access across the protective boundary of the firewall.
+SOCKSv4's client identification relies on the USERID field, often intended for use with the IDENT protocol (specified in {{RFC1413}}). This reliance constitutes a major security risk because the IDENT protocol depends on an untrusted daemon on the client host, making the identification process susceptible to trivial spoofing or malicious disabling. Crucially, SOCKSv4 entirely lacks integrated provisions for strong client-to-server or server-to-client authentication, offering no mechanisms for verifying user credentials, passwords, or employing cryptographic challenge-response methods. Consequently, access control (authorization) is managed exclusively by the SOCKS server's local configuration and security policy. A failure in the server's policy or configuration directly risks granting unauthorized network access across the protective boundary of the firewall.
 
 ## Data Integrity and Transport Limitations
 
-SOCKSv4 does not incorporate any encryption capabilities for the application data stream. As a session layer relay, it forwards all application traffic, including sensitive data, in plaintext. This inherent vulnerability exposes all transmitted data to passive network eavesdropping and interception, resulting in a total absence of confidentiality. Furthermore, the protocol’s operational scope is strictly confined to proxying Transmission Control Protocol (TCP) connections. It provides no native support for the relay of User Datagram Protocol (UDP) traffic or other IP-layer protocols, limiting its utility and scope of protection.
+SOCKSv4 does not incorporate any encryption capabilities for the application data stream. As a session layer relay, it forwards all application traffic, including sensitive data, in plaintext. This inherent vulnerability exposes all transmitted data to passive network eavesdropping and interception, resulting in a total absence of confidentiality. Furthermore, the protocol’s operational scope is strictly confined to proxying Transmission Control Protocol (defined in {{RFC9293}}) connections. It provides no native support for the relay of User Datagram Protocol (defined in {{RFC768}}) traffic or other IP-layer protocols, limiting its utility and scope of protection.
 
 ## Vulnerabilities Associated with the BIND Operation
 
@@ -292,7 +293,7 @@ Every successful SOCKS connection consumes finite server resources, including ac
 
 ## Recommended Mitigation and Deployment Practices
 
-Given SOCKSv4's security deficiencies, its deployment should be strictly limited to environments designated as highly trusted and subject to stringent local policy control. Where SOCKSv4 must transport sensitive application traffic, the protocol must be encapsulated within an existing secure transport layer, such as a Transport Layer Security (TLS/SSL) or IPsec tunnel, to establish the essential confidentiality and integrity mechanisms that SOCKSv4 lacks. Operators should actively plan for migration to SOCKS Version 5 (RFC 1928), which incorporates native, robust authentication methods.
+Given SOCKSv4's security deficiencies, its deployment should be strictly limited to environments designated as highly trusted and subject to stringent local policy control. Where SOCKSv4 must transport sensitive application traffic, the protocol must be encapsulated within an existing secure transport layer, such as a Transport Layer Security (TLS/SSL) or IPsec tunnel, to establish the essential confidentiality and integrity mechanisms that SOCKSv4 lacks. Operators should actively plan for migration to SOCKS Version 5 ({{RFC1928}}), which incorporates native, robust authentication methods.
 
 # Existing Values
 
