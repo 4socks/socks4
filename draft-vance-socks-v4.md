@@ -34,6 +34,7 @@ informative:
   RFC791:
   RFC9293:
   RFC1928:
+  RFC1948:
   RFC1929:
   RFC3552:
   RFC3365:
