@@ -37,6 +37,10 @@ informative:
   RFC1929:
   RFC3552:
   RFC3365:
+  RFC4301:
+  RFC4732:
+  RFC4953:
+  RFC8446:
   SOCKS4a:
        title: "SOCKS 4A: A  Simple Extension to SOCKS 4 Protocol"
        author:
@@ -262,9 +266,9 @@ Although DSTIP and DSTPORT in the BIND request are intended to identify the appl
 
 When initiating a BIND request, a client SHOULD ensure that DSTIP is the address of the application server it expects to receive the connection from, to improve compatibility.
 
-## Explanation of Timeout Mechanism
+## Common Implementations of Timeout Mechanism
 
-As mandated by Section 5, the SOCKS server MUST employ time limits. In common implementations, timeouts usually trigger under the following circumstances:
+As mandated by {{timeout-mechanism}}, the SOCKS server MUST employ time limits. In common implementations, timeouts usually trigger under the following circumstances:
 
 * CONNECT Timeout: The server is unable to establish a connection with DSTIP:DSTPORT within the specified time.
 * Timeout after the first BIND reply: After the SOCKS server successfully binds the listening socket (sent the first 90 reply), but fails to receive an inbound connection from the application server within the specified time.
@@ -273,27 +277,27 @@ When a timeout occurs, the server MUST immediately close the connection with the
 
 # Security Analysis
 
-The SOCKS Version 4 (SOCKSv4) protocol, designed exclusively for TCP proxy traversal across network firewalls, is fundamentally weak from a security perspective as it operates solely at the session layer and lacks intrinsic security mechanisms. Any deployment of SOCKSv4 must be critically assessed against its inherent deficiencies.
+The SOCKS Version 4 (SOCKSv4) protocol was designed as a pragmatic mechanism for TCP proxying across firewalls in an era when the Internet threat model was significantly less hostile than at present. By contemporary standards, as established in {{RFC3552}} and {{RFC3365}} (BCP 61), SOCKSv4 is considered fundamentally insecure. It fails to meet the "strong security" requirements mandated for Internet protocols because it lacks native mechanisms for mutual authentication, data confidentiality, and integrity protection.
 
-## Authentication and Authorization Deficiencies
+## Weaknesses in Identification and Authentication
 
-SOCKSv4's client identification relies on the USERID field, often intended for use with the IDENT protocol (specified in {{RFC1413}}). This reliance constitutes a major security risk because the IDENT protocol depends on an untrusted daemon on the client host, making the identification process susceptible to trivial spoofing or malicious disabling. Crucially, SOCKSv4 entirely lacks integrated provisions for strong client-to-server or server-to-client authentication, offering no mechanisms for verifying user credentials, passwords, or employing cryptographic challenge-response methods. Consequently, access control (authorization) is managed exclusively by the SOCKS server's local configuration and security policy. A failure in the server's policy or configuration directly risks granting unauthorized network access across the protective boundary of the firewall.
+The primary mechanism for client identification in SOCKSv4 is the USERID field, typically leveraged in conjunction with the Identification Protocol (IDENT) as defined in {{RFC1413}}. As noted in the security considerations of {{RFC1413}}, the information returned by an IDENT server is only as trustworthy as the client host and the network path. In a modern decentralized network, a malicious actor can easily spoof IDENT responses or disable the service entirely, rendering the USERID field unsuitable for any meaningful authorization decisions. Furthermore, SOCKSv4 provides no facility for server-to-client authentication, leaving the client vulnerable to "rogue proxy" attacks where an adversary intercepts the connection and masquerades as the intended SOCKS server. This lack of cryptographic authentication deviates from the best practices for session-layer protocols outlined in {{RFC1928}}.
 
-## Data Integrity and Transport Limitations
+## Absence of Confidentiality and Integrity
 
-SOCKSv4 does not incorporate any encryption capabilities for the application data stream. As a session layer relay, it forwards all application traffic, including sensitive data, in plaintext. This inherent vulnerability exposes all transmitted data to passive network eavesdropping and interception, resulting in a total absence of confidentiality. Furthermore, the protocol’s operational scope is strictly confined to proxying Transmission Control Protocol (defined in {{RFC9293}}) connections. It provides no native support for the relay of User Datagram Protocol (defined in {{RFC768}}) traffic or other IP-layer protocols, limiting its utility and scope of protection.
+SOCKSv4 operates strictly as a plaintext relay. It does not incorporate any cryptographic transforms to protect the application data stream. Consequently, all traffic traversing a SOCKSv4 proxy is susceptible to passive eavesdropping and active injection or modification by any entity with access to the network path. Under the criteria defined in BCP 61 {{RFC3365}}, protocols that fail to implement strong encryption are insufficient for use over the public Internet. While SOCKSv4 is confined to proxying TCP connections as defined in {{RFC9293}}, its inability to handle UDP traffic (defined in {{RFC768}}) or provide per-packet integrity checks means that even the protocol’s control plane—such as the BIND and CONNECT requests—can be manipulated by an on-path attacker.
 
-## Vulnerabilities Associated with the BIND Operation
+## Vulnerabilities in the BIND Operation
 
-The BIND command, used for establishing a socket for an anticipated inbound connection (a callback) from an application server, introduces distinct security challenges. The SOCKS server attempts a rudimentary security check by comparing the source IP address of the incoming connection with the target address (DSTIP) specified in the client's request. However, a malicious actor can easily forge the source IP address of the inbound connection, potentially bypassing this basic server check and facilitating an unauthorized session. Moreover, in network topologies employing Network Address Translation (NAT) or Port Address Translation (PAT), the source IP address is structurally altered, rendering the BIND source address verification mechanism unreliable, ineffectual, or operationally complex to maintain.
+The BIND command, intended to support protocols requiring secondary inbound connections, presents a significant attack surface. The protocol’s reliance on a rudimentary source IP address check to validate the incoming "callback" connection is inherently flawed. As documented in {{RFC1948}} and {{RFC4953}}, IP address-based authentication is easily subverted through IP spoofing. Additionally, the prevalence of Network Address Translation (NAT) and middleboxes in modern architectures frequently masks the true source IP of the remote host, making the SOCKSv4 BIND verification either operationally brittle or entirely ineffective. An attacker can exploit this weakness to hijack the inbound socket, potentially gaining unauthorized access to the client’s internal network environment.
 
-## Denial of Service Vector
+## Susceptibility to Resource Exhaustion
 
-Every successful SOCKS connection consumes finite server resources, including active sockets, allocated memory, and network bandwidth. A direct vector for a Denial of Service attack exists where a malicious client can exploit this resource consumption by initiating a large volume of connection attempts, particularly through the resource-intensive BIND operation, to rapidly exhaust the SOCKS server’s capacity. Although the protocol specifies a basic connection establishment timeout mechanism (2 minutes), this measure is entirely insufficient in scope and rigor to fully mitigate the risks associated with sophisticated DoS attacks.
+SOCKSv4 lacks robust flow control and state management for its control plane, making it a viable vector for Denial of Service (DoS) attacks. Every request, particularly the BIND operation which requires the server to listen for an indeterminate period, consumes finite system resources including memory, file descriptors, and kernel state. While the protocol suggests a two-minute timeout for connection establishment, this fixed value is not an adequate defense against coordinated resource exhaustion attacks. Without the modern rate-limiting and state-tracking mechanisms discussed in {{RFC4732}}, a SOCKSv4 server can be easily overwhelmed by a relatively small number of malicious clients.
 
-## Recommended Mitigation and Deployment Practices
+## Deployment Limitations and Mitigation
 
-Given SOCKSv4's security deficiencies, its deployment should be strictly limited to environments designated as highly trusted and subject to stringent local policy control. Where SOCKSv4 must transport sensitive application traffic, the protocol must be encapsulated within an existing secure transport layer, such as a Transport Layer Security (TLS/SSL) or IPsec tunnel, to establish the essential confidentiality and integrity mechanisms that SOCKSv4 lacks. Operators should actively plan for migration to SOCKS Version 5 ({{RFC1928}}), which incorporates native, robust authentication methods.
+Given the deficiencies detailed above, SOCKSv4 is classified as a "Historic" protocol and its use is strongly discouraged. In scenarios where legacy requirements necessitate its deployment, it MUST be encapsulated within a secure transport layer, such as Transport Layer Security (TLS) defined in {{RFC8446}} or an IPsec tunnel as defined in {{RFC4301}}, to provide the requisite security properties. Operators are urged to migrate to SOCKS Version 5 {{RFC1928}}, which supports extensible authentication (GSS-API, etc.) and UDP proxying, or to modern proxying solutions that satisfy the security requirements of the IETF "Danvers Doctrine" as memorialized in {{RFC3365}}.
 
 # Existing Values
 
