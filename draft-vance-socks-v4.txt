@@ -4,8 +4,8 @@
 
 Network Working Group                                        D. J. Vance
 Internet-Draft                                               Independent
-Intended status: Historic                                  10 April 2026
-Expires: 12 October 2026
+Intended status: Historic                                  11 April 2026
+Expires: 13 October 2026
 
 
                         SOCKS Protocol Version 4
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 October 2026.
+   This Internet-Draft will expire on 13 October 2026.
 
 Copyright Notice
 
@@ -444,6 +444,10 @@ Table of Contents
               DOI 10.17487/RFC3552, July 2003,
               <https://www.rfc-editor.org/rfc/rfc3552>.
 
+   [RFC768]   Postel, J., "User Datagram Protocol", STD 6, RFC 768,
+              DOI 10.17487/RFC0768, August 1980,
+              <https://www.rfc-editor.org/rfc/rfc768>.
+
    [RFC791]   Postel, J., "Internet Protocol", STD 5, RFC 791,
               DOI 10.17487/RFC0791, September 1981,
               <https://www.rfc-editor.org/rfc/rfc791>.
@@ -588,7 +592,7 @@ Appendix B.  Security Analysis
 B.1.  Authentication and Authorization Deficiencies
 
    SOCKSv4's client identification relies on the USERID field, often
-   intended for use with the IDENT protocol (specified in RFC 1413).
+   intended for use with the IDENT protocol (specified in [RFC1413]).
    This reliance constitutes a major security risk because the IDENT
    protocol depends on an untrusted daemon on the client host, making
    the identification process susceptible to trivial spoofing or
@@ -610,10 +614,11 @@ B.2.  Data Integrity and Transport Limitations
    inherent vulnerability exposes all transmitted data to passive
    network eavesdropping and interception, resulting in a total absence
    of confidentiality.  Furthermore, the protocol’s operational scope is
-   strictly confined to proxying Transmission Control Protocol (TCP)
-   connections.  It provides no native support for the relay of User
-   Datagram Protocol (UDP) traffic or other IP-layer protocols, limiting
-   its utility and scope of protection.
+   strictly confined to proxying Transmission Control Protocol (defined
+   in [RFC9293]) connections.  It provides no native support for the
+   relay of User Datagram Protocol (defined in [RFC768]) traffic or
+   other IP-layer protocols, limiting its utility and scope of
+   protection.
 
 B.3.  Vulnerabilities Associated with the BIND Operation
 
@@ -654,7 +659,7 @@ B.5.  Recommended Mitigation and Deployment Practices
    Transport Layer Security (TLS/SSL) or IPsec tunnel, to establish the
    essential confidentiality and integrity mechanisms that SOCKSv4
    lacks.  Operators should actively plan for migration to SOCKS Version
-   5 (RFC 1928), which incorporates native, robust authentication
+   5 ([RFC1928]), which incorporates native, robust authentication
    methods.
 
 Appendix C.  Existing Values
