@@ -9,17 +9,17 @@
 <meta content="
        This document specifies SOCKS 4A, an extension to the SOCKS Version 4 protocol. This extension allows SOCKS clients to delegate domain name resolution to the SOCKS server. This is particularly useful in environments where the client host cannot resolve the destination host's domain name due to restrictive network policies or lack of DNS access. 
     " name="description">
-<meta content="xml2rfc 3.32.0" name="generator">
+<meta content="xml2rfc 3.33.0" name="generator">
 <meta content="draft-vance-socks-v4a-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.32.0
-    Python 3.12.12
+  xml2rfc 3.33.0
+    Python 3.12.13
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.0.2
-    platformdirs 4.9.4
+    platformdirs 4.9.6
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.32.5
@@ -1048,7 +1048,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Vance</td>
-<td class="center">Expires 13 October 2026</td>
+<td class="center">Expires 21 October 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1061,12 +1061,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-vance-socks-v4a-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-04-11" class="published">11 April 2026</time>
+<time datetime="2026-04-19" class="published">19 April 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Historic</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-10-13">13 October 2026</time></dd>
+<dd class="expires"><time datetime="2026-10-21">21 October 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1108,7 +1108,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 13 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 21 October 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1205,30 +1205,36 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.9.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-security-analysis" class="internal xref">Security Analysis</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
-                <p id="section-toc.1-1.9.2.1.1"><a href="#appendix-B.1" class="auto internal xref">B.1</a>.  <a href="#name-dns-privacy-and-information" class="internal xref">DNS Privacy and information Leakage</a></p>
+                <p id="section-toc.1-1.9.2.1.1"><a href="#appendix-B.1" class="auto internal xref">B.1</a>.  <a href="#name-security-deficiencies-of-th" class="internal xref">Security Deficiencies of the Base Protocol</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#appendix-B.2" class="auto internal xref">B.2</a>.  <a href="#name-server-side-request-forgery" class="internal xref">Server-Side Request Forgery</a></p>
+                <p id="section-toc.1-1.9.2.2.1"><a href="#appendix-B.2" class="auto internal xref">B.2</a>.  <a href="#name-remote-name-resolution-and-" class="internal xref">Remote Name Resolution and Information Leakage</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.3">
-                <p id="section-toc.1-1.9.2.3.1"><a href="#appendix-B.3" class="auto internal xref">B.3</a>.  <a href="#name-denial-of-service-and-resou" class="internal xref">Denial of Service and Resource Exhaustion</a></p>
+                <p id="section-toc.1-1.9.2.3.1"><a href="#appendix-B.3" class="auto internal xref">B.3</a>.  <a href="#name-server-side-request-forgery" class="internal xref">Server-Side Request Forgery Risks</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4">
-                <p id="section-toc.1-1.9.2.4.1"><a href="#appendix-B.4" class="auto internal xref">B.4</a>.  <a href="#name-lack-of-cryptographic-integ" class="internal xref">Lack of Cryptographic Integrity and Authentication</a></p>
+                <p id="section-toc.1-1.9.2.4.1"><a href="#appendix-B.4" class="auto internal xref">B.4</a>.  <a href="#name-robustness-and-resource-exh" class="internal xref">Robustness and Resource Exhaustion</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.5">
+                <p id="section-toc.1-1.9.2.5.1"><a href="#appendix-B.5" class="auto internal xref">B.5</a>.  <a href="#name-protocol-rollback-and-downg" class="internal xref">Protocol Rollback and Downgrade Attacks</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.6">
+                <p id="section-toc.1-1.9.2.6.1"><a href="#appendix-B.6" class="auto internal xref">B.6</a>.  <a href="#name-interaction-with-internatio" class="internal xref">Interaction with Internationalized Domain Names</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.7">
+                <p id="section-toc.1-1.9.2.7.1"><a href="#appendix-B.7" class="auto internal xref">B.7</a>.  <a href="#name-final-security-note" class="internal xref">Final Security Note</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#appendix-C" class="auto internal xref">Appendix C</a>.  <a href="#name-example-implementations" class="internal xref">Example Implementations</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-original-author" class="internal xref">Original Author</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-original-author" class="internal xref">Original Author</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-contributors" class="internal xref">Contributors</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#appendix-E" class="auto internal xref"></a><a href="#name-contributors" class="internal xref">Contributors</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-F" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#appendix-E" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
 </li>
         </ul>
 </nav>
@@ -1560,6 +1566,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <dd>
 <span class="refAuthor">Braden, R., Ed.</span>, <span class="refTitle">"Requirements for Internet Hosts - Communication Layers"</span>, <span class="seriesInfo">STD 3</span>, <span class="seriesInfo">RFC 1122</span>, <span class="seriesInfo">DOI 10.17487/RFC1122</span>, <time datetime="1989-10" class="refDate">October 1989</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc1122">https://www.rfc-editor.org/rfc/rfc1122</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC1918">[RFC1918]</dt>
+        <dd>
+<span class="refAuthor">Rekhter, Y.</span>, <span class="refAuthor">Moskowitz, B.</span>, <span class="refAuthor">Karrenberg, D.</span>, <span class="refAuthor">de Groot, G. J.</span>, and <span class="refAuthor">E. Lear</span>, <span class="refTitle">"Address Allocation for Private Internets"</span>, <span class="seriesInfo">BCP 5</span>, <span class="seriesInfo">RFC 1918</span>, <span class="seriesInfo">DOI 10.17487/RFC1918</span>, <time datetime="1996-02" class="refDate">February 1996</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc1918">https://www.rfc-editor.org/rfc/rfc1918</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC1928">[RFC1928]</dt>
         <dd>
 <span class="refAuthor">Leech, M.</span>, <span class="refAuthor">Ganis, M.</span>, <span class="refAuthor">Lee, Y.</span>, <span class="refAuthor">Kuris, R.</span>, <span class="refAuthor">Koblas, D.</span>, and <span class="refAuthor">L. Jones</span>, <span class="refTitle">"SOCKS Protocol Version 5"</span>, <span class="seriesInfo">RFC 1928</span>, <span class="seriesInfo">DOI 10.17487/RFC1928</span>, <time datetime="1996-03" class="refDate">March 1996</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc1928">https://www.rfc-editor.org/rfc/rfc1928</a>&gt;</span>. </dd>
@@ -1567,6 +1577,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <dt id="RFC1929">[RFC1929]</dt>
         <dd>
 <span class="refAuthor">Leech, M.</span>, <span class="refTitle">"Username/Password Authentication for SOCKS V5"</span>, <span class="seriesInfo">RFC 1929</span>, <span class="seriesInfo">DOI 10.17487/RFC1929</span>, <time datetime="1996-03" class="refDate">March 1996</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc1929">https://www.rfc-editor.org/rfc/rfc1929</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2827">[RFC2827]</dt>
+        <dd>
+<span class="refAuthor">Ferguson, P.</span> and <span class="refAuthor">D. Senie</span>, <span class="refTitle">"Network Ingress Filtering: Defeating Denial of Service Attacks which employ IP Source Address Spoofing"</span>, <span class="seriesInfo">BCP 38</span>, <span class="seriesInfo">RFC 2827</span>, <span class="seriesInfo">DOI 10.17487/RFC2827</span>, <time datetime="2000-05" class="refDate">May 2000</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2827">https://www.rfc-editor.org/rfc/rfc2827</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC3365">[RFC3365]</dt>
         <dd>
@@ -1576,13 +1590,49 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <dd>
 <span class="refAuthor">Rescorla, E.</span> and <span class="refAuthor">B. Korver</span>, <span class="refTitle">"Guidelines for Writing RFC Text on Security Considerations"</span>, <span class="seriesInfo">BCP 72</span>, <span class="seriesInfo">RFC 3552</span>, <span class="seriesInfo">DOI 10.17487/RFC3552</span>, <time datetime="2003-07" class="refDate">July 2003</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3552">https://www.rfc-editor.org/rfc/rfc3552</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC3927">[RFC3927]</dt>
+        <dd>
+<span class="refAuthor">Cheshire, S.</span>, <span class="refAuthor">Aboba, B.</span>, and <span class="refAuthor">E. Guttman</span>, <span class="refTitle">"Dynamic Configuration of IPv4 Link-Local Addresses"</span>, <span class="seriesInfo">RFC 3927</span>, <span class="seriesInfo">DOI 10.17487/RFC3927</span>, <time datetime="2005-05" class="refDate">May 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3927">https://www.rfc-editor.org/rfc/rfc3927</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4301">[RFC4301]</dt>
+        <dd>
+<span class="refAuthor">Kent, S.</span> and <span class="refAuthor">K. Seo</span>, <span class="refTitle">"Security Architecture for the Internet Protocol"</span>, <span class="seriesInfo">RFC 4301</span>, <span class="seriesInfo">DOI 10.17487/RFC4301</span>, <time datetime="2005-12" class="refDate">December 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4301">https://www.rfc-editor.org/rfc/rfc4301</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC4732">[RFC4732]</dt>
+        <dd>
+<span class="refAuthor">Handley, M., Ed.</span>, <span class="refAuthor">Rescorla, E., Ed.</span>, and <span class="refAuthor">IAB</span>, <span class="refTitle">"Internet Denial-of-Service Considerations"</span>, <span class="seriesInfo">RFC 4732</span>, <span class="seriesInfo">DOI 10.17487/RFC4732</span>, <time datetime="2006-12" class="refDate">December 2006</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc4732">https://www.rfc-editor.org/rfc/rfc4732</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5246">[RFC5246]</dt>
+        <dd>
+<span class="refAuthor">Dierks, T.</span> and <span class="refAuthor">E. Rescorla</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.2"</span>, <span class="seriesInfo">RFC 5246</span>, <span class="seriesInfo">DOI 10.17487/RFC5246</span>, <time datetime="2008-08" class="refDate">August 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5246">https://www.rfc-editor.org/rfc/rfc5246</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5890">[RFC5890]</dt>
+        <dd>
+<span class="refAuthor">Klensin, J.</span>, <span class="refTitle">"Internationalized Domain Names for Applications (IDNA): Definitions and Document Framework"</span>, <span class="seriesInfo">RFC 5890</span>, <span class="seriesInfo">DOI 10.17487/RFC5890</span>, <time datetime="2010-08" class="refDate">August 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5890">https://www.rfc-editor.org/rfc/rfc5890</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC5891">[RFC5891]</dt>
         <dd>
 <span class="refAuthor">Klensin, J.</span>, <span class="refTitle">"Internationalized Domain Names in Applications (IDNA): Protocol"</span>, <span class="seriesInfo">RFC 5891</span>, <span class="seriesInfo">DOI 10.17487/RFC5891</span>, <time datetime="2010-08" class="refDate">August 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5891">https://www.rfc-editor.org/rfc/rfc5891</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC7626">[RFC7626]</dt>
+        <dd>
+<span class="refAuthor">Bortzmeyer, S.</span>, <span class="refTitle">"DNS Privacy Considerations"</span>, <span class="seriesInfo">RFC 7626</span>, <span class="seriesInfo">DOI 10.17487/RFC7626</span>, <time datetime="2015-08" class="refDate">August 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7626">https://www.rfc-editor.org/rfc/rfc7626</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7858">[RFC7858]</dt>
+        <dd>
+<span class="refAuthor">Hu, Z.</span>, <span class="refAuthor">Zhu, L.</span>, <span class="refAuthor">Heidemann, J.</span>, <span class="refAuthor">Mankin, A.</span>, <span class="refAuthor">Wessels, D.</span>, and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"Specification for DNS over Transport Layer Security (TLS)"</span>, <span class="seriesInfo">RFC 7858</span>, <span class="seriesInfo">DOI 10.17487/RFC7858</span>, <time datetime="2016-05" class="refDate">May 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7858">https://www.rfc-editor.org/rfc/rfc7858</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC791">[RFC791]</dt>
         <dd>
 <span class="refAuthor">Postel, J.</span>, <span class="refTitle">"Internet Protocol"</span>, <span class="seriesInfo">STD 5</span>, <span class="seriesInfo">RFC 791</span>, <span class="seriesInfo">DOI 10.17487/RFC0791</span>, <time datetime="1981-09" class="refDate">September 1981</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc791">https://www.rfc-editor.org/rfc/rfc791</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8446">[RFC8446]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="seriesInfo">RFC 8446</span>, <span class="seriesInfo">DOI 10.17487/RFC8446</span>, <time datetime="2018-08" class="refDate">August 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8446">https://www.rfc-editor.org/rfc/rfc8446</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8484">[RFC8484]</dt>
+        <dd>
+<span class="refAuthor">Hoffman, P.</span> and <span class="refAuthor">P. McManus</span>, <span class="refTitle">"DNS Queries over HTTPS (DoH)"</span>, <span class="seriesInfo">RFC 8484</span>, <span class="seriesInfo">DOI 10.17487/RFC8484</span>, <time datetime="2018-10" class="refDate">October 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8484">https://www.rfc-editor.org/rfc/rfc8484</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9293">[RFC9293]</dt>
       <dd>
@@ -1640,82 +1690,75 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-security-analysis">
 <a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-security-analysis" class="section-name selfRef">Security Analysis</a>
       </h2>
-<p id="appendix-B-1">This section provides an analysis of the security implications introduced by the SOCKS 4A extension. As an extension to SOCKSv4, it inherits the fundamental insecurities of the base protocol while introducing new vectors related to remote name resolution.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
-<div id="dns-privacy-and-information-leakage">
+<p id="appendix-B-1">The SOCKS 4A protocol is a lightweight shim designed to facilitate TCP proxying with remote name resolution. It operates primarily at the session layer and lacks the cryptographic primitives found in more modern protocols like TLS <span>[<a href="#RFC8446" class="cite xref">RFC8446</a>]</span>. This appendix provides a detailed analysis of the security implications of the protocol, assuming a threat model where an attacker can observe, intercept, and modify traffic between the client, the SOCKS server, and the DNS infrastructure.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<div id="security-deficiencies-of-the-base-protocol">
 <section id="appendix-B.1">
-        <h3 id="name-dns-privacy-and-information">
-<a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-dns-privacy-and-information" class="section-name selfRef">DNS Privacy and information Leakage</a>
+        <h3 id="name-security-deficiencies-of-th">
+<a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-security-deficiencies-of-th" class="section-name selfRef">Security Deficiencies of the Base Protocol</a>
         </h3>
-<p id="appendix-B.1-1">SOCKS 4A functions as a countermeasure against DNS leakage at the client-side network layer. In the base SOCKSv4 protocol, the Requirement for the client to provide a literal IPv4 address necessitates a local DNS lookup. This transaction is typically unencrypted and occurs outside the proxy tunnel, exposing the destination hostname to local network observers and the DNS recursive resolver.<a href="#appendix-B.1-1" class="pilcrow">¶</a></p>
-<p id="appendix-B.1-2">By delegating resolution to the SOCKS server, the client encapsulates the intent (the DOMAIN string) within the TCP session established to the SOCKS server. However, this merely shifts the point of leakage; the SOCKS server’s own DNS queries may still be observable unless the server implements encrypted DNS transport (e.g., DNS over TLS).<a href="#appendix-B.1-2" class="pilcrow">¶</a></p>
+<p id="appendix-B.1-1">As an extension of SOCKSv4, SOCKS 4A inherits significant structural vulnerabilities. The protocol provides no mechanisms for mutual authentication, integrity protection, or confidentiality. Consequently, it is inherently susceptible to active man-in-the-middle (MITM) attacks. An attacker positioned between the client and the SOCKS server can silently alter the <code>DSTPORT</code> or <code>DOMAIN</code> fields, effectively redirecting the application traffic to a malicious destination without either party's knowledge.<a href="#appendix-B.1-1" class="pilcrow">¶</a></p>
+<p id="appendix-B.1-2">The <code>USERID</code> field, while intended for identity assertion, provides no cryptographic proof of origin. In the absence of a strong authentication framework as recommended in <span>[<a href="#RFC1918" class="cite xref">RFC1918</a>]</span>, this field must be treated as untrusted and unauthenticated information. Relying on <code>USERID</code> for access control decisions is a violation of the principle of least privilege and is highly discouraged.<a href="#appendix-B.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="server-side-request-forgery">
+<div id="remote-name-resolution-and-information-leakage">
 <section id="appendix-B.2">
-        <h3 id="name-server-side-request-forgery">
-<a href="#appendix-B.2" class="section-number selfRef">B.2. </a><a href="#name-server-side-request-forgery" class="section-name selfRef">Server-Side Request Forgery</a>
+        <h3 id="name-remote-name-resolution-and-">
+<a href="#appendix-B.2" class="section-number selfRef">B.2. </a><a href="#name-remote-name-resolution-and-" class="section-name selfRef">Remote Name Resolution and Information Leakage</a>
         </h3>
-<p id="appendix-B.2-1">The SOCKS 4A resolution mechanism enables a primitive form of Server-Side Request Forgery. Because the server performs resolution and subsequent connection on behalf of the client, a malicious client may use the SOCKS server to:<a href="#appendix-B.2-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="appendix-B.2-2.1">
-            <p id="appendix-B.2-2.1.1">Probe Internal Infrastructure: Access or scan hostnames and IP addresses that are non-routable or firewalled from the public internet but reachable from the SOCKS server’s internal interface.<a href="#appendix-B.2-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="appendix-B.2-2.2">
-            <p id="appendix-B.2-2.2.1">Resolve Split-Horizon DNS: Enumerate internal DNS records that are only visible to the SOCKS server's configured resolvers.<a href="#appendix-B.2-2.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="appendix-B.2-3">Implementations <span class="bcp14">SHOULD</span> employ strict egress filtering and Access Control Lists (ACLs) to prevent the SOCKS server from connecting to loopback addresses (127.0.0.0/8), private address space (RFC 1918), or link-local addresses.<a href="#appendix-B.2-3" class="pilcrow">¶</a></p>
+<p id="appendix-B.2-1">One of the primary motivations for SOCKS 4A is the mitigation of "DNS leakage" on the client's local network. By delegating resolution to the SOCKS server, the client avoids issuing plaintext DNS queries that would otherwise expose the destination hostname to local observers <span>[<a href="#RFC7626" class="cite xref">RFC7626</a>]</span>. However, this delegation does not eliminate the risk but rather relocates it to the SOCKS server's network environment.<a href="#appendix-B.2-1" class="pilcrow">¶</a></p>
+<p id="appendix-B.2-2">Unless the SOCKS server employs encrypted DNS transports such as DNS over TLS <span>[<a href="#RFC7858" class="cite xref">RFC7858</a>]</span> or DNS over HTTPS <span>[<a href="#RFC8484" class="cite xref">RFC8484</a>]</span>, the resolution process remains transparent to upstream passive monitors. Furthermore, if the client and SOCKS server communicate over an untrusted wide-area network (WAN) without a secure tunnel (e.g., <span>[<a href="#RFC4301" class="cite xref">RFC4301</a>]</span> or <span>[<a href="#RFC5246" class="cite xref">RFC5246</a>]</span>), the <code>DOMAIN</code> string itself is transmitted in the clear, negating any privacy benefits intended by the use of remote resolution.<a href="#appendix-B.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="denial-of-service-and-resource-exhaustion">
+<div id="server-side-request-forgery-risks">
 <section id="appendix-B.3">
-        <h3 id="name-denial-of-service-and-resou">
-<a href="#appendix-B.3" class="section-number selfRef">B.3. </a><a href="#name-denial-of-service-and-resou" class="section-name selfRef">Denial of Service and Resource Exhaustion</a>
+        <h3 id="name-server-side-request-forgery">
+<a href="#appendix-B.3" class="section-number selfRef">B.3. </a><a href="#name-server-side-request-forgery" class="section-name selfRef">Server-Side Request Forgery Risks</a>
         </h3>
-<p id="appendix-B.3-1">The variable-length nature of the SOCKS 4A request introduces two primary vectors for resource exhaustion:<a href="#appendix-B.3-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="appendix-B.3-2">
-<li id="appendix-B.3-2.1">
-            <p id="appendix-B.3-2.1.1">Memory Exhaustion: A SOCKS 4A request involves two variable-length NULL-terminated strings (USERID and DOMAIN). An implementation that fails to enforce strict bounds on these fields during the "read-until-NULL" phase is vulnerable to heap exhaustion. Servers <span class="bcp14">MUST</span> enforce a maximum buffer limit (<span class="bcp14">RECOMMENDED</span> 255 octets for DOMAIN) and terminate connections that exceed this limit without a NULL terminator.<a href="#appendix-B.3-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li id="appendix-B.3-2.2">
-            <p id="appendix-B.3-2.2.1">Resolver Tarpitting: DNS resolution is an asynchronous, I/O-bound operation. A client may initiate numerous concurrent 4A requests targeting non-responsive or slow DNS authoritative servers. This can exhaust the server's thread pool or file descriptors. Servers <span class="bcp14">MUST</span> implement a per-request resolution timeout.<a href="#appendix-B.3-2.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ol>
+<p id="appendix-B.3-1">SOCKS 4A servers act as confused deputies by performing network operations on behalf of potentially anonymous clients. This mechanism introduces a significant risk of Server-Side Request Forgery (SSRF). A malicious client may leverage the SOCKS server to probe or attack internal infrastructure that is otherwise shielded from the public internet.<a href="#appendix-B.3-1" class="pilcrow">¶</a></p>
+<p id="appendix-B.3-2">To mitigate this, implementations <span class="bcp14">MUST</span> adhere to the guidance in <span>[<a href="#RFC2827" class="cite xref">RFC2827</a>]</span> regarding network ingress filtering. Servers should be configured with strict egress Access Control Lists (ACLs) to prevent connections to loopback addresses (127.0.0.0/8), private address space <span>[<a href="#RFC1918" class="cite xref">RFC1918</a>]</span>, and link-local addresses <span>[<a href="#RFC3927" class="cite xref">RFC3927</a>]</span>. Failure to implement these controls allows an attacker to use the SOCKS server as a scanning proxy to enumerate internal services or exploit vulnerabilities in non-hardened internal applications.<a href="#appendix-B.3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="lack-of-cryptographic-integrity-and-authentication">
+<div id="robustness-and-resource-exhaustion">
 <section id="appendix-B.4">
-        <h3 id="name-lack-of-cryptographic-integ">
-<a href="#appendix-B.4" class="section-number selfRef">B.4. </a><a href="#name-lack-of-cryptographic-integ" class="section-name selfRef">Lack of Cryptographic Integrity and Authentication</a>
+        <h3 id="name-robustness-and-resource-exh">
+<a href="#appendix-B.4" class="section-number selfRef">B.4. </a><a href="#name-robustness-and-resource-exh" class="section-name selfRef">Robustness and Resource Exhaustion</a>
         </h3>
-<p id="appendix-B.4-1">SOCKS 4A, like its predecessor, provides no facility for session encryption, message integrity, or robust authentication.<a href="#appendix-B.4-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="appendix-B.4-2.1">
-            <p id="appendix-B.4-2.1.1">Identity Spoofing: The <code>USERID</code> field is provided by the client without any cryptographic proof of identity. It is trivial to spoof and <span class="bcp14">SHOULD NOT</span> be relied upon for security-critical authorization.<a href="#appendix-B.4-2.1.1" class="pilcrow">¶</a></p>
-</li>
-          <li class="normal" id="appendix-B.4-2.2">
-            <p id="appendix-B.4-2.2.1">Active Interception: The entire handshake, including the <code>DOMAIN</code> string, is transmitted in plaintext. An attacker in the path between the client and the SOCKS server can perform a Man-in-the-Middle (MITM) attack, observing the destination domain or modifying the server's reply to redirect the client.<a href="#appendix-B.4-2.2.1" class="pilcrow">¶</a></p>
-</li>
-        </ul>
-<p id="appendix-B.4-3">Implementations requiring confidentiality or integrity <span class="bcp14">MUST</span> wrap the SOCKS 4A transaction in a secure transport layer, such as TLS or an SSH tunnel.<a href="#appendix-B.4-3" class="pilcrow">¶</a></p>
+<p id="appendix-B.4-1">The variable-length nature of the <code>USERID</code> and <code>DOMAIN</code> fields introduces vectors for Denial of Service (DoS) attacks. Unlike protocols with explicit length-prefixing, SOCKS 4A relies on <code>NULL</code> terminators. An implementation that performs unbounded reads while searching for a <code>NULL</code> octet is vulnerable to memory exhaustion attacks.<a href="#appendix-B.4-1" class="pilcrow">¶</a></p>
+<p id="appendix-B.4-2">In accordance with <span>[<a href="#RFC4732" class="cite xref">RFC4732</a>]</span>, implementations <span class="bcp14">MUST</span> enforce hard limits on the size of the input buffers used for these fields. For the <code>DOMAIN</code> field, a limit of 255 octets is recommended to align with the maximum length of a Fully Qualified Domain Name (FQDN) as specified in <span>[<a href="#RFC1035" class="cite xref">RFC1035</a>]</span>. Furthermore, servers <span class="bcp14">MUST</span> implement per-session timeouts for the resolution phase to prevent "tarpitting" attacks, where a client initiates a large number of requests that target slow or non-responsive DNS authoritative servers, thereby exhausting the server's thread pool or file descriptors.<a href="#appendix-B.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="protocol-rollback-and-downgrade-attacks">
+<section id="appendix-B.5">
+        <h3 id="name-protocol-rollback-and-downg">
+<a href="#appendix-B.5" class="section-number selfRef">B.5. </a><a href="#name-protocol-rollback-and-downg" class="section-name selfRef">Protocol Rollback and Downgrade Attacks</a>
+        </h3>
+<p id="appendix-B.5-1">While SOCKS 4A was designed to improve upon SOCKSv4, it remains a subset of the capabilities provided by SOCKSv5 <span>[<a href="#RFC1928" class="cite xref">RFC1928</a>]</span>. SOCKSv5 offers robust authentication methods <span>[<a href="#RFC1929" class="cite xref">RFC1929</a>]</span> and support for UDP. However, because SOCKS 4A does not participate in a formal version negotiation (it merely uses a different version octet), it is susceptible to downgrade attacks. An attacker may modify the version octet of a SOCKSv5 request to force the use of SOCKS 4A, thereby stripping away any authentication or encryption requirements mandated by the higher-version configuration.<a href="#appendix-B.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="example-implementations">
-<section id="appendix-C">
-      <h2 id="name-example-implementations">
-<a href="#appendix-C" class="section-number selfRef">Appendix C. </a><a href="#name-example-implementations" class="section-name selfRef">Example Implementations</a>
-      </h2>
-<p id="appendix-C-1">TODO<a href="#appendix-C-1" class="pilcrow">¶</a></p>
+<div id="interaction-with-internationalized-domain-names">
+<section id="appendix-B.6">
+        <h3 id="name-interaction-with-internatio">
+<a href="#appendix-B.6" class="section-number selfRef">B.6. </a><a href="#name-interaction-with-internatio" class="section-name selfRef">Interaction with Internationalized Domain Names</a>
+        </h3>
+<p id="appendix-B.6-1">The use of the <code>DOMAIN</code> field requires careful handling of Internationalized Domain Names (IDNs). As noted in <span>[<a href="#RFC5890" class="cite xref">RFC5890</a>]</span>, the interpretation of non-ASCII characters can lead to ambiguity and "homograph" attacks, where a visually similar but different domain is resolved. For maximum security and interoperability, clients <span class="bcp14">SHOULD</span> convert IDNs to A-label format (Punycode) as defined in <span>[<a href="#RFC5891" class="cite xref">RFC5891</a>]</span> before transmission. Servers <span class="bcp14">SHOULD</span> treat the <code>DOMAIN</code> string as an opaque sequence of octets to be passed to the resolver, while ensuring that the resulting IP address undergoes the filtering described in <a href="#server-side-request-forgery-risks" class="auto internal xref">Appendix B.3</a>.<a href="#appendix-B.6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="final-security-note">
+<section id="appendix-B.7">
+        <h3 id="name-final-security-note">
+<a href="#appendix-B.7" class="section-number selfRef">B.7. </a><a href="#name-final-security-note" class="section-name selfRef">Final Security Note</a>
+        </h3>
+<p id="appendix-B.7-1">SOCKS 4A is an aged protocol and lacks modern security features. It should only be used in environments where the communication channel is otherwise secured by a lower-layer technology (such as IPsec) or where the risk of interception and spoofing is deemed acceptable. For all other use cases, the transition to SOCKSv5 <span>[<a href="#RFC1928" class="cite xref">RFC1928</a>]</span> combined with TLS is strongly recommended to ensure the confidentiality and integrity of the session.<a href="#appendix-B.7-1" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="original-author">
-<section id="appendix-D">
+<section id="appendix-C">
       <h2 id="name-original-author">
 <a href="#name-original-author" class="section-name selfRef">Original Author</a>
       </h2>
-<div class="alignLeft art-text artwork" id="appendix-D-1">
+<div class="alignLeft art-text artwork" id="appendix-C-1">
 <pre>
       Ying-Da Lee
       Principal Member Technical Staff
@@ -1724,17 +1767,17 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 
       David Koblas
       Netskope
-</pre><a href="#appendix-D-1" class="pilcrow">¶</a>
+</pre><a href="#appendix-C-1" class="pilcrow">¶</a>
 </div>
-<p id="appendix-D-2">We sincerely apologize that, due to the document's long history and the passage of time, many early contributors may not have been formally included in this list. We extend our deepest gratitude to all who have contributed to this work. If you believe your name should be added to the acknowledgments, please contact the draft maintainers.<a href="#appendix-D-2" class="pilcrow">¶</a></p>
+<p id="appendix-C-2">We sincerely apologize that, due to the document's long history and the passage of time, many early contributors may not have been formally included in this list. We extend our deepest gratitude to all who have contributed to this work. If you believe your name should be added to the acknowledgments, please contact the draft maintainers.<a href="#appendix-C-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="contributors">
-<section id="appendix-E">
+<section id="appendix-D">
       <h2 id="name-contributors">
 <a href="#name-contributors" class="section-name selfRef">Contributors</a>
       </h2>
-<div class="alignLeft art-text artwork" id="appendix-E-1">
+<div class="alignLeft art-text artwork" id="appendix-D-1">
 <pre>
       George G. Michaelson
       Asia-Pacific Network Information Centre
@@ -1742,12 +1785,12 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       South Brisbane QLD 4101
       Australia
       Email: ggm@algebras.org
-</pre><a href="#appendix-E-1" class="pilcrow">¶</a>
+</pre><a href="#appendix-D-1" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="authors-addresses">
-<section id="appendix-F">
+<section id="appendix-E">
       <h2 id="name-authors-address">
 <a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
       </h2>
