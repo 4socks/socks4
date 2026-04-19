@@ -197,7 +197,7 @@ To ensure maximum interoperability, a SOCKS 4A-compliant server MUST NOT attempt
 
 Historical implementations have occasionally encountered "leaky" or malformed packets where the `NULL` terminators for the `USERID` or `DOMAIN` fields are missing or followed by extraneous data. A robust implementation SHOULD treat the first `NULL` octet encountered as the definitive end of the field.
 
-Furthermore, if the stream terminates before the second `NULL` octet (the `DOMAIN` terminator) is received, the server MUST treat the request as failed and send a rejection reply (Result Code `91`). This prevents the server from hanging in a "half-read" state, which could be exploited as a resource exhaustion vector (see {{robustness-and-Resource-exhaustion}}).
+Furthermore, if the stream terminates before the second `NULL` octet (the `DOMAIN` terminator) is received, the server MUST treat the request as failed and send a rejection reply (Result Code `91`). This prevents the server from hanging in a "half-read" state, which could be exploited as a resource exhaustion vector (see {{robustness-and-resource-exhaustion}}).
 
 ### Character Set Consistency
 
