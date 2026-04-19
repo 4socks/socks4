@@ -175,7 +175,7 @@ In hierarchical network architectures, an intermediate SOCKS server often acts a
 
 ### Recursive Resolution and Protocol Downgrade
 
-An intermediate proxy receiving a SOCKS 4A request MAY perform local resolution of the `DOMAIN` field. If the resolution is successful, the intermediate proxy may elect to "downgrade" the request to a standard SOCKSv4 `CONNECT` or `BIND` operation when communicating with the upstream server, using the literal IPv4 address obtained from its local resolver. 
+An intermediate proxy receiving a SOCKS 4A request MAY perform local resolution of the `DOMAIN` field. If the resolution is successful, the intermediate proxy may elect to "downgrade" the request to a standard SOCKSv4 `CONNECT` or `BIND` operation when communicating with the upstream server, using the literal IPv4 address obtained from its local resolver.
 
 While this approach reduces the resolution burden on the upstream server, it requires that the intermediate proxy possesses a DNS environment consistent with the client's expectations. Implementations should be aware that resolving a domain at an intermediate hop may yield different IP addresses (e.g., in Content Delivery Networks) than resolution at the network edge.
 
@@ -189,19 +189,19 @@ In accordance with the general robustness principle—to be conservative in what
 
 ### Handling of Pre-resolved Requests
 
-Certain "SOCKSified" libraries or shim layers may resolve the destination hostname locally via the system's standard resolver before initiating the SOCKS handshake. Despite possessing a valid IP address, these clients may still utilize the SOCKS 4A format, placing the original hostname in the `DOMAIN` field. 
+Certain "SOCKSified" libraries or shim layers may resolve the destination hostname locally via the system's standard resolver before initiating the SOCKS handshake. Despite possessing a valid IP address, these clients may still utilize the SOCKS 4A format, placing the original hostname in the `DOMAIN` field.
 
 To ensure maximum interoperability, a SOCKS 4A-compliant server MUST NOT attempt to validate whether a 4A request was strictly necessary. Any request that matches the `0.0.0.x` pattern MUST be processed according to the SOCKS 4A logic described in Section 4, even if the server suspects the client is capable of direct IPv4 addressing.
 
 ### Buffer Management and Premature Termination
 
-Historical implementations have occasionally encountered "leaky" or malformed packets where the `NULL` terminators for the `USERID` or `DOMAIN` fields are missing or followed by extraneous data. A robust implementation SHOULD treat the first `NULL` octet encountered as the definitive end of the field. 
+Historical implementations have occasionally encountered "leaky" or malformed packets where the `NULL` terminators for the `USERID` or `DOMAIN` fields are missing or followed by extraneous data. A robust implementation SHOULD treat the first `NULL` octet encountered as the definitive end of the field.
 
-Furthermore, if the stream terminates before the second `NULL` octet (the `DOMAIN` terminator) is received, the server MUST treat the request as failed and send a rejection reply (Result Code `91`). This prevents the server from hanging in a "half-read" state, which could be exploited as a resource exhaustion vector (see Section A.4).
+Furthermore, if the stream terminates before the second `NULL` octet (the `DOMAIN` terminator) is received, the server MUST treat the request as failed and send a rejection reply (Result Code `91`). This prevents the server from hanging in a "half-read" state, which could be exploited as a resource exhaustion vector (see {{robustness-and-Resource-exhaustion}}).
 
 ### Character Set Consistency
 
-While this document recommends US-ASCII or Punycode (Section 3.1.2), historical deployments have occasionally seen `DOMAIN` strings containing raw UTF-8 or local codepage octets. Servers SHOULD treat the `DOMAIN` string as an opaque sequence of octets when passing it to the local resolver. If the local resolver returns an error due to illegal characters, the server MUST return a failure code to the client rather than attempting to "guess" the intended encoding, which can lead to security vulnerabilities through domain name spoofing.
+While this document recommends US-ASCII or Punycode ({{destination-domain-name-field}}), historical deployments have occasionally seen `DOMAIN` strings containing raw UTF-8 or local codepage octets. Servers SHOULD treat the `DOMAIN` string as an opaque sequence of octets when passing it to the local resolver. If the local resolver returns an error due to illegal characters, the server MUST return a failure code to the client rather than attempting to "guess" the intended encoding, which can lead to security vulnerabilities through domain name spoofing.
 
 # Security Analysis
 
