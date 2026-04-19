@@ -165,27 +165,43 @@ No IANA actions required.
 
 --- back
 
-# Operational Considerations and Implementation Notes
+# Operational Considerations
 
-The following behaviors were observed in historical deployments of SOCKS 4A to address specific network constraints and interoperability challenges.
+The following section outlines the operational behaviors and implementation strategies observed in historical deployments of SOCKS 4A. These notes are provided to ensure interoperability and to document how the protocol handles complex network topologies.
 
-## Proxy Chaining and Relaying
+## Multi-tier Proxying and Chaining
 
-In multi-tiered network environments, a SOCKS server (the "intermediate proxy") may itself be configured to use another SOCKS server (the "upstream proxy") for outbound connectivity. When an intermediate proxy receives a SOCKS 4A request:
+In hierarchical network architectures, an intermediate SOCKS server often acts as a client to an upstream SOCKS server. This configuration, known as proxy chaining, requires specific handling of SOCKS 4A requests to maintain the integrity of the resolution delegation.
 
-* Recursive Resolution: The intermediate proxy may attempt to resolve the DOMAIN locally. If successful, it may then downgrade the request to a standard SOCKSv4 CONNECT/BIND using the resolved IPv4 address when communicating with the upstream proxy.
-* Transparent Relaying: If the intermediate proxy lacks DNS access or is configured for "blind" relaying, it passes the SOCKS 4A request—including the 0.0.0.x DSTIP signaling and the DOMAIN field—intact to the upstream proxy. This delegates the resolution responsibility to the edge of the network.
+### Recursive Resolution and Protocol Downgrade
 
-This mechanism was frequently employed in "firewall-behind-firewall" scenarios where only the outermost gateway possessed external name resolution capabilities.
+An intermediate proxy receiving a SOCKS 4A request MAY perform local resolution of the `DOMAIN` field. If the resolution is successful, the intermediate proxy may elect to "downgrade" the request to a standard SOCKSv4 `CONNECT` or `BIND` operation when communicating with the upstream server, using the literal IPv4 address obtained from its local resolver. 
 
-## Client-Side Resolution "Leakage" and Server Robustness
+While this approach reduces the resolution burden on the upstream server, it requires that the intermediate proxy possesses a DNS environment consistent with the client's expectations. Implementations should be aware that resolving a domain at an intermediate hop may yield different IP addresses (e.g., in Content Delivery Networks) than resolution at the network edge.
 
-While the SOCKS 4A extension was primarily designed for clients unable to perform local DNS lookups, many "SOCKSified" application libraries (such as those using `LD_PRELOAD` or global proxy settings) exhibited "leaky" behavior.
+### Transparent Relaying
 
-* Pre-resolution: A client might resolve a domain name locally but still initiate a SOCKS 4A request using that domain name rather than the resolved IP address.
-* Server Interoperability: To ensure maximum compatibility with various client stacks, historical SOCKS 4A server implementations typically did not validate whether the client *needed* to use 4A. A server would process any request matching the 0.0.0.x DSTIP pattern as a 4A request, regardless of the client's network location or supposed capabilities.
+In environments where the intermediate proxy is situated behind a restrictive firewall without direct DNS access, it SHOULD implement transparent relaying. In this mode, the intermediate proxy preserves the SOCKS 4A signaling (the `0.0.0.x` `DSTIP` pattern) and appends the `USERID` and `DOMAIN` fields exactly as received from the client when initiating the upstream connection. This ensures that the resolution intent is signaled end-to-end until it reaches a node capable of performing the lookup.
 
-This permissive approach was essential for maintaining a uniform interface across diverse application environments, though it occasionally resulted in redundant DNS queries if both the client and the server performed the same resolution.
+## Implementation Robustness and Interoperability
+
+In accordance with the general robustness principle—to be conservative in what you send and liberal in what you accept—SOCKS 4A implementations have historically adopted permissive processing logic to accommodate diverse and sometimes non-compliant client behaviors.
+
+### Handling of Pre-resolved Requests
+
+Certain "SOCKSified" libraries or shim layers may resolve the destination hostname locally via the system's standard resolver before initiating the SOCKS handshake. Despite possessing a valid IP address, these clients may still utilize the SOCKS 4A format, placing the original hostname in the `DOMAIN` field. 
+
+To ensure maximum interoperability, a SOCKS 4A-compliant server MUST NOT attempt to validate whether a 4A request was strictly necessary. Any request that matches the `0.0.0.x` pattern MUST be processed according to the SOCKS 4A logic described in Section 4, even if the server suspects the client is capable of direct IPv4 addressing.
+
+### Buffer Management and Premature Termination
+
+Historical implementations have occasionally encountered "leaky" or malformed packets where the `NULL` terminators for the `USERID` or `DOMAIN` fields are missing or followed by extraneous data. A robust implementation SHOULD treat the first `NULL` octet encountered as the definitive end of the field. 
+
+Furthermore, if the stream terminates before the second `NULL` octet (the `DOMAIN` terminator) is received, the server MUST treat the request as failed and send a rejection reply (Result Code `91`). This prevents the server from hanging in a "half-read" state, which could be exploited as a resource exhaustion vector (see Section A.4).
+
+### Character Set Consistency
+
+While this document recommends US-ASCII or Punycode (Section 3.1.2), historical deployments have occasionally seen `DOMAIN` strings containing raw UTF-8 or local codepage octets. Servers SHOULD treat the `DOMAIN` string as an opaque sequence of octets when passing it to the local resolver. If the local resolver returns an error due to illegal characters, the server MUST return a failure code to the client rather than attempting to "guess" the intended encoding, which can lead to security vulnerabilities through domain name spoofing.
 
 # Security Analysis
 
