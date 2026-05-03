@@ -31,8 +31,6 @@ informative:
   RFC8446:
   I-D.vance-socks-v4a:
 
-...
-
 --- abstract
 
 This document describes SOCKS version 4, a protocol designed to facilitate TCP proxy services across a network firewall. SOCKS operates at the session layer, providing application users with transparent access to network services on the other side of the firewall. It is application-protocol independent, allowing it to support a wide range of services, including those utilizing encryption, while maintaining minimum processing overhead by simply relaying data after initial access control checks. The protocol defines two primary operations: CONNECT for establishing outbound connections to an application server, and BIND for preparing for and accepting inbound connections initiated by an application server.
@@ -199,8 +197,6 @@ No IANA actions required.
 See {{existing-values}} for the existing values used within the protocol.
 
 --- back
-
----
 
 # Relationship with SOCKS 4A
 
