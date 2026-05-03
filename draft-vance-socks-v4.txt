@@ -67,7 +67,6 @@ Table of Contents
    3.  CONNECT Operation
      3.1.  CONNECT Request Packet Format
      3.2.  CONNECT Processing and Reply
-       3.2.1.  Interpretation of Special DSTIP Values
      3.3.  CONNECT Reply Packet Format
    4.  BIND Operation
      4.1.  BIND Request Packet Format
@@ -211,22 +210,6 @@ Table of Contents
 
    A reply packet MUST be sent to the client upon the establishment of
    the connection, rejection of the request, or operational failure.
-
-3.2.1.  Interpretation of Special DSTIP Values
-
-   To ensure compatibility with widespread protocol extensions (notably
-   SOCKSv4a), implementations MUST adhere to the following logic
-   regarding the DSTIP field:
-
-   *  If the first three octets of the DSTIP are zero and the fourth
-      octet is non-zero (the range 0.0.0.x), the SOCKS server MUST NOT
-      attempt to establish a TCP connection to this literal IP address.
-
-   *  A SOCKSv4 server without SOCKSv4a support MUST treat such a DSTIP
-      as an unreachable destination and return a reply with CD = 91.  An
-      implementation conforming to this protocol MUST NOT process any
-      octets encountered after the initial NULL octet that terminates
-      the USERID field.
 
 3.3.  CONNECT Reply Packet Format
 
