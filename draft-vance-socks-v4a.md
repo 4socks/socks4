@@ -14,25 +14,7 @@ author:
     email: djvanc@outlook.com
 
 normative:
-  SOCKS4:
-       title: "SOCKS: A protocol for TCP proxy across firewalls"
-       author:
-         name: Ying-Da Lee
-         org: NEC Systems Laboratory, CSTC
-       target: https://www.openssh.org/txt/socks4.protocol
-  SOCKS:
-       title: "SOCKS"
-       author:
-         name: David Koblas
-         org: Netskope
-       seriesinfo: 1992 Usenix Security Symposium
-       date: 1992
-  SOCKS4a:
-       title: "SOCKS 4A: A  Simple Extension to SOCKS 4 Protocol"
-       author:
-         name: Ying-Da Lee
-         org: NEC Systems Laboratory, CSTC
-       target: https://www.openssh.org/txt/socks4a.protocol
+  I-D.vance-socks-v4:
 
 informative:
   RFC791:
@@ -64,7 +46,7 @@ This document specifies SOCKS 4A, an extension to the SOCKS Version 4 protocol. 
 
 # Introduction
 
-The original SOCKSv4 protocol requires the client to provide the destination host's IPv4 address. However, in many firewall configurations, the client resides on a network without direct DNS access to the outside world. SOCKS 4A addresses this by allowing the client to provide a domain name string instead of a resolved IP address.
+The original SOCKSv4 protocol ({{I-D.vance-socks-v4}}) requires the client to provide the destination host's IPv4 address. However, in many firewall configurations, the client resides on a network without direct DNS access to the outside world. SOCKS 4A addresses this by allowing the client to provide a domain name string instead of a resolved IP address.
 
 # Conventions and Terminology
 
