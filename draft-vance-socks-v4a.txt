@@ -4,8 +4,8 @@
 
 Network Working Group                                        D. J. Vance
 Internet-Draft                                               Independent
-Intended status: Historic                                  19 April 2026
-Expires: 21 October 2026
+Intended status: Historic                                     3 May 2026
+Expires: 4 November 2026
 
 
                        SOCKS Protocol Version 4A
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 October 2026.
+   This Internet-Draft will expire on 4 November 2026.
 
 Copyright Notice
 
@@ -95,12 +95,12 @@ Table of Contents
 
 1.  Introduction
 
-   The original SOCKSv4 protocol requires the client to provide the
-   destination host's IPv4 address.  However, in many firewall
-   configurations, the client resides on a network without direct DNS
-   access to the outside world.  SOCKS 4A addresses this by allowing the
-   client to provide a domain name string instead of a resolved IP
-   address.
+   The original SOCKSv4 protocol ([I-D.vance-socks-v4]) requires the
+   client to provide the destination host's IPv4 address.  However, in
+   many firewall configurations, the client resides on a network without
+   direct DNS access to the outside world.  SOCKS 4A addresses this by
+   allowing the client to provide a domain name string instead of a
+   resolved IP address.
 
 2.  Conventions and Terminology
 
@@ -307,6 +307,12 @@ Table of Contents
 
 7.1.  Normative References
 
+   [I-D.vance-socks-v4]
+              Vance, D. J., "SOCKS Protocol Version 4", Work in
+              Progress, Internet-Draft, draft-vance-socks-v4-08, 10
+              April 2026, <https://datatracker.ietf.org/doc/html/draft-
+              vance-socks-v4-08>.
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
@@ -315,17 +321,6 @@ Table of Contents
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
-
-   [SOCKS]    Koblas, D., "SOCKS", 1992 Usenix Security Symposium ,
-              1992.
-
-   [SOCKS4]   Lee, Y.-D., "SOCKS: A protocol for TCP proxy across
-              firewalls", n.d.,
-              <https://www.openssh.org/txt/socks4.protocol>.
-
-   [SOCKS4a]  Lee, Y.-D., "SOCKS 4A: A Simple Extension to SOCKS 4
-              Protocol", n.d.,
-              <https://www.openssh.org/txt/socks4a.protocol>.
 
 7.2.  Informative References
 
