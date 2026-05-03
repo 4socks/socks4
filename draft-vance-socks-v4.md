@@ -15,19 +15,6 @@ author:
 
 normative:
   RFC1413:
-  SOCKS4:
-       title: "SOCKS: A protocol for TCP proxy across firewalls"
-       author:
-         name: Ying-Da Lee
-         org: NEC Systems Laboratory, CSTC
-       target: https://www.openssh.org/txt/socks4.protocol
-  SOCKS:
-       title: "SOCKS"
-       author:
-         name: David Koblas
-         org: Netskope
-       seriesinfo: 1992 Usenix Security Symposium
-       date: 1992
 
 informative:
   RFC768:
