@@ -29,12 +29,7 @@ informative:
   RFC4732:
   RFC4953:
   RFC8446:
-  SOCKS4a:
-       title: "SOCKS 4A: A  Simple Extension to SOCKS 4 Protocol"
-       author:
-         name: Ying-Da Lee
-         org: NEC Systems Laboratory, CSTC
-       target: https://www.openssh.org/txt/socks4a.protocol
+  I-D.vance-socks-v4a:
 
 ...
 
@@ -205,67 +200,33 @@ See {{existing-values}} for the existing values used within the protocol.
 
 --- back
 
-# Common Operational Extensions
+---
 
-The content of this appendix is Informative, not Normative. It describes extensions and interpretations of the SOCKSv4 protocol that have been widely adopted in practical deployments and client implementations to enhance functionality and compatibility.
+# Relationship with SOCKS 4A
 
-## SOCKS Protocol Version 4A
+The relationship between the base SOCKSv4 protocol and the variant commonly known as SOCKS 4A ({{I-D.vance-socks-v4a}}) is frequently misunderstood as a simple backward-compatible extension. In strict architectural terms, SOCKS 4A functions as an independent protocol that occupies the same version number space while introducing semantic behaviors that directly conflict with the original specification. While SOCKSv4 mandates that the client perform destination address resolution prior to the request—thereby transmitting a definitive four-octet IPv4 address—SOCKS 4A introduces a mechanism where the server assumes responsibility for DNS resolution. This shift is triggered by a specific heuristic where the client provides an invalid IP address in the format 0.0.0.x.
 
-The SOCKSv4 protocol originally required the client to resolve the target domain name before sending the request. As this is impractical in many environments, the SOCKSv4a protocol was widely adopted to allow the SOCKS server to perform domain name resolution.
+This intersection creates a significant protocol conflict. According to the original SOCKSv4 design, a server receiving a destination IP in the 0.0.0.x range should treat it as a literal, albeit unreachable, network address and immediately reject the request with a failure code. However, a SOCKS 4A-compliant server intercepts this specific bit pattern to signal the presence of a trailing variable-length domain name field located after the initial null-terminated user identifier. This divergence means that a standard SOCKSv4 server cannot safely ignore the additional data appended by a 4A client; doing so would result in the trailing domain name being misinterpreted as the start of the application data stream or causing a synchronization error in the TCP buffer. Consequently, SOCKS 4A should be treated as a distinct experimental branch that successfully gained market dominance due to the practical necessity of server-side resolution in environments where clients lack direct DNS access, such as those described in the context of private addressing in RFC 1918.
 
-SOCKSv4a, though share a same version number with SOCKSv4, is treated as a complete independent protocol here. The specification will be published elsewhere. The content below is just a simple summary of SOCKSv4a, and it should never be treated as a Normative standard.
+# Operational Considerations
 
-Clients using this protocol must follow these rules:
+The following sections provide a analysis of the operational realities of SOCKS version 4, accounting for its historical evolution and the practical interpretations that have shaped its deployment in modern network environments.
 
-### SOCKSv4a Request Format
+## Operational Security and Access Control in BIND
 
-When a client wishes to connect using a domain name instead of an IP address, the request format follows the CONNECT/BIND format, but with modifications to DSTIP and the end of the request:
+In practical deployments, the BIND operation deviates significantly from its theoretical description as a simple port-binding utility. While the protocol fields DSTIP and DSTPORT are nominally intended to identify the target application server, most production-grade SOCKS implementations utilize these fields as a primitive form of an Access Control List (ACL). This behavior is driven by the security requirements outlined in RFC 3552, as allowing an unrestricted inbound socket on a firewall host would present an unacceptable internal network risk. Most servers enforce a strict source-address restriction, ensuring that the incoming connection to the temporary listening port originates specifically from the IP address provided in the client’s initial BIND request.
 
-| Field | Description | Size (bytes) | SOCKSv4a Usage |
-| :--- | :--- | :--- | :--- |
-| VN | Version Number (4) | 1 | Unchanged. |
-| CD | Command Code (1 or 2) | 1 | Unchanged. |
-| DSTPORT | Destination Port | 2 | Unchanged. |
-| DSTIP | Destination IP Address | 4 | MUST be set to 0.0.0.1 (0x00000001). |
-| USERID | User ID | variable | Unchanged. |
-| NULL | Null Terminator (0x00) | 1 | Terminates USERID. |
-| DOMAIN | Target Domain Name | variable | New field: Null-terminated string. |
-| NULL | Final Null Terminator | 1 | New field: Terminates DOMAIN. |
-{: \#socks4a-req-format title="SOCKSv4a Request Format"}
+Furthermore, the operational stability of the BIND command is often compromised by the presence of Network Address Translation (NAT) devices between the SOCKS server and the application server. If the application server's perceived IP address changes due to a NAT gateway, the SOCKS server's security check will fail, returning a rejection code despite a legitimate connection attempt. While some implementations attempt to extend this verification to the source port (DSTPORT), this is widely considered an unreliable practice. As per the transport layer behaviors defined in {{RFC9293}}, source ports for outbound connections are typically ephemeral and allocated dynamically by the operating system’s stack, making them unpredictable for the purpose of pre-configured access control.
 
-A SOCKSv4a client, when sending a request, must append the target domain name string after the NULL terminator of USERID, and terminate the entire request with a second NULL byte.
+## Implementation of State Management and Timeouts
 
-### SOCKSv4a Server Processing
+The lack of explicit state-tracking mechanisms in the SOCKSv4 control plane necessitates the implementation of aggressive timeout policies to prevent resource exhaustion. Standard operational practice involves two distinct timer categories: the connection establishment timer and the idle listener timer. For CONNECT operations, servers typically implement a 120-second limit for the three-way handshake with the destination host. Failure to receive an ACK within this window results in a code 91 reply and immediate teardown of the client-to-proxy segment. This prevents the "hanging" of file descriptors which could be exploited in a low-bandwidth Denial of Service attack as categorized in {{RFC4732}}.
 
-When a SOCKSv4a server receives a request where the DSTIP field is 0.0.0.1, it MUST perform the following actions:
-
-1.  Treat 0.0.0.1 as a special signal and MUST NOT attempt to connect to this IP address.
-2.  Start reading data after the USERID's NULL terminator, interpreting it as the target domain name string (DOMAIN), until the next NULL terminator is encountered.
-3.  The server MUST attempt to resolve this domain name.
-4.  If resolution is successful, the server attempts to connect to the obtained IP address. If the connection succeeds, it replies 90. If the connection fails, it replies 91.
-5.  If resolution fails, the server MUST reply 91 and close the connection.
-
-## Use of DSTIP/DSTPORT in BIND Requests for Access Control
-
-Although DSTIP and DSTPORT in the BIND request are intended to identify the application server, many SOCKS server and firewall implementations use them as an Access Control List (ACL) for the inbound connection.
-
-* DSTIP as Source Address Restriction: The server strictly requires the IP address of the inbound connection to MUST match the DSTIP specified in the BIND request.
-* DSTPORT as Source Port Restriction (less common): Some implementations may attempt to verify that the source port of the inbound connection matches the DSTPORT in the BIND request. Since the source port of an application server is usually randomly allocated by the operating system, this usage is generally considered unreliable or misleading and is ignored in most implementations.
-
-When initiating a BIND request, a client SHOULD ensure that DSTIP is the address of the application server it expects to receive the connection from, to improve compatibility.
-
-## Common Implementations of Timeout Mechanism
-
-As mandated by {{timeout-mechanism}}, the SOCKS server MUST employ time limits. In common implementations, timeouts usually trigger under the following circumstances:
-
-* CONNECT Timeout: The server is unable to establish a connection with DSTIP:DSTPORT within the specified time.
-* Timeout after the first BIND reply: After the SOCKS server successfully binds the listening socket (sent the first 90 reply), but fails to receive an inbound connection from the application server within the specified time.
-
-When a timeout occurs, the server MUST immediately close the connection with the client and abort all pending network operations.
+The BIND operation introduces a more complex state requirement. After the SOCKS server sends the initial success reply containing its local listening port, it must maintain an open socket waiting for the application server's secondary connection. Modern implementations strictly limit this "waiting" state to a narrow window, often significantly shorter than the default TCP timeout. If the expected inbound SYN packet does not arrive within this period, the server must abort the BIND process to free the ephemeral port for other users. This rigorous management of the listener state is a critical operational safeguard, ensuring that a single misbehaving or malicious client cannot monopolize the proxy's available port range or impact the overall availability of the gateway service.
 
 # Security Analysis
 
-The SOCKS Version 4 (SOCKSv4) protocol was designed as a pragmatic mechanism for TCP proxying across firewalls in an era when the Internet threat model was significantly less hostile than at present. By contemporary standards, as established in {{RFC3552}} and {{RFC3365}} (BCP 61), SOCKSv4 is considered fundamentally insecure. It fails to meet the "strong security" requirements mandated for Internet protocols because it lacks native mechanisms for mutual authentication, data confidentiality, and integrity protection.
+The SOCKS Version 4 (SOCKSv4) protocol was designed as a pragmatic mechanism for TCP proxying across firewalls in an era when the Internet threat model was significantly less hostile than at present. By contemporary standards, as established in {{RFC3552}} and {{RFC3365}}, SOCKSv4 is considered fundamentally insecure. It fails to meet the "strong security" requirements mandated for Internet protocols because it lacks native mechanisms for mutual authentication, data confidentiality, and integrity protection.
 
 ## Weaknesses in Identification and Authentication
 
