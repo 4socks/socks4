@@ -422,6 +422,11 @@ Table of Contents
               February 2026, <https://datatracker.ietf.org/doc/html/
               draft-vance-socks-v4a-01>.
 
+   [RFC1918]  Rekhter, Y., Moskowitz, B., Karrenberg, D., de Groot, G.
+              J., and E. Lear, "Address Allocation for Private
+              Internets", BCP 5, RFC 1918, DOI 10.17487/RFC1918,
+              February 1996, <https://www.rfc-editor.org/rfc/rfc1918>.
+
    [RFC1928]  Leech, M., Ganis, M., Lee, Y., Kuris, R., Koblas, D., and
               L. Jones, "SOCKS Protocol Version 5", RFC 1928,
               DOI 10.17487/RFC1928, March 1996,
@@ -504,7 +509,7 @@ Appendix A.  Relationship with SOCKS 4A
    should be treated as a distinct experimental branch that successfully
    gained market dominance due to the practical necessity of server-side
    resolution in environments where clients lack direct DNS access, such
-   as those described in the context of private addressing in RFC 1918.
+   as those described in the context of private addressing in [RFC1918].
 
 Appendix B.  Operational Considerations
 
