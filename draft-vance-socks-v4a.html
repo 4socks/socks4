@@ -7,7 +7,7 @@
 <title>SOCKS Protocol Version 4A</title>
 <meta content="Daniel James Vance" name="author">
 <meta content="
-       This document specifies SOCKS 4A, an extension to the SOCKS Version 4 protocol. This extension allows SOCKS clients to delegate domain name resolution to the SOCKS server. This is particularly useful in environments where the client host cannot resolve the destination host's domain name due to restrictive network policies or lack of DNS access. 
+       This document specifies SOCKS Protocol Version 4A, an independent protocol originated from the SOCKS Protocol Version 4. This protocol allows SOCKS clients to delegate domain name resolution to the SOCKS server. This is particularly useful in environments where the client host cannot resolve the destination host's domain name due to restrictive network policies or lack of DNS access. 
     " name="description">
 <meta content="xml2rfc 3.33.0" name="generator">
 <meta content="draft-vance-socks-v4a-latest" name="ietf.draft">
@@ -1079,7 +1079,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">SOCKS Protocol Version 4A</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document specifies SOCKS 4A, an extension to the SOCKS Version 4 protocol. This extension allows SOCKS clients to delegate domain name resolution to the SOCKS server. This is particularly useful in environments where the client host cannot resolve the destination host's domain name due to restrictive network policies or lack of DNS access.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document specifies SOCKS Protocol Version 4A, an independent protocol originated from the SOCKS Protocol Version 4. This protocol allows SOCKS clients to delegate domain name resolution to the SOCKS server. This is particularly useful in environments where the client host cannot resolve the destination host's domain name due to restrictive network policies or lack of DNS access.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-discussion-venues">
@@ -1310,7 +1310,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-protocol-mechanism">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-protocol-mechanism" class="section-name selfRef">Protocol Mechanism</a>
       </h2>
-<p id="section-3-1">The SOCKS 4A extension is triggered by a specific, non-routable pattern in the <code>DSTIP</code> field of a standard SOCKSv4 request.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-1">The only behaviors that SOCKS 4A is different from the original SOCKSv4 is triggered by a specific, non-routable pattern in the <code>DSTIP</code> field of a standard SOCKSv4 request.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <div id="request-format">
 <section id="section-3.1">
         <h3 id="name-request-format">
