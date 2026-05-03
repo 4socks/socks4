@@ -20,6 +20,7 @@ informative:
   RFC768:
   RFC791:
   RFC9293:
+  RFC1918:
   RFC1928:
   RFC1948:
   RFC1929:
@@ -202,7 +203,7 @@ See {{existing-values}} for the existing values used within the protocol.
 
 The relationship between the base SOCKSv4 protocol and the variant commonly known as SOCKS 4A ({{I-D.vance-socks-v4a}}) is frequently misunderstood as a simple backward-compatible extension. In strict architectural terms, SOCKS 4A functions as an independent protocol that occupies the same version number space while introducing semantic behaviors that directly conflict with the original specification. While SOCKSv4 mandates that the client perform destination address resolution prior to the request—thereby transmitting a definitive four-octet IPv4 address—SOCKS 4A introduces a mechanism where the server assumes responsibility for DNS resolution. This shift is triggered by a specific heuristic where the client provides an invalid IP address in the format 0.0.0.x.
 
-This intersection creates a significant protocol conflict. According to the original SOCKSv4 design, a server receiving a destination IP in the 0.0.0.x range should treat it as a literal, albeit unreachable, network address and immediately reject the request with a failure code. However, a SOCKS 4A-compliant server intercepts this specific bit pattern to signal the presence of a trailing variable-length domain name field located after the initial null-terminated user identifier. This divergence means that a standard SOCKSv4 server cannot safely ignore the additional data appended by a 4A client; doing so would result in the trailing domain name being misinterpreted as the start of the application data stream or causing a synchronization error in the TCP buffer. Consequently, SOCKS 4A should be treated as a distinct experimental branch that successfully gained market dominance due to the practical necessity of server-side resolution in environments where clients lack direct DNS access, such as those described in the context of private addressing in RFC 1918.
+This intersection creates a significant protocol conflict. According to the original SOCKSv4 design, a server receiving a destination IP in the 0.0.0.x range should treat it as a literal, albeit unreachable, network address and immediately reject the request with a failure code. However, a SOCKS 4A-compliant server intercepts this specific bit pattern to signal the presence of a trailing variable-length domain name field located after the initial null-terminated user identifier. This divergence means that a standard SOCKSv4 server cannot safely ignore the additional data appended by a 4A client; doing so would result in the trailing domain name being misinterpreted as the start of the application data stream or causing a synchronization error in the TCP buffer. Consequently, SOCKS 4A should be treated as a distinct experimental branch that successfully gained market dominance due to the practical necessity of server-side resolution in environments where clients lack direct DNS access, such as those described in the context of private addressing in {{RFC1918}}.
 
 # Operational Considerations
 
