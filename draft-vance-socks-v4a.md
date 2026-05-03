@@ -225,6 +225,10 @@ The use of the `DOMAIN` field requires careful handling of Internationalized Dom
 
 SOCKS 4A is an aged protocol and lacks modern security features. It should only be used in environments where the communication channel is otherwise secured by a lower-layer technology (such as IPsec) or where the risk of interception and spoofing is deemed acceptable. For all other use cases, the transition to SOCKSv5 {{RFC1928}} combined with TLS is strongly recommended to ensure the confidentiality and integrity of the session.
 
+# Relationship with SOCKS 4
+
+See Appendix A of {{I-D.vance-socks-v4}} for the reason why SOCKS 4A was not an extension of SOCKS Version 4.
+
 # Original Author
 {:numbered="false"}
 ~~~~
