@@ -40,7 +40,7 @@ informative:
 
 --- abstract
 
-This document specifies SOCKS 4A, an extension to the SOCKS Version 4 protocol. This extension allows SOCKS clients to delegate domain name resolution to the SOCKS server. This is particularly useful in environments where the client host cannot resolve the destination host's domain name due to restrictive network policies or lack of DNS access.
+This document specifies SOCKS Protocol Version 4A, an independent protocol originated from the SOCKS Protocol Version 4. This protocol allows SOCKS clients to delegate domain name resolution to the SOCKS server. This is particularly useful in environments where the client host cannot resolve the destination host's domain name due to restrictive network policies or lack of DNS access.
 
 --- middle
 
@@ -65,7 +65,7 @@ This specification uses the following terms:
 
 # Protocol Mechanism
 
-The SOCKS 4A extension is triggered by a specific, non-routable pattern in the `DSTIP` field of a standard SOCKSv4 request.
+The only behaviors that SOCKS 4A is different from the original SOCKSv4 is triggered by a specific, non-routable pattern in the `DSTIP` field of a standard SOCKSv4 request.
 
 ## Request Format
 
