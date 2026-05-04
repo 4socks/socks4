@@ -4,8 +4,8 @@
 
 Network Working Group                                        D. J. Vance
 Internet-Draft                                               Independent
-Intended status: Historic                                     3 May 2026
-Expires: 4 November 2026
+Intended status: Historic                                     4 May 2026
+Expires: 5 November 2026
 
 
                        SOCKS Protocol Version 4A
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 November 2026.
+   This Internet-Draft will expire on 5 November 2026.
 
 Copyright Notice
 
@@ -89,7 +89,8 @@ Table of Contents
      B.5.  Protocol Rollback and Downgrade Attacks
      B.6.  Interaction with Internationalized Domain Names
      B.7.  Final Security Note
-   Appendix C.  Relationship with SOCKS 4
+   Appendix C.  Example Implementations
+   Appendix D.  Relationship with SOCKS 4
    Original Author
    Contributors
    Author's Address
@@ -311,9 +312,9 @@ Table of Contents
 
    [I-D.vance-socks-v4]
               Vance, D. J., "SOCKS Protocol Version 4", Work in
-              Progress, Internet-Draft, draft-vance-socks-v4-08, 10
-              April 2026, <https://datatracker.ietf.org/doc/html/draft-
-              vance-socks-v4-08>.
+              Progress, Internet-Draft, draft-vance-socks-v4-09, 4 May
+              2026, <https://datatracker.ietf.org/doc/html/draft-vance-
+              socks-v4-09>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -625,7 +626,29 @@ B.7.  Final Security Note
    with TLS is strongly recommended to ensure the confidentiality and
    integrity of the session.
 
-Appendix C.  Relationship with SOCKS 4
+Appendix C.  Example Implementations
+
+   The following software projects provide full or partial
+   implementations of the SOCKS4A protocol.  The author consulted these
+   implementations as practical references during the drafting of this
+   document.  It is explicitly stated that the author and this draft are
+   entirely unaffiliated with these projects.
+
+   *  Dante A sophisticated SOCKS server implementation for Unix-based
+      systems.  It handles SOCKS4A requests within its broader SOCKS4
+      module, utilizing the specific "null-domain" IP address format
+      ($0.0.0.x$) to trigger remote DNS resolution.
+
+   *  GOST (Go Simple Tunnel) A multi-protocol tunnel manager written in
+      Go.  It includes a native SOCKS4A handler that supports both the
+      protocol's command set and its specific address representation.
+
+   *  3proxy A lightweight, multi-platform proxy server.  It implements
+      SOCKS4A as part of its compact SOCKS service, supporting the
+      extension for environments where client-side DNS resolution is
+      restricted.
+
+Appendix D.  Relationship with SOCKS 4
 
    See Appendix A of [I-D.vance-socks-v4] for the reason why SOCKS 4A
    was not an extension of SOCKS Version 4.
