@@ -229,7 +229,7 @@ SOCKS 4A is an aged protocol and lacks modern security features. It should only 
 
 The following software projects provide full or partial implementations of the SOCKS4A protocol. The author consulted these implementations as practical references during the drafting of this document. It is explicitly stated that the author and this draft are entirely unaffiliated with these projects.
 
-*   Dante: A sophisticated SOCKS server implementation for Unix-based systems. It handles SOCKS4A requests within its broader SOCKS4 module, utilizing the specific "null-domain" IP address format ($0.0.0.x$) to trigger remote DNS resolution.
+*   Dante: A sophisticated SOCKS server implementation for Unix-based systems. It handles SOCKS4A requests within its broader SOCKS4 module, utilizing the specific "null-domain" IP address format to trigger remote DNS resolution.
 
 *   GOST (Go Simple Tunnel): A multi-protocol tunnel manager written in Go. It includes a native SOCKS4A handler that supports both the protocol's command set and its specific address representation.
 
