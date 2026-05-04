@@ -636,8 +636,8 @@ Appendix C.  Example Implementations
 
    *  Dante: A sophisticated SOCKS server implementation for Unix-based
       systems.  It handles SOCKS4A requests within its broader SOCKS4
-      module, utilizing the specific "null-domain" IP address format
-      ($0.0.0.x$) to trigger remote DNS resolution.
+      module, utilizing the specific "null-domain" IP address format to
+      trigger remote DNS resolution.
 
    *  GOST (Go Simple Tunnel): A multi-protocol tunnel manager written
       in Go.  It includes a native SOCKS4A handler that supports both
