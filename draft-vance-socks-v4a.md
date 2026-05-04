@@ -225,6 +225,19 @@ The use of the `DOMAIN` field requires careful handling of Internationalized Dom
 
 SOCKS 4A is an aged protocol and lacks modern security features. It should only be used in environments where the communication channel is otherwise secured by a lower-layer technology (such as IPsec) or where the risk of interception and spoofing is deemed acceptable. For all other use cases, the transition to SOCKSv5 {{RFC1928}} combined with TLS is strongly recommended to ensure the confidentiality and integrity of the session.
 
+# Example Implementations
+
+The following software projects provide full or partial implementations of the SOCKS4A protocol. The author consulted these implementations as practical references during the drafting of this document. It is explicitly stated that the author and this draft are entirely unaffiliated with these projects.
+
+*   Dante
+    A sophisticated SOCKS server implementation for Unix-based systems. It handles SOCKS4A requests within its broader SOCKS4 module, utilizing the specific "null-domain" IP address format ($0.0.0.x$) to trigger remote DNS resolution.
+
+*   GOST (Go Simple Tunnel)
+    A multi-protocol tunnel manager written in Go. It includes a native SOCKS4A handler that supports both the protocol's command set and its specific address representation.
+
+*   3proxy
+    A lightweight, multi-platform proxy server. It implements SOCKS4A as part of its compact SOCKS service, supporting the extension for environments where client-side DNS resolution is restricted.
+
 # Relationship with SOCKS 4
 
 See Appendix A of {{I-D.vance-socks-v4}} for the reason why SOCKS 4A was not an extension of SOCKS Version 4.
